@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var controllers = require('../controllers/userController')
 
 var loggedin = function (req, res, next) {
   if (req.isAuthenticated()) {
@@ -15,27 +16,22 @@ router.get('/', function (req, res, next) {
     title: 'Express'
   });
 });
-
-
 router.get('/login', function (req, res, next) {
   res.render('login');
 });
-
-
 router.get('/signup', function (req, res, next) {
   res.render('signup');
 });
-
-
 router.get('/profile', loggedin, function (req, res, next) {
   res.render('profile', {
     user: req.user
   })
 });
-
-
 router.get('/logout', function (req, res) {
   req.logout()
   res.redirect('/')
-})
+});
+router.get('/otp', (req, res) => {
+  res.render('otp');
+}, controllers.generateOTP);
 module.exports = router;
