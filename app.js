@@ -7,21 +7,22 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const hbs = require('hbs');
+const ejs = require('ejs');
 
 require('./passport')(passport)
 
 mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management')
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var auth = require('./routes/auth')(passport);
+const index = require('./routes/index');
+const users = require('./routes/users');
+const auth = require('./routes/auth')(passport);
+const complaint = require('./routes/complaints');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -34,19 +35,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'thesecret',
-  saveUninitialized: false,
+  saveUninitialized: true,
   resave: false
-}))
+}));
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
+// app.use((req,res,next) => {
+//   res.locals.currentUser = req.user;
+//   next();
+// });
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/auth', auth)
+app.use('/auth', auth);
+app.use('/complaints', complaint);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);

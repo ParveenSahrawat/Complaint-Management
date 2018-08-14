@@ -14,7 +14,7 @@ module.exports.createUser = (req, res, next) => {
         adminRegistration = true;
     User.findOne({
         email : req.body.email
-    }, function (err, doc) {
+    }, (err, doc) => {
         if (err) {
             res.status(500).send('error occured')
         } else {
@@ -55,12 +55,9 @@ module.exports.createUser = (req, res, next) => {
                             }
                             console.log('Message sent : %s ', info.messageId);
                             console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
-                            // return res.status(200).send({
-                            //     status: 1,
-                            //     msg: 'User Registration Successful. '
-                            // });
+                            res.redirect('/login');
                         });                          
-                    })  
+                    });  
                 }).catch((e) => {
                   res.status(500).json({
                       msg: 'Sever error',

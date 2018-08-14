@@ -4,9 +4,9 @@ var controllers = require('../controllers/userController')
 
 var loggedin = function (req, res, next) {
   if (req.isAuthenticated()) {
-    next()
+    next();
   } else {
-    res.redirect('/login')
+    res.redirect('/login');
   }
 }
 
@@ -22,10 +22,13 @@ router.get('/login', function (req, res, next) {
 router.get('/signup', function (req, res, next) {
   res.render('signup');
 });
-router.get('/profile', loggedin, function (req, res, next) {
-  res.render('profile', {
+router.get('/allComplaints', loggedin, function (req, res, next) {
+  res.render('allComplaints', {
     user: req.user
-  })
+  });
+});
+router.get('/newComplaint', loggedin, (req, res, next) => {
+  res.render('newComplaint');
 });
 router.get('/logout', function (req, res) {
   req.logout()

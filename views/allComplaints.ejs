@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+</head>
+<% include partials/scripts.ejs %>
+<body>
+
+   <% include partials/navbar.ejs %>
+
+    <!-- complaints -->
+    <div class="container mb-5 pb-5">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 mx-auto">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between my-5 ">
+                        <p class="h4">All Suggestions &amp; Objections</p>
+                    </div>
+                    <div >
+                        <button><a href="/newComplaint">Add New Complaint</a></button>
+                    </div>
+                    <div class="col-12">
+                        <table id="ctable" class="d-none table table-striped table-bordered" cellspacing="0" width="100%">
+                            <tfoot id="cfoot">
+                            </tfoot>
+                            <thead id="chead">
+                            </thead>
+                            <tbody id="cbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+    <!-- complaints end -->
+   
+</body>
+
+</html>

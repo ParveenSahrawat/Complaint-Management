@@ -4,11 +4,14 @@ var User = require('./db/User')
 
 module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
+        // console.log(user._id);
         done(null, user)
     })
-    passport.deserializeUser(function (user, done) {
-        done(null, user)
-    })
+    passport.deserializeUser(function (id, done) {
+        User.findById(id, (error, user) => {
+            done(error, user);
+        });
+    });
 
     passport.use(new localStrategy({
         usernameField : 'email',
@@ -16,7 +19,7 @@ module.exports = function (passport) {
     }, function (username, password, done) {
         User.findOne({
             email : username
-        }, function (err, doc) {
+        }, (err, doc) => {
             if (err) {
                 done(err)
             } else {
@@ -25,8 +28,9 @@ module.exports = function (passport) {
                     if (valid) {
                         // do not add password hash to session
                         done(null, {
+                            // "req.user._id" : doc._id,
                             username: doc.username,
-                            id: doc._id
+                            _id: doc._id
                         })
                     } else {
                         done(null, false)
