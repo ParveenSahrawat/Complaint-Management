@@ -2,7 +2,7 @@ const express = require('express');
 const request = require('request');
 const User = require('../db/User');
 const nodemailer = require('nodemailer');
-const validateUserFields = require('./userFIeldsController');
+const validateUserFields = require('./userFieldsController');
 // const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
 const { Organization_name } = require('../config/organization');
 

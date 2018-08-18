@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var controllers = require('../controllers/userController')
+var controllers = require('../controllers/userController');
+const complaintsController = require('../controllers/complaintsController');
 
 var loggedin = function (req, res, next) {
   if (req.isAuthenticated()) {
@@ -22,9 +23,10 @@ router.get('/login', function (req, res, next) {
 router.get('/signup', function (req, res, next) {
   res.render('signup');
 });
-router.get('/allComplaints', loggedin, function (req, res, next) {
+router.get('/allComplaints', loggedin, complaintsController.listAllComplaints, function (req, res, next) {
+  console.log('Hi i\'m here');
   res.render('allComplaints', {
-    user: req.user
+    complaints : data
   });
 });
 router.get('/newComplaint', loggedin, (req, res, next) => {

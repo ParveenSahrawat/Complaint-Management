@@ -22,12 +22,21 @@
                     </div>
                     <div class="col-12">
                         <table id="ctable" class="d-none table table-striped table-bordered" cellspacing="0" width="100%">
-                            <tfoot id="cfoot">
-                            </tfoot>
-                            <thead id="chead">
-                            </thead>
-                            <tbody id="cbody">
-                            </tbody>
+                            <tr>
+                                <!-- <th scope="col">ID</th> -->
+                                <th>Objection/ Suggestion</th>
+                                <th>Type</th>
+                                <th scope="col">Complainant</th>
+                                <th scope="col">DateTime</th>
+                                <th scope="col">DateTime</th>
+                                <th scope="col">Status</th>
+                                <th>View</th>
+                            </tr>
+                            <% for(let i = 0; complaints.length; i++) { %>
+                                <td><%=complaints[i].objectionOrSuggestion %></td>
+                                <td><%=complaints[i].complaintType %></td>
+                                <td><%=complaints[i].postedOn.toDateString() %></td>    
+                            <% } %>
                         </table>
                     </div>
                 </div>
@@ -35,7 +44,7 @@
         </div>  
     </div>
     <!-- complaints end -->
-   
+   <!-- <script src="../controllers/complaintsController.js"></script> -->
 </body>
 
 </html>

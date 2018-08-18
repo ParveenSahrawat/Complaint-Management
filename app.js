@@ -7,8 +7,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
+const multer = require('multer');
 const ejs = require('ejs');
-
+const upload = multer();
 require('./passport')(passport)
 
 mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management')
@@ -29,9 +30,10 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }));
 app.use(cookieParser());
+app.use(upload.array());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'thesecret',

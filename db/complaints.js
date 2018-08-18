@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-// var counter = require('../models/counter'); //counter model
+var counter = require('./counter'); //counter model
 
 var complaintSchema = new mongoose.Schema({
     complaintNumber: {
@@ -99,6 +99,6 @@ var complaintSchema = new mongoose.Schema({
 //         });
 // });
 
-module.exports.Complaint = mongoose.model('complaints', complaintSchema);
+module.exports = mongoose.model('complaints', complaintSchema, 'Complaint');
 
 

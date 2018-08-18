@@ -4,12 +4,12 @@ const _ = require('lodash');
 const validator = require('validator');
 
 module.exports.registerNewComplaint = (req, res) => {
-    var complaintBody = _.pick(req.body, ['complaintType', 'location', 'relevantParaClause', 'objectionOrSuggestion', 'complaintDesc', 'paraClauseLink']);
+    // var req.body = _.pick(req.body, ['complaintType', 'location', 'relevantParaClause', 'objectionOrSuggestion', 'complaintDesc', 'paraClauseLink']);
+    console.log(req.sessionID);
     console.log(req.user._id);
-    
-    console.log(complaintBody);
+    // console.log(`form body is ${req.body}`);
     console.log(req.user);
-    if (typeof (complaintBody.complaintType) == "undefined") {
+    if (typeof (req.body.complaintType) == "undefined") {
         return res.status(400).json({
             status: 0,
             msg: 'Complaint Type required'
@@ -18,7 +18,7 @@ module.exports.registerNewComplaint = (req, res) => {
     else {
         if (["Land Use Proposals", "Zoning Acquisition", "Infrastructure Provisions", 
              "Demographic & Population Projections", "Environment Related", "MCA/Control Area/Village Boundary", 
-             "Traffic & Transportation", "Others"].indexOf(validator.trim(complaintBody.complaintType)) == -1) {
+             "Traffic & Transportation", "Others"].indexOf(validator.trim(req.body.complaintType)) == -1) {
             return res.status(400).json({
                 status: 0,
                 msg: 'Complaint Type required'
@@ -26,14 +26,14 @@ module.exports.registerNewComplaint = (req, res) => {
         }
     }
 
-    if (typeof (complaintBody.location) == "undefined") {
+    if (typeof (req.body.location) == "undefined") {
         return res.status(400).json({
             status: 0,
-            msg: 'Location is required'
+            msg: 'Location iiis required'
         });
     }
     else {
-        if (!validator.trim(complaintBody.location)) {
+        if (!validator.trim(req.body.location)) {
             return res.status(400).json({
                 status: 0,
                 msg: 'Location is required'
@@ -41,14 +41,14 @@ module.exports.registerNewComplaint = (req, res) => {
         }
     }
 
-    if (typeof (complaintBody.relevantParaClause) == "undefined") {
+    if (typeof (req.body.relevantParaClause) == "undefined") {
         return res.status(400).json({
             status: 0,
             msg: 'Please enter relevant Para/Clause'
         });
     }
     else {
-        if (!validator.trim(complaintBody.relevantParaClause)) {
+        if (!validator.trim(req.body.relevantParaClause)) {
             return res.status(400).json({
                 status: 0,
                 msg: 'Please enter relevant Para/Clause'
@@ -56,14 +56,14 @@ module.exports.registerNewComplaint = (req, res) => {
         }
     }
 
-    if (typeof (complaintBody.complaintDesc) == "undefined") {
+    if (typeof (req.body.complaintDesc) == "undefined") {
         return res.status(400).json({
             status: 0,
             msg: 'Complaint Description is required'
         });
     }
     else {
-        if (!validator.trim(complaintBody.complaintDesc)) {
+        if (!validator.trim(req.body.complaintDesc)) {
             return res.status(400).json({
                 status: 0,
                 msg: 'Complaint Description is required'
@@ -71,14 +71,14 @@ module.exports.registerNewComplaint = (req, res) => {
         }
     }
 
-    if (typeof (complaintBody.objectionOrSuggestion) == "undefined") {
+    if (typeof (req.body.objectionOrSuggestion) == "undefined") {
         return res.status(400).json({
             status: 0,
             msg: 'Select whether its a complaint or suggestion.'
         });
     }
     else {
-        if (['Objection', 'Suggestion'].indexOf(validator.trim(complaintBody.objectionOrSuggestion)) === -1) {
+        if (['Objection', 'Suggestion'].indexOf(validator.trim(req.body.objectionOrSuggestion)) === -1) {
             return res.status(400).json({
                 status: 0,
                 msg: 'Select whether its a complaint or suggestion.'
@@ -86,11 +86,11 @@ module.exports.registerNewComplaint = (req, res) => {
         }
     }
     let newComplaint = new Complaint({
-        complaintType : complaintBody.complaintType,
-        location : complaintBody.location,
-        relevantParaClause : complaintBody.relevantParaClause,
-        complaintDesc : complaintBody.complaintDesc,
-        objectionOrSuggestion : complaintBody.objectionOrSuggestion,
+        complaintType : req.body.complaintType,
+        location : req.body.location,
+        relevantParaClause : req.body.relevantParaClause,
+        complaintDesc : req.body.complaintDesc,
+        objectionOrSuggestion : req.body.objectionOrSuggestion,
         complainant : req.user._id,
         actionTrail : [{
             user : req.user._id,
@@ -111,7 +111,7 @@ module.exports.registerNewComplaint = (req, res) => {
         else {
             res.json({
                 status: 1,
-                msg: `Your ${registeredComplaint.objectionOrSuggestion} was successfully registered.`,
+                msg: `Your ${registeredComplaint.objectionOrSuggestion} is successfully registered.`,
                 refNo: registeredComplaint.complaintNumber
             });
         }
@@ -119,8 +119,31 @@ module.exports.registerNewComplaint = (req, res) => {
 
 }
 
-module.exports.listAllComplaints = (req, res) => {
+module.exports.listAllComplaints = (req, res, next) => {
+    if (req.user.userType === "user") {
+        var query = Complaint.find({
+            complainant: req.user._id,
+        }, '-actionTrail -official -_id -__v').populate('complainant', 'name-_id').exec();
+    }
+    else {
+        var query = Complaint.find({}, '-actionTrail -_id -__v').populate([{
+            path: 'complainant',
+            select: 'name-_id'
+        }]).exec();
+    }
 
+    query.then((allcomplaints) => {
+        return res.send({
+            status: 1,
+            data: allcomplaints
+        })
+    }).catch((e) => {
+        return res.status(500).json({   
+            status: 0,
+            msg: 'Server Error',
+            errorDetails: e
+        });
+    });
 }
 
 module.exports.getComplaint = (req, res) => {

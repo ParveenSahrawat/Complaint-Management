@@ -27,6 +27,7 @@ module.exports = (passport) => {
                 res.redirect('/login');
             } else {
                 res.redirect('/allComplaints');
+                // window.location = 'allComplaints';
             }
         });
     });
