@@ -47,18 +47,18 @@
                 <input type="submit" value="Submit">
             </div>
       </form>
-      <!-- AIzaSyC6YPILh1-6c4CrG7rygxH2_9q3GZO2H7E -->
-     <!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script> -->
-     <script src="https://maps.googleapis.com/maps/api/place/autocomplete/json?input&key=AIzaSyC6YPILh1-6c4CrG7rygxH2_9q3GZO2H7E">
-     </script>
-     <script>
+      <script>
          function init(){
+            var options = {
+                types: ['(regions)'],
+                componentRestrictions: {country: "in"}
+            };
              var input = document.getElementById('location');
-             var autocomplete = new google.maps.Autocomplete(input);
+             var autocomplete = new google.maps.places.Autocomplete(input, options);
          }
-         google.maps.event.addDomListener(window, 'load', init);
-    </script>
-
+      </script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyGse3P2-C38xk4tO_s4od1Na5zBAmAgI&libraries=places&callback=init" async defer></script>
+     
 
 </body>
 </html>

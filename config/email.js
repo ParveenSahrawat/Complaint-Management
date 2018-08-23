@@ -8,5 +8,5 @@ module.exports.emailConfig = {
     }
 };
 
-module.exports.adminEmailAddress = 'complaintmanager179@gmail.com';
+module.exports.adminEmailAddress = 'complaintmanager@gmail.com';
 module.exports.adminName = 'Complaint Manager';

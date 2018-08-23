@@ -7,8 +7,10 @@ const validateUserFields = require('./userFieldsController');
 // const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
 const { Organization_name } = require('../config/organization');
 const bcrypt = require('bcrypt-nodejs');
+const {adminEmailAddress, adminName} = require('../config/email');
 
 module.exports.createUser = (req, res) => {
+
     validateUserFields.checkUserFields(req, res);
     var adminRegistration = false;
     var adminEmailAddress = `parveen.sahrawat1209@gmail.com`;
@@ -72,6 +74,7 @@ module.exports.createUser = (req, res) => {
 }
 
 module.exports.fetchLoggedUserDetails = (req, res) => {
+
   User.findById(req.user._id).then((doc) => {
     var { username, mobile, email, aadharNumber, mobileVerified } = doc;
     if (doc) {
@@ -92,6 +95,7 @@ module.exports.fetchLoggedUserDetails = (req, res) => {
     })
 })
 }
+
 module.exports.generateOTP = (req, res, next) => {
     console.log(req.user);
   if(req.user.mobileVerified){
@@ -368,3 +372,28 @@ module.exports.changePassword = (req, res) => {
     });
   }
 }
+!function(){
+  User.findOne({superAdmin : true}).then((doc) => {
+    if(doc)
+      return console.log(`Superadmin exists`);
+    else {
+      let user = new User();
+        user.username = adminName;
+        user.email = adminEmailAddress;
+        user.password = user.hashPassword(123456);
+        user.mobile = 9999999999;
+        user.aadharNumber = 123456789012;
+        user.userType = 'admin';
+        user.superAdmin = true;
+        user.save().then((superadmin) => {
+        if(superadmin){
+          console.log(`Superadmin created succesfully  ${superadmin}`);
+        } 
+      }).catch((err) => {
+        console.log('Error in creating superadmin');
+      });
+    }
+  }).catch((err) => {
+    console.log(`Error in finding the superadmin ${err}`);
+  });
+}();
