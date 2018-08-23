@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node app.js"
   },
+  "git repository" : "git clone https://ParveenSahrawat@bitbucket.org/ParveenSahrawat/complaint-management.git",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.18.2",
