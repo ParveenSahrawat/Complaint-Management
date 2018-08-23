@@ -1,42 +1,57 @@
-var express = require('express');
-var router = express.Router();
-var controllers = require('../controllers/userController');
+const express = require('express');
+const router = express.Router();
+const controllers = require('../controllers/userController');
 const complaintsController = require('../controllers/complaintsController');
+const usersController = require('../controllers/userController');
 
-var loggedin = function (req, res, next) {
+const loggedin = function (req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
     res.redirect('/login');
   }
 }
-
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res) => {
   res.render('index', {
     title: 'Express'
   });
 });
-router.get('/login', function (req, res, next) {
+// login and signup routes
+router.get('/login', (req, res) => {
   res.render('login');
 });
-router.get('/signup', function (req, res, next) {
+router.get('/signup', (req, res) => {
   res.render('signup');
 });
-router.get('/allComplaints', loggedin, complaintsController.listAllComplaints, function (req, res, next) {
-  console.log('Hi i\'m here');
-  res.render('allComplaints', {
-    complaints : data
-  });
-});
-router.get('/newComplaint', loggedin, (req, res, next) => {
-  res.render('newComplaint');
-});
-router.get('/logout', function (req, res) {
+router.get('/logout', (req, res) => {
   req.logout()
   res.redirect('/')
+});
+// profile routes
+router.get('/profile', loggedin, (req, res) => {
+  res.render('profile');
+});
+router.get('/getProfileDetails', loggedin, usersController.fetchLoggedUserDetails);
+router.patch('/profile', loggedin, usersController.editUserDetails);
+router.patch('/changePassword', loggedin, usersController.changePassword);
+// complaints routes
+router.get('/complaints', loggedin, (req, res) => {
+  res.render('allComplaints', {
+    user : req.user.username
+  });
+});
+router.get('/view/:_id', loggedin, complaintsController.getComplaint);
+router.get('/getComplaints', loggedin, complaintsController.listAllComplaints);
+
+router.get('/newComplaint', loggedin, (req, res) => {
+  res.render('newComplaint');
+});
+router.get('/view', loggedin, (req, res) => {
+  res.render('preview');
 });
 router.get('/otp', (req, res) => {
   res.render('otp');
 }, controllers.generateOTP);
+
 module.exports = router;

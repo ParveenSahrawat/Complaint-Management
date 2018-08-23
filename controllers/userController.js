@@ -1,12 +1,14 @@
 const express = require('express');
 const request = require('request');
+const validator = require('validator');
 const User = require('../db/User');
 const nodemailer = require('nodemailer');
 const validateUserFields = require('./userFieldsController');
 // const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
 const { Organization_name } = require('../config/organization');
+const bcrypt = require('bcrypt-nodejs');
 
-module.exports.createUser = (req, res, next) => {
+module.exports.createUser = (req, res) => {
     validateUserFields.checkUserFields(req, res);
     var adminRegistration = false;
     var adminEmailAddress = `parveen.sahrawat1209@gmail.com`;
@@ -19,7 +21,7 @@ module.exports.createUser = (req, res, next) => {
             res.status(500).send('error occured')
         } else {
             if (doc) {
-                res.status(500).send('Username already exists')
+                res.status(500).send('User already exists')
             } else {
                 var record = new User()
                 record.username = req.body.username;
@@ -69,7 +71,27 @@ module.exports.createUser = (req, res, next) => {
     });
 }
 
-
+module.exports.fetchLoggedUserDetails = (req, res) => {
+  User.findById(req.user._id).then((doc) => {
+    var { username, mobile, email, aadharNumber, mobileVerified } = doc;
+    if (doc) {
+        res.json({ username, mobile, email, aadharNumber, mobileVerified });
+    }
+    else {
+        res.status(400).json({
+            status: 0,
+            msg: 'User Not Found',
+            code: 'AC - 1'
+        })
+    }
+}).catch((e) => {
+    res.status(400).json({
+        status: 0,
+        msg: 'User Not Found',
+        code: 'AC-2'
+    })
+})
+}
 module.exports.generateOTP = (req, res, next) => {
     console.log(req.user);
   if(req.user.mobileVerified){
@@ -194,6 +216,155 @@ module.exports.checkOTP = (req, res) => {
       status : 0,
       message : `Invalid request`,
       errorDetails : 'OTP_1'
+    });
+  }
+}
+module.exports.editUserDetails = (req, res) => {
+  console.log('In edit ');
+  if( typeof(req.body.username) === 'undefined' || typeof(req.body.email) === 'undefined' || typeof(req.body.mobile) === 'undefined' || typeof(req.body.aadharNumber) === 'undefined'){
+    res.status(400).send({
+      status : 0,
+      message : 'Invalid request'
+    });
+  } else {
+    let username = req.body.username;
+    let email = req.body.email;
+    let mobile = req.body.mobile;
+    let aadharNumber = req.body.aadharNumber;
+      if(!validator.trim(username).length){
+        return res.status(400).send({
+          status : 0,
+          message : `Name can't be empty`
+        });
+      } else if(!validator.isEmail(email)){
+        return res.status(400).json({
+          status : 0,
+          message : `Invalid email address`
+        });
+      } else if(!validator.isMobilePhone(mobile, "en-IN")){
+        return res.status(400).json({
+          status : 0,
+          message : 'Invalid mobile number'
+        });
+      } else if(!(validator.isNumeric(aadharNumber) && validator.trim(aadharNumber).length === 12)){
+        return res.status(400).json({
+          status : 0,
+          message : 'Invalid aadharNumber'
+        });
+      }
+      // All Good. çheck duplicacy of Mobile, Email
+      // Checking If Email isn't associated with any other account.
+      User.findOne({
+        'email' : email,
+        '_id' : {
+          $ne : req.user._id
+        }
+      }).then((doc) => {
+          if(doc){
+            return res.status(400).json({
+              status : 0,
+              message : `Entered email is already associated with an account`
+            })
+          } else {
+            User.findOne({
+              'mobile' : mobile,
+              '_id' : {
+                $ne : req.user._id
+              }
+            }).then((doc) => {
+              if(doc){
+                return res.sendStatus(400).json({
+                  status : 0,
+                  message : `Entered mobile is already associted with an account`
+                })
+              } else {
+                User.findByIdAndUpdate(req.user._id, {
+                  $set : {
+                    username, email, aadharNumber,mobile
+                  }
+                }, (error, doc) => {
+                  if(error){
+                    return res.status(500).json({
+                      status : 0,
+                      message : `An error occured while updating the document`,
+                      errorDetails : error
+                    })
+                  } else {
+                    res.send({
+                      status : 1,
+                      message : 'Update successfull',
+                      newDetails : doc
+                    })
+                  }
+                })
+              }
+            })
+          }
+      })
+  }
+}
+module.exports.changePassword = (req, res) => {
+  console.log('in changepassword');
+  if(typeof(req.body.oldPassword) === 'undefined' || typeof(req.body.newPassword) === 'undefined' || req.body.newPassword.length < 6){
+    res.status(400).send({
+      status : 0,
+      message : 'Invalid request'
+    }); 
+  } else {
+    let oldPassword = req.body.oldPassword;
+    let newPassword = req.body.newPassword;
+    User.findById(req.user._id).then((doc) => {
+      if(doc){
+        bcrypt.compare(oldPassword, doc.password, (error, passwordMatched) => {
+          if(error){
+            res.status(400).json({
+              status : 0,
+              message : 'Password not matched',
+              errorDetails : 'An error occured while processing your request',
+              error
+            });
+          } else if(passwordMatched){
+            let salt = bcrypt.genSalt(10, (error, salt) => {
+              if(error){
+                res.status(400).json({
+                  status : 0,
+                  message : 'An error occured while changing password',
+                  errorDetails : 'An error occured while changing password',
+                  error
+                });
+              } else {
+                let hash = bcrypt.hashSync(newPassword, salt);
+                User.findByIdAndUpdate(req.user._id, {
+                  $set : {
+                    password : hash
+                  }
+                }).then((passwordChanged) => {
+                  if(passwordChanged){
+                    res.status(200).json({
+                      status : 1,
+                      message : 'Password changed successfully',
+                    });
+                  }
+                }).catch((error) => {
+                  res.status(400).json({
+                    status : 0,
+                    message : 'An error occured while processing your request',
+                    errorDetails : 'An error occured while processing your request',
+                    error
+                  });
+                });
+              }
+            });
+          }
+        });
+      }
+    }).catch((error) => {
+      res.status(404).json({
+        status : 0,
+        message : 'user not found',
+        errorDetails : 'User not found',
+        error
+      });
     });
   }
 }

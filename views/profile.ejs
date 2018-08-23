@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile</title>
+    <% include partials/scripts.ejs %>
+</head>
+    <body onload="getProfileDetails()">
+    <% include partials/navbar.ejs %>
+        <div class="container mb-5 ">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card mt-5">
+                        <div class="card-body">
+                            <div class="row border border-top-0 border-left-0 border-right-0">
+                                <div class="col-lg-12 text-center">
+                                    <p class="text-capitalize lead">My Profile</p>
+                                </div>
+                            </div>
+                            <div class="hide_on_edit row">
+                                    <button onclick="editProfileDetails()" class="btn btn-link float-right">Edit Profile</button>
+                                    <button data-toggle="modal" data-target="#changePassword" class="btn btn-link float-left">Change Password</button>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table class="table">
+                                        <tr>
+                                            <td class="font-weight-bold">Name</td>
+                                            <td><input type="text" id="username" class="editProfileFields form-control" disabled></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Email</td>
+                                            <td><input type="email" id="email" class="editProfileFields form-control" disabled></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Mobile</td>
+                                            <td><input type="number" id="mobile" class="editProfileFields form-control" disabled></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Aadhar Number</td>
+                                            <td><input type="number" id="aadharNumber" class="editProfileFields form-control" disabled></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="editProfileRow" class="row d-none" >
+                                    <button class="col-lg-3 mt-3 offset-lg-3 btn btn-muted btn-rounded" onclick="closeEditProfile()">Cancel</button> 
+                                    <button type="submit" class="col-lg-3 mt-3 btn btn-primary btn-rounded" onclick="saveUserProfile()">Save Details</button> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <a href="../home" class="hide_on_edit btn btn-secondary col-lg-3 mt-3 offset-lg-5 btn-rounded px-4">Go Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    <!-- Change Password Modal  -->
+
+    <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="oldPassword">Enter Current Password :</label>
+                            <input type="password" class="form-control" id="oldPassword" aria-describedby="oldPassHelp" placeholder="Enter Current Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Enter New Password :</label>
+                            <input type="password" class="form-control" id="newPassword" aria-describedby="newPassHelp" placeholder="Enter New Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password :</label>
+                            <input type="password" class="form-control" id="confirmPassword" aria-describedby="confirmPasshelp" placeholder="Confirm Above Password">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="saveNewPassword()" class="btn btn-primary">Save</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

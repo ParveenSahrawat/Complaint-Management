@@ -1,148 +1,210 @@
-var baseUrl = '';
-$(function () {
-    let t = trimChar(window.location.pathname, '/').split('/').length;
-    while (t--) baseUrl += '../';
-    baseUrl = baseUrl.substring(1) + '';
-    populate_links();
-    if (typeof (pname) != "undefined") {
-        switch (pname) {
-            case 'new': init_newComplaint(); break;
-            case 'home': load_all_complaints(); break;
-            case 'profile': load_profile_data(); break
-            case 'forgotPassword': init_forgotPass(); break;
-            case 'resetPassword': init_resetPassword(); break;
-            case 'login': init_loginPage(); break;
-            case 'view': load_complaint(); init_frola_editor(); break;
-            case 'stats': initStats(); break;
-            case 'manageAdminUsers': initManageAdminUsers(); break;
-            case 'relevantParaLinks': init_relevantParaLinks(); break;
-        }
-    }
-    else {
-        // Pagename not defined
-    }
+// import swal from 'sweetalert'
 
-});
+var baseUrl = 'http://localhost:3000';
+
 function loadAllComplaints(){
     $.ajax({
-        url: '/allComplaints',
-        type: 'GET',
-        success: function (data) {
-            if (data.status) {
-                var m = data.data;
-                if (isad) {
-                    chead = '<tr><th scope="col">ID</th><th>Objection/ Suggestion</th><th>Type</th><th scope="col">Complainant</th><th scope="col">DateTime</th><th scope="col">DateTime</th><th scope="col">Status</th><th>View</th></tr>';
-                    cfoot = '<tr><th scope="col">Complaint ID</th><th>Objection/ Suggestion</th><th>Type</th><th scope="col">Complainant</th><th scope="col">DateTime</th><th scope="col">DateTime</th><th scope="col">Status</th><th>View</th></tr>';
-                    $('#cfoot').html(cfoot);
-                }
-                else {
-                    chead = '<tr><th scope="col">#</th><th>Type</th><th scope="col">DateTime</th><th>DateTime-2</th><th scope="col">Status</th><th scope="col">View</th></tr>';
-                    cfoot = '';
-                }
-                $('#chead').html(chead);
-                cbody = '';
-                for (var i = 0; i < m.length; i++) {
-                    let t = m[i];
-                    if (!isad) {
-                        cbody += `<tr>
-                                <td scope="row"> ${t.complaintNumber}</td>
-                                <td scope="row"> ${t.complaintType} - ${t.objectionOrSuggestion}</td>
-                                <td scope="row"> ${moment(t.postedOn).format("dddd, Do MMM YY, h:mm a")}</td>
-                                <td scope="row"> ${t.postedOn}</td>
-                                <td scope="row"> ${t.status}</td>
-                                <td scope="row"> <a href="./view/${t.complaintNumber}">View</a></td>
-                            </tr>`;
-                    }
-                    else {
-                        cbody += `<tr>
-                                <td scope="row"> ${t.complaintNumber}</td>
-                                <td scope="row"> ${t.objectionOrSuggestion}</td>
-                                <td scope="row"> ${t.complaintType} </td>
-                                <td scope="row"> ${t.complainant.name} </td>
-                                <td scope="row"> ${moment(t.postedOn).format("dddd, Do MMM YY, h:mm a")}</td>
-                                <td scope="row"> ${t.postedOn}</td>
-                                <td scope="row"> ${t.status}</td>
-                                <td scope="row"> <a href="./view/${t.complaintNumber}">View</a></td>
-                            </tr>`;
-                    }
-                }
-                $('#cbody').html(cbody);
-                if (!isad) {
-                    $('#ctable').DataTable({
-                        language: {
-                            "emptyTable": 'You haven\'t posted any suggestion or objection yet.',
-                            "infoEmpty": "No suggestions or objections to show",
-                            "zeroRecords": "No matching suggestion or objection found",
-                        },
-                        columnDefs: [{
-                            orderable: false,
-                            targets: 5
-                        },
-                        {
-                            orderData: [3],
-                            targets: 2
-                        },
-                        {
-                            visible: false,
-                            targets: 3
-                        }
-                        ]
-                    });
-                    $('#ctable').removeClass('d-none');
-                }
-                else {
-                    var ctable = $('#ctable').DataTable({
-                        language: {
-                            "emptyTable": "No suggestions or objections to show",
-                            "infoEmpty": "No suggestions or objections to show",
-                            "zeroRecords": "No matching suggestion or objection found"
-                        },
-                        columnDefs: [{
-                            orderable: false,
-                            targets: 7
-                        }, {
-                            orderData: [5],
-                            targets: 4
-                        }, {
-                            visible: false,
-                            targets: 5
-                        }],
-                        initComplete: function () {
-                            this.api().columns().every(function () {
-                                var column = this;
-                                var select = $('<select><option value="">Showing All</option></select>')
-                                    .appendTo($(column.footer()).empty())
-                                    .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                            $(this).val()
-                                        );
+        url : baseUrl + '/getComplaints',
+        type : 'GET',
+        datatype:'json',
+        success : (complaints) => {
+            //var comp= complaints.data
+            //debugger;
+            if(complaints){
+                var trHTML = '';
+                $.each(complaints.data, function (i, item) {
+                    
+                    trHTML += '<tr><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
+                        '</td><td>' + complaints.data[i].complaintType +
+                        '</td><td>' + complaints.data[i].postedOn + '</td><td>' + 
+                        complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
+                        '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' + 
+                            complaints.data[i].status + '</td><td>' + '<a onclick="" href="http://localhost:3000/view/_id">View</a>' + '</td></tr>';
+                });
+            //$('#ctable').clear();
+            // $('#ctable').removeClass(d-none);
+            $('#ctable').append(trHTML);
+            } else {
 
-                                        column
-                                            .search(val ? '^' + val + '$' : '', true, false)
-                                            .draw();
-                                    });
-
-                                column.data().unique().sort().each(function (d, j) {
-                                    select.append('<option value="' + d + '">' + d + '</option>')
-                                });
-                            });
-                        }
-                    });
-                    $('#cfoot>tr>th:nth-child(1),#cfoot>tr>th:nth-child(4),#cfoot>tr>th:nth-child(5),#cfoot>tr>th:nth-child(7)').html('')
-                    $('#ctable').removeClass('d-none');
-                }
-            }
-            else {
-                show_error_swal(data.msg);
             }
         },
-        error: (e) => {
-            if (typeof e.responseJSON != "undefined")
-                show_error_swal(e.responseJSON.msg);
-            else
-                show_error_swal('An error occured while communicating with server.\n\nTry refreshing the page.');
+        error: function(err)
+        {
+            alert('FAILED');
         }
     });
 }
+function getComplaint(){
+    $.ajax({
+        url : baseUrl + '/view/' + _id,
+        type : 'GET',
+        datatype : 'json',
+        success : (complaint) => {
+            
+        }
+    });
+}
+function getProfileDetails(){
+    $.ajax({
+        url : baseUrl + '/getProfileDetails',
+        type : 'GET',
+        datatype : 'json',
+        success: (profileDetails) => {
+            if(profileDetails){
+                var data = profileDetails;
+                populateUserProfileFields(data);
+            } else {
+                alert('User details are not fetched');
+            }
+        }
+    });
+}
+function populateUserProfileFields(data) {
+    $('#username').val(data.username).attr('disabled', 'disabled');
+    $('#mobile').val(data.mobile).attr('disabled', 'disabled');
+    $('#email').val(data.email).attr('disabled', 'disabled');
+    $('#aadharNumber').val(data.aadharNumber).attr('disabled', 'disabled');
+}
+function editProfileDetails(){
+    $('.editProfileFields').removeAttr('disabled');
+    $('.hide_on_edit').fadeOut(200, () => {
+        $('#editProfileRow').removeClass('d-none');
+    });
+}
+function saveUserProfile() {
+        let username = $("#username").val();
+        let email = $("#email").val();
+        let mobile = $("#mobile").val();
+        let aadharNumber = $("#aadharNumber").val();
+        let err = [];
+        if (!username.length)
+            err.push('Userame can\'t be left empty');
+        if (!validate_email(email))
+            err.push('Please enter valid Email');
+        if (!validate_mobile(mobile)) {
+            err.push('Please Enter Valid Mobile Number');
+        }
+        if (validate_aadhar(aadharNumber)) {
+            err.push('Please Enter Valid Aadhar number');
+        }
+        if (err.length) {
+            swal({
+                type: 'warning',
+                html: err.join('<li>')
+            })
+        }
+            // open_processing_ur_request_swal();
+            $.ajax({
+                url: baseUrl + '/profile',
+                type: 'PATCH',
+                data: {
+                    username:username, email:email, mobile:mobile, aadharNumber:aadharNumber
+                },
+                datatype : 'json',
+                success: (data) => {
+                    if (data.status) {
+                        savedDetails = {
+                            username, email, mobile, aadharNumber
+                        };
+                        swal({
+                            type: 'success',
+                            text: data.message,
+                            timer: 3000
+                        }).then(() => {
+                            closeEditProfile();
+                        }, (dismiss) => {
+                            closeEditProfile();
+                        })
+                    }
+                },
+                error: (e) => {
+                    if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                        swal({
+                            text: e.responseJSON.message,
+                            type: 'warning'
+                        });
+                    else
+                        swal({
+                            text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                            type: 'warning'
+                        });
+                }
+            })
+}
+function closeEditProfile() {
+        // swal({
+        //     type: 'warning',
+        //     text: "You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.",
+        //     showConfirmButton: true,
+        //     showCancelButton: true,
+        //     confirmButtonText: 'Continue',
+        //     cancelButtonText: 'Cancel'
+        // }).then(() => {
+            populateUserProfileFields(savedDetails);
+            show_hide_btns();
+        // }, (dismiss) => {
+        //     return;
+        // });
 
+    function show_hide_btns() {
+        $('.editProfileFields').attr('disabled', 'disabled');
+        $('.hide_on_edit').fadeIn();
+        $('#editProfileRow').addClass('d-none');
+    }
+}
+function saveNewPassword() {
+    var oldPassword = $("#oldPassword").val();
+    var newPassword = $("#newPassword").val();
+    var confirmPassword = $("#confirmPassword").val();
+
+    if (!oldPassword.length) {
+        swal({
+            type: 'warning',
+            text: 'Please Enter current Password'
+        });
+        return;
+    }
+    if (newPassword.length < 6) {
+        swal({
+            type: 'warning',
+            text: 'New Password has to be of atleast 6 chars.'
+        })
+        return;
+    }
+    else if (newPassword != confirmPassword) {
+        swal({
+            type: 'warning',
+            text: 'New Password and Confirm Password do not match'
+        });
+        return;
+    }
+    else {
+        // open_processing_ur_request_swal();
+        $.ajax({
+            type: 'PATCH',
+            url: baseUrl + '/changePassword',
+            data: {
+                newPassword,
+                oldPassword
+            },
+            success: (data) => {
+                if (data.status) {
+                    swal({
+                        type: 'success',
+                        text: data.message
+                    }).then(() => {
+                        $('#changePassword button[data-dismiss="modal"]').click();
+                    }, (dismiss) => {
+                        $('#changePassword button[data-dismiss="modal"]').click();
+                    })
+                }
+            },
+            error: (e) => {
+                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                    swal(e.responseJSON.message);
+                else
+                    swal('An error occured while communicating with server.\n\nTry refreshing the page.')
+            }
+        })
+    }
 }

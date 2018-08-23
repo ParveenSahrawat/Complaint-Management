@@ -15,18 +15,17 @@ module.exports = (passport) => {
     //    console.log(req.user);
     // });
     router.post('/login', passport.authenticate('local'), (req, res) => {
-
-        console.log("executed login!");
-        console.log(req.user._id);
+        // console.log("executed login!");
+        // console.log(req.user._id);
         req.session.user = req.user;
-        console.log(req.sessionID);
+        // console.log(req.sessionID);
         // console.log(req.user.sessionID);
-
         req.logIn(req.user, (err) => {
             if (err) {
+                console.log(err);
                 res.redirect('/login');
             } else {
-                res.redirect('/allComplaints');
+                res.redirect('/complaints');
                 // window.location = 'allComplaints';
             }
         });

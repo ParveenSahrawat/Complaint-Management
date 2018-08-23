@@ -5,10 +5,10 @@ const validator = require('validator');
 
 module.exports.registerNewComplaint = (req, res) => {
     // var req.body = _.pick(req.body, ['complaintType', 'location', 'relevantParaClause', 'objectionOrSuggestion', 'complaintDesc', 'paraClauseLink']);
-    console.log(req.sessionID);
-    console.log(req.user._id);
+    // console.log(req.sessionID);
+    // console.log(req.user._id);
     // console.log(`form body is ${req.body}`);
-    console.log(req.user);
+    // console.log(req.user);
     if (typeof (req.body.complaintType) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -85,7 +85,17 @@ module.exports.registerNewComplaint = (req, res) => {
             });
         }
     }
-    let newComplaint = new Complaint({
+       
+        // Complaint.findOneAndUpdate({ _id : req.user._id}, { $inc : { counter : 1}}, { new : true }, (error, res) => {
+        //     if(error)
+        //         return error;
+        //     else {
+        //         return res;
+        //     }
+        // }) 
+
+       let newComplaint = new Complaint({
+        // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,
         location : req.body.location,
         relevantParaClause : req.body.relevantParaClause,
@@ -104,7 +114,7 @@ module.exports.registerNewComplaint = (req, res) => {
         if (err) {
             res.status(500).json({
                 status: 0,
-                msg: 'Server Error',
+                msg: 'Server Error while saving new complaint',
                 errorDetails: err
             });
         }
@@ -116,14 +126,15 @@ module.exports.registerNewComplaint = (req, res) => {
             });
         }
     });
-
 }
 
 module.exports.listAllComplaints = (req, res, next) => {
     if (req.user.userType === "user") {
         var query = Complaint.find({
-            complainant: req.user._id,
-        }, '-actionTrail -official -_id -__v').populate('complainant', 'name-_id').exec();
+            $query : { complainant: req.user._id },
+            $orderby : { postedOn : -1 }
+        })
+        // , '-actionTrail -official -_id -__v').populate('complainant', 'name-_id').exec();
     }
     else {
         var query = Complaint.find({}, '-actionTrail -_id -__v').populate([{
@@ -147,8 +158,54 @@ module.exports.listAllComplaints = (req, res, next) => {
 }
 
 module.exports.getComplaint = (req, res) => {
+    var { _id } = req.params;
+        if (req.user.userType == "user") {
 
-} 
+            var query = Complaint.findOne({
+                _id,
+                complainant: req.user._id
+            }, ' -official -_id -__v')
+                .populate([{
+                    path: 'complainant',
+                    select: 'name-_id'
+                }, {
+                    path: 'actionTrail.user',
+                    select: 'userType-_id'
+                }]).exec();
+        }
+        else {
+            var query = Complaint.findOne({
+                _id
+            }, '-_id -__v')
+                .populate({
+                    path: 'complainant',
+                    select: 'name mobile email-_id'
+                })
+                .populate({
+                    path: 'actionTrail.user',
+                    select: 'name userType-_id'
+                })
+                .exec();
+        }
+        query.then((complaint) => {
+            if (!complaint) {
+                return res.status(404).status({
+                    status: 0,
+                    msg: 'The requested resources does not exist or you do not have sufficient priviledge to access it.'
+                });
+            }
+            else {
+                return res.send(complaint);
+            }
+        })
+    }
+    // else {
+    //     return res.status(400).json({
+    //         status: 0,
+    //         msg: 'Invalid Request.'
+    //     });
+    // }
+ 
 
 module.exports.updateStatus = (req, res) => {
 

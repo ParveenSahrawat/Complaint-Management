@@ -7,12 +7,18 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const multer = require('multer');
-const ejs = require('ejs');
-const upload = multer();
+// const multer = require('multer');
+// const ejs = require('ejs');
+// const upload = multer();
 require('./passport')(passport)
 
-mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management')
+mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management', (error, data) => {
+  if(error){
+    console.log('Failed in connecting to database');
+  } else {
+    console.log('Database connection succesfull');
+  }
+})
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -20,6 +26,7 @@ const auth = require('./routes/auth')(passport);
 const complaint = require('./routes/complaints');
 
 var app = express();
+app.set('port', 3000);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,7 +40,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(cookieParser());
-app.use(upload.array());
+// app.use(upload.array());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'thesecret',
@@ -43,10 +50,6 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use((req,res,next) => {
-//   res.locals.currentUser = req.user;
-//   next();
-// });
 
 app.use('/', index);
 app.use('/users', users);
@@ -71,4 +74,11 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+app.listen(app.get('port'), (error, result) => {
+  if(error){
+    console.log('Failed in creating server');
+  } else {
+    console.log(`Server is running on port ${app.get('port')}`);
+  }
+})
+// module.exports = app;

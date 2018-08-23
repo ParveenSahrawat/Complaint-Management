@@ -1,8 +1,11 @@
 var mongoose = require('mongoose');
-
-var counter = require('./counter'); //counter model
+var Counter = require('./counter');
 
 var complaintSchema = new mongoose.Schema({
+    counter : {
+        type : Number,
+        default : 0
+    },
     complaintNumber: {
         type: Number
     },
@@ -43,7 +46,7 @@ var complaintSchema = new mongoose.Schema({
     },
     postedOn: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     },
     official: {
         type: mongoose.Schema.Types.ObjectId,
@@ -76,18 +79,21 @@ var complaintSchema = new mongoose.Schema({
     }]
 });
 
-// complaintSchema.pre('save', function (next) {
+// complaintSchema.pre('save', (next) => {
+//     console.log(`It's pre`);
 //     var complaint = this;
-//     counter.findOneAndUpdate(
+//     Counter.findOneAndUpdate(
 //         { 'for': 'complaintNumber' },
 //         { $inc: { 'seq': 1 } },
-//         (err, counter) => {
+//         (err, Counter) => {
 //             if (err) {
+//                 console.log(`You r in pre`);
 //                 res.status(500);
 //             }
 //             else {
-//                 if (counter) {
-//                     complaint.complaintNumber = counter.seq;
+//                 if (Counter) {
+//                     console.log(`Counter here`)
+//                     complaint.complaintNumber = Counter.seq;
 //                     next();
 //                 }
 //                 else {

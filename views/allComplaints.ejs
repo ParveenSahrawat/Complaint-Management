@@ -2,14 +2,16 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+    <link rel="style    sheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
 </head>
 <% include partials/scripts.ejs %>
-<body>
+
+<body onload="loadAllComplaints()">
 
    <% include partials/navbar.ejs %>
 
     <!-- complaints -->
+    <p><% user %></p>
     <div class="container mb-5 pb-5">
         <div class="row">
             <div class="col-lg-12 col-md-12 mx-auto">
@@ -17,26 +19,23 @@
                     <div class="col-12 d-flex justify-content-between my-5 ">
                         <p class="h4">All Suggestions &amp; Objections</p>
                     </div>
-                    <div >
-                        <button><a href="/newComplaint">Add New Complaint</a></button>
-                    </div>
+                    <a class="btn secondary white btn-lg" href="/profile">Profile</a>
+                    <a class="btn secondary white btn-lg" href="/logout">Logout</a>
+
+                    <button><a href="/newComplaint">Add New Complaint</a></button>
                     <div class="col-12">
-                        <table id="ctable" class="d-none table table-striped table-bordered" cellspacing="0" width="100%">
+                        <table id="ctable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <tr>
-                                <!-- <th scope="col">ID</th> -->
-                                <th>Objection/ Suggestion</th>
-                                <th>Type</th>
-                                <th scope="col">Complainant</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
                                 <th scope="col">DateTime</th>
-                                <th scope="col">DateTime</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Relevant ParaClause</th>
+                                <th scope="col">Description</th>
                                 <th scope="col">Status</th>
-                                <th>View</th>
+                                <th>Preview</th> 
                             </tr>
-                            <% for(let i = 0; complaints.length; i++) { %>
-                                <td><%=complaints[i].objectionOrSuggestion %></td>
-                                <td><%=complaints[i].complaintType %></td>
-                                <td><%=complaints[i].postedOn.toDateString() %></td>    
-                            <% } %>
                         </table>
                     </div>
                 </div>
@@ -45,6 +44,7 @@
     </div>
     <!-- complaints end -->
    <!-- <script src="../controllers/complaintsController.js"></script> -->
+
 </body>
 
 </html>
