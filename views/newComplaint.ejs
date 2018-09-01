@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -40,25 +40,26 @@
                 <input type="text" class="form-control" name="relevantParaClause" placeholder="">
           </div>
             <div class="form-group">
-                <label for="editor">Complaint Description</label>
-                <textarea class="form-control" name="complaintDesc" cols="30" rows="10"></textarea>
+                <label for="">Complaint Description</label>
+                <input id="editor" type="text" class="form-control" name="complaintDesc" cols="30" rows="10" placeholder="Type your complaint here">
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" name="image" placeholder="Choose photo">
             </div>
             <div class="form-group text-center">
                 <input type="submit" value="Submit">
             </div>
       </form>
-      <script>
-         function init(){
+    <script>
+        function init(){
             var options = {
                 types: ['(regions)'],
                 componentRestrictions: {country: "in"}
             };
-             var input = document.getElementById('location');
-             var autocomplete = new google.maps.places.Autocomplete(input, options);
-         }
-      </script>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyGse3P2-C38xk4tO_s4od1Na5zBAmAgI&libraries=places&callback=init" async defer></script>
-     
-
+            var input = document.getElementById('location');
+            var autocomplete = new google.maps.places.Autocomplete(input, options);
+        }
+    </script>
 </body>
 </html>

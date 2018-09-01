@@ -16,10 +16,10 @@ function loadAllComplaints(){
                     
                     trHTML += '<tr><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
                         '</td><td>' + complaints.data[i].complaintType +
-                        '</td><td>' + complaints.data[i].postedOn + '</td><td>' + 
+                        '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' + 
                         complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
                         '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' + 
-                            complaints.data[i].status + '</td><td>' + '<a onclick="" href="http://localhost:3000/view/_id">View</a>' + '</td></tr>';
+                            complaints.data[i].status + '</td><td>' + `<a onclick="getComplaint()" href="http://localhost:3000/view">View</a>` + '</td></tr>';
                 });
             //$('#ctable').clear();
             // $('#ctable').removeClass(d-none);
@@ -34,15 +34,160 @@ function loadAllComplaints(){
         }
     });
 }
-function getComplaint(){
+function loadAllComplaintsForAdmin(){
     $.ajax({
-        url : baseUrl + '/view/' + _id,
+        url : baseUrl + '/dashboardComplaints',
         type : 'GET',
-        datatype : 'json',
-        success : (complaint) => {
-            
+        datatype:'json',
+        success : (complaints) => {
+            //var comp= complaints.data
+            //debugger;
+            if(complaints){
+                var trHTML = '';
+                $.each(complaints.data, function (i, item) {
+                    
+                    trHTML += '<tr><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
+                        '</td><td>' + complaints.data[i].complaintType +
+                        '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' + 
+                        complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
+                        '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' + 
+                            complaints.data[i].status + '</td><td>' + 
+                            `<a href="http://localhost:3000/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
+                });
+            //$('#ctable').clear();
+            // $('#ctable').removeClass(d-none);
+            $('#ctable').append(trHTML);
+            } else {
+
+            }
+        },
+        error: function(err)
+        {
+            alert('FAILED');
         }
     });
+}
+function loadAnalytics(){
+        var baseUrl = 'http://localhost:3000';
+        $.ajax({
+            url : baseUrl + '/getAllComplaints',
+            type : 'GET',
+            dataType : 'json',
+            success : (complaints) => {
+                console.log(complaints);
+                var ctxBar = document.getElementById("myChart").getContext('2d');
+                var ctxPie = document.getElementById("myPieChart")
+                var ctxLine = document.getElementById("myLineChart");
+                console.log(complaints.results);
+                // var comp = $.map(complaints.results, (value, key) => {
+                //     return { [key] : value};
+                // });
+                var comp = Object.keys(complaints.results.counts).map(function (key) {
+                    return { [key]: complaints.results.counts[key] };
+                });
+                var getSum = (total, currentElement) => total + valueOf(currentElement);
+                // var totalComplaints = Object.values(comp).reduce((total, current) => total + current.value, 0);
+                var totalComplaints = 0;
+                for(var i=0; i<complaints.results.statusCount.length; i++){
+                    totalComplaints += complaints.results.statusCount[i];
+                }
+                console.log(comp);
+                var myChart = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Land Use Proposals", "Zoning Acquisition", "Infrastructure Provisions", "Demographic & Population Projections", "Environment Related", "MCA/Control Area/Village Boundary", "Traffic & Transportation", "Others"],
+                        datasets: [{
+                            label: `${totalComplaints} of Complaints`,
+                            data: [
+                                    comp[7]['Land Use Proposals'],
+                                    comp[0]['Zoning Acquisition'],
+                                    comp[4]['Infrastructure Provisions'],
+                                    comp[3]['Demographic & Population Projections'],
+                                    comp[5]['Environment Related'],
+                                    comp[1]['MCA/Control Area/Village Boundary'],
+                                    comp[2]['Traffic & Transportation'],
+                                    comp[6]['Others']
+                                ],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 120, 98, 0.2)',
+                                'rgba(255, 140, 150, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 0.2)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+                var myPieChart = new Chart(ctxPie, {
+                    type : 'pie',
+                    data : {
+                        labels : ['Pending','Replied'],
+                        datasets : [ {
+                           data : [ complaints.results.statusCount[0], complaints.results.statusCount[1] ]
+                        } ],
+                        backgroundColor : ['rgba(54, 162, 235)','rgb(173, 255, 47)']
+                    },
+                    options : {
+                        cutoutPercentage : 0,
+                        rotation : -0.5 * Math.PI,
+                        circumference : 2 * Math.PI,
+                    },
+                });
+                var myLineChart = new Chart(ctxLine,{
+                    type : 'line',
+                    data : {
+                        labels : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        datasets : [{
+                            data : [ 
+                                complaints.results.monthArray[0],
+                                complaints.results.monthArray[1],
+                                complaints.results.monthArray[2],
+                                complaints.results.monthArray[3],
+                                complaints.results.monthArray[4],
+                                complaints.results.monthArray[5],
+                                complaints.results.monthArray[6],
+                                complaints.results.monthArray[7],
+                                complaints.results.monthArray[8],
+                                complaints.results.monthArray[9],
+                                complaints.results.monthArray[10],
+                                complaints.results.monthArray[11]
+                            ],
+                            fill : false,
+                            borderColor : 'rgb(75, 192, 192)',
+                            lineTension : 0.1
+                            
+                        }]
+                    },
+                    options : {
+                        showLine : true,
+                        spanGaps : true
+                    }
+                });
+            },
+        });
 }
 function getProfileDetails(){
     $.ajax({
@@ -206,5 +351,74 @@ function saveNewPassword() {
                     swal('An error occured while communicating with server.\n\nTry refreshing the page.')
             }
         })
+    }
+}
+function getComplaint(){
+    let params = (new URL(document.location)).searchParams;
+    console.log(params);
+    let id = params.get('_id');
+    $.ajax({
+        url : baseUrl + '/complaint/' + $("#uid").text(),
+        type : 'GET',
+        datatype : 'json',
+        success : (complaint) => {
+            if(complaint){
+                let trHTML = '';
+                console.log(complaint);
+                if(complaint.status === 'Replied'){
+                    $('.btn-secondary').removeClass('btn-secondary').addClass('btn-success');
+                } else if(complaint.status === 'Under Consideration'){
+                    $('#underConsideration').removeClass('btn-secondary').addClass('btn-success');
+                    $('#replied').removeClass('btn-secondary').addClass('btn-success');
+                } else if(complaint.status === 'Replied'){
+                    $('#replied').removeClass('btn-secondary').addClass('btn-success');
+                }
+                trHTML += '<tr><td>' + 'Id' + '</td><td>' + complaint._id + '</td><tr>' +
+                        '<tr><td>' + 'Name' + '</td><td>' + complaint.objectionOrSuggestion + '</td><tr>' +
+                        '<tr><td>' + 'Type' + '</td><td>' + complaint.complaintType + '</td><tr>' +
+                        '<tr><td>' + 'Date' + '</td><td>' + complaint.postedOn +'</td><tr>' + 
+                        '<tr><td>' + 'Location' + '</td><td>' +complaint.location + '</td><tr>'  + 
+                        '<tr><td>' + 'Relevant Paraclause' + '</td><td>' + complaint.relevantParaClause + '</td><tr>'
+                        '<tr><td>' + 'Description' + '</td><td>' + complaint.complaintDesc + '</td><tr>' + 
+                        '<tr><td>' + 'Status' + '</td><td>' + complaint.status + '</td></tr>';
+                $('#ctable').append(trHTML);  
+                $('#action_div').removeClass('d-none');
+                $('#c_remarks_div').removeClass('d-none');      
+            }
+        }
+    });
+}
+function changeStatus(){
+    let newStatus = $('#c_new_status').val();
+    if (!newStatus) {
+        alert('Please select an option')
+        return;
+    }
+    else {
+        if ($('#c_new_status').val() == "Replied" && !$('#c_remarks').val().trim()) {
+            alert('Please Enter Reply comment.');
+            return;
+        }
+        else {
+            var remarks = $('#c_remarks').val();
+            // open_processing_ur_request_swal();
+            $.ajax({
+                type: 'POST',
+                url: baseUrl + '/complaints/updateStatus/' + $("#uid").text(),
+                data: { newStatus, remarks },
+                success: (data) => {
+                    if (data) {
+                        alert('Status Updated Successfully');
+                        window.location.href = window.location.href;
+                    }
+                },
+                error: (e) => {
+                    if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                        alert(e.responseJSON.message);
+                    else
+                        alert('An error occured while communicating with server.\n\nTry refreshing the page.');
+                }
+            })
+        }
     }
 }

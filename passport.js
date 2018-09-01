@@ -29,7 +29,8 @@ module.exports = function (passport) {
                         // do not add password hash to session
                         done(null, {
                             // "req.user._id" : doc._id,
-                            username: doc.username,
+                            username : doc.username,
+                            userType : doc.userType,
                             _id: doc._id
                         })
                     } else {

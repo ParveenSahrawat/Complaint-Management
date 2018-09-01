@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
 const Complaint = require('../db/complaints');
+const User = require('../db/User');
 const _ = require('lodash');
 const validator = require('validator');
-
+const fs = require('fs');
+const moment = require('moment');
+const nodemailer = require('nodemailer');
+const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 module.exports.registerNewComplaint = (req, res) => {
     // var req.body = _.pick(req.body, ['complaintType', 'location', 'relevantParaClause', 'objectionOrSuggestion', 'complaintDesc', 'paraClauseLink']);
     // console.log(req.sessionID);
@@ -85,15 +89,7 @@ module.exports.registerNewComplaint = (req, res) => {
             });
         }
     }
-       
-        // Complaint.findOneAndUpdate({ _id : req.user._id}, { $inc : { counter : 1}}, { new : true }, (error, res) => {
-        //     if(error)
-        //         return error;
-        //     else {
-        //         return res;
-        //     }
-        // }) 
-
+    console.log(req.file);
        let newComplaint = new Complaint({
         // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,
@@ -101,6 +97,10 @@ module.exports.registerNewComplaint = (req, res) => {
         relevantParaClause : req.body.relevantParaClause,
         complaintDesc : req.body.complaintDesc,
         objectionOrSuggestion : req.body.objectionOrSuggestion,
+        // image : {
+        //     path : req.file,
+        //     originalName : req.file.originalname
+        // },
         complainant : req.user._id,
         actionTrail : [{
             user : req.user._id,
@@ -127,90 +127,193 @@ module.exports.registerNewComplaint = (req, res) => {
         }
     });
 }
-
 module.exports.listAllComplaints = (req, res, next) => {
     if (req.user.userType === "user") {
         var query = Complaint.find({
             $query : { complainant: req.user._id },
             $orderby : { postedOn : -1 }
         })
+        query.then((allcomplaints) => {
+            return res.send({
+                status: 1,
+                data: allcomplaints
+            })
+        }).catch((e) => {
+            return res.status(500).json({   
+                status: 0,
+                message: 'Server Error',
+                errorDetails: e
+            });
+        });
         // , '-actionTrail -official -_id -__v').populate('complainant', 'name-_id').exec();
     }
     else {
-        var query = Complaint.find({}, '-actionTrail -_id -__v').populate([{
-            path: 'complainant',
-            select: 'name-_id'
-        }]).exec();
-    }
+        // var query = Complaint.find({}, '-actionTrail -_id -__v').populate([{
+        //     path: 'complainant',
+        //     select: 'name-_id'
+        // }]).exec();
+        var query = Complaint.find({}).exec((err, result) => {
+            if(err){
+                console.log('Error in finding complaints');
+            } else if(result){
+                console.log('Complaints are fetched');
+                // console.log(result);
+                var counts = {};
+                result.forEach((comp) => {
+                    counts[comp.complaintType] = (counts[comp.complaintType] || 0) +1;
+                });
+                var monthArray = [];
+                for(var i=0; i<12; i++){
+                    monthArray[i] = 0;
+                }
+                for(var i=0; i< result.length; i++){
+                    var index = parseInt(moment(result[i].postedOn).format('L').split('/')[0])-1;
+                    // console.log(index);
+                    monthArray[index]++;
+                }
+                // console.log(monthArray);
+                var pendingCount = 0;
+                var repliedCount = 0;
+                for(var i=0; i < result.length; i++){
+                    if(result[i].status === 'Replied'){
+                        repliedCount++;
+                    } else 
+                        pendingCount++;
+                }
+                var statusCount = [pendingCount,repliedCount];
 
-    query.then((allcomplaints) => {
-        return res.send({
-            status: 1,
-            data: allcomplaints
-        })
-    }).catch((e) => {
-        return res.status(500).json({   
-            status: 0,
-            msg: 'Server Error',
-            errorDetails: e
-        });
-    });
-}
-
-module.exports.getComplaint = (req, res) => {
-    var { _id } = req.params;
-        if (req.user.userType == "user") {
-
-            var query = Complaint.findOne({
-                _id,
-                complainant: req.user._id
-            }, ' -official -_id -__v')
-                .populate([{
-                    path: 'complainant',
-                    select: 'name-_id'
-                }, {
-                    path: 'actionTrail.user',
-                    select: 'userType-_id'
-                }]).exec();
-        }
-        else {
-            var query = Complaint.findOne({
-                _id
-            }, '-_id -__v')
-                .populate({
-                    path: 'complainant',
-                    select: 'name mobile email-_id'
-                })
-                .populate({
-                    path: 'actionTrail.user',
-                    select: 'name userType-_id'
-                })
-                .exec();
-        }
-        query.then((complaint) => {
-            if (!complaint) {
-                return res.status(404).status({
-                    status: 0,
-                    msg: 'The requested resources does not exist or you do not have sufficient priviledge to access it.'
+                return res.send({
+                    status : 200,
+                    results : {counts, statusCount, monthArray}
                 });
             }
-            else {
-                return res.send(complaint);
-            }
-        })
-    }
-    // else {
-    //     return res.status(400).json({
-    //         status: 0,
-    //         msg: 'Invalid Request.'
-    //     });
-    // }
- 
-
-module.exports.updateStatus = (req, res) => {
-
+        });   
+    }  
 }
+module.exports.getAllComplaintsForAdmin = (req, res) => {
+    if(req.user.userType === 'admin'){
+        Complaint.find({
+            $query : {},
+            $orderby : { postedOn : 1}
+        }).exec((err, result) => {
+            if(err){
+                console.log('error in finding complaints');
+                return res.send({
+                    status : 0,
+                    errorDetails : err
+                });
+            } else if(result){
+                console.log('Complaints found');
+                return res.send({
+                    status : 1,
+                    data : result
+                });
+            }
+        });
+    }
+}
+module.exports.getComplaint = (req, res, next) => {
+    var complaintId = req.params._id;
+    Complaint.findById(complaintId).exec((error, doc) => {
+        if(error){
+            console.log('Error in finding complaint');
+            res
+                .status(500)
+                .json(error);
+        } else if(!doc){
+            res
+                .status(404)
+                .json("Complaint Id not found");
+        }
+        res
+            .status(200)
+            .json(doc);
+        // next(doc);
+    });
+}    
+module.exports.updateStatus = (req, res) => {
+    if(typeof(req.body.newStatus !== 'undefined') && ['Under Consideration', 'Replied'].indexOf(validator.trim(req.body.newStatus)) !== -1){
+        var newStatus = req.body.newStatus;
+    }
+    let complaintId = req.params._id;
+    // var comp = Complaint.distinct(complainant, {"_id" : complaintId});
+    // console.log(comp);
+    Complaint.findById(complaintId).then((complaint) => {
+        if(!complaint){
+            res.status(400).send('Complaint with this id doesn\'t exist');
+        } else {
+            let user = complaint.complainant;
+            Complaint.findByIdAndUpdate(complaint._id, {
+                $set : {
+                    status : newStatus
+                },
+                $push : {
+                    actionTrail : {
+                        datetime : Date.now(),
+                        action : `Status changed to ${newStatus}`,
+                        remarks : req.body.remarks
+                    }
+                }
+            }).then((result) => {
+                if(!result){
+                    return res.status(400).send({
+                        status : 0,
+                        message : `Status not updated`
+                    });
+                } if (result.status == "Replied") {
+                    return res.status(400).send({
+                        status: 0,
+                        message: 'No further action is possible as it has been marked as Replied.'
+                    });
+                } else {
+                     User.findById(user).then((doc) => {
+                         let receiverEmailAddress = doc.email;
+                    var transporter = nodemailer.createTransport(emailConfig);
 
+                    var mailOptions = {
+                        from: `"${adminName}"${adminEmailAddress}`,
+                        to: `${receiverEmailAddress}`,
+                        subject: `Sharing ${complaint.objectionOrSuggestion}`,
+                        html: `Your complaint has been revieved please check it on website`
+                    };
+
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            res.status(500).send({
+                                status: 0,
+                                message: 'Could Not Email the complaint.',
+                                errorDetails: error
+                            })
+                        }
+                        else {
+                            res.send({
+                                status: 1,
+                                message: 'Email Sent successfully',
+                                details: info.response
+                            })
+                        }
+                    });
+                     }).catch((err) => {
+                         res.status(500).send({
+                             status : 0,
+                             message : 'Error in finding user of this complaint'
+                         });
+                     });
+                    return res.status(200).send({
+                        status : 1,
+                         message : 'Status updated successfully'
+                    });
+                }
+            }).catch((err) =>{
+                return res.status(500).send({
+                    status : 0,
+                    message : 'Error in update',
+                    errorDetails : err
+                });
+            });
+        }
+    });
+}
 module.exports.getStats = (req, res) => {
 
 }

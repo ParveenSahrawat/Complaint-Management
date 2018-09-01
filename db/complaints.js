@@ -1,6 +1,17 @@
 var mongoose = require('mongoose');
 var Counter = require('./counter');
 
+var imageSchema = new mongoose.Schema({
+    path: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    originalname: {
+        type: String,
+        required: true
+    }
+});
 var complaintSchema = new mongoose.Schema({
     counter : {
         type : Number,
@@ -39,6 +50,7 @@ var complaintSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    image : [imageSchema],
     complainant: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',

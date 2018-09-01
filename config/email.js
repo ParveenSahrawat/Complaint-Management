@@ -1,12 +1,12 @@
 module.exports.emailConfig = {
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // true for 465, false for other ports
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
-        user: 'complaintmanager179@gmail.com', // generated ethereal user
-        pass: '3{U7n-{bMFnrE89('  // generated ethereal password
+        user : 'parveen.sahrawat1209@gmail.com',
+        pass : 'helloeagle23'
     }
 };
 
-module.exports.adminEmailAddress = 'complaintmanager@gmail.com';
+module.exports.adminEmailAddress = 'parveen.sahrawat1209@gmail.com';
 module.exports.adminName = 'Complaint Manager';
