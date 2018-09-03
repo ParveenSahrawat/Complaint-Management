@@ -14,16 +14,17 @@ function loadAllComplaints(){
                 var trHTML = '';
                 $.each(complaints.data, function (i, item) {
                     
-                    trHTML += '<tr><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
+                    trHTML += '<tr class="td-font"><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
                         '</td><td>' + complaints.data[i].complaintType +
                         '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' + 
                         complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
                         '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' + 
-                            complaints.data[i].status + '</td><td>' + `<a onclick="getComplaint()" href="http://localhost:3000/view">View</a>` + '</td></tr>';
+                            complaints.data[i].status + '</td><td>' + `<a href="http://localhost:3000/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
                 });
             //$('#ctable').clear();
             // $('#ctable').removeClass(d-none);
             $('#ctable').append(trHTML);
+            
             } else {
 
             }
@@ -46,7 +47,7 @@ function loadAllComplaintsForAdmin(){
                 var trHTML = '';
                 $.each(complaints.data, function (i, item) {
                     
-                    trHTML += '<tr><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
+                    trHTML += '<tr class="td-font"><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion + 
                         '</td><td>' + complaints.data[i].complaintType +
                         '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' + 
                         complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
@@ -138,7 +139,8 @@ function loadAnalytics(){
                                     beginAtZero:true
                                 }
                             }]
-                        }
+                        },
+                        responsive : true,
                     }
                 });
                 var myPieChart = new Chart(ctxPie, {
@@ -148,12 +150,13 @@ function loadAnalytics(){
                         datasets : [ {
                            data : [ complaints.results.statusCount[0], complaints.results.statusCount[1] ]
                         } ],
-                        backgroundColor : ['rgba(54, 162, 235)','rgb(173, 255, 47)']
+                        backgroundColor : ['rgba(54, 162, 235, 1)','rgba(173, 255, 47, 1)']
                     },
                     options : {
                         cutoutPercentage : 0,
                         rotation : -0.5 * Math.PI,
                         circumference : 2 * Math.PI,
+                        responsive : true
                     },
                 });
                 var myLineChart = new Chart(ctxLine,{
@@ -183,7 +186,8 @@ function loadAnalytics(){
                     },
                     options : {
                         showLine : true,
-                        spanGaps : true
+                        spanGaps : true,
+                        responsive : true
                     }
                 });
             },
@@ -277,25 +281,25 @@ function saveUserProfile() {
             })
 }
 function closeEditProfile() {
-        // swal({
-        //     type: 'warning',
-        //     text: "You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.",
-        //     showConfirmButton: true,
-        //     showCancelButton: true,
-        //     confirmButtonText: 'Continue',
-        //     cancelButtonText: 'Cancel'
-        // }).then(() => {
+        swal({
+            type: 'warning',
+            text: "You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Continue',
+            cancelButtonText: 'Cancel'
+        }).then(() => {
             populateUserProfileFields(savedDetails);
             show_hide_btns();
-        // }, (dismiss) => {
-        //     return;
-        // });
+        }, (dismiss) => {
+            return;
+        });
 
-    function show_hide_btns() {
-        $('.editProfileFields').attr('disabled', 'disabled');
-        $('.hide_on_edit').fadeIn();
-        $('#editProfileRow').addClass('d-none');
-    }
+        function show_hide_btns() {
+            $('.editProfileFields').attr('disabled', 'disabled');
+            $('.hide_on_edit').fadeIn();
+            $('#editProfileRow').addClass('d-none');
+        }
 }
 function saveNewPassword() {
     var oldPassword = $("#oldPassword").val();
@@ -365,13 +369,13 @@ function getComplaint(){
             if(complaint){
                 let trHTML = '';
                 console.log(complaint);
-                if(complaint.status === 'Replied'){
-                    $('.btn-secondary').removeClass('btn-secondary').addClass('btn-success');
+                if(complaint.status === 'Registered'){
+                    $('#registered').removeClass('btn-secondary').addClass('btn-success');
                 } else if(complaint.status === 'Under Consideration'){
+                    $('#registered').removeClass('btn-secondary').addClass('btn-success');
                     $('#underConsideration').removeClass('btn-secondary').addClass('btn-success');
-                    $('#replied').removeClass('btn-secondary').addClass('btn-success');
                 } else if(complaint.status === 'Replied'){
-                    $('#replied').removeClass('btn-secondary').addClass('btn-success');
+                    $('.btn-secondary').removeClass('btn-secondary').addClass('btn-success');
                 }
                 trHTML += '<tr><td>' + 'Id' + '</td><td>' + complaint._id + '</td><tr>' +
                         '<tr><td>' + 'Name' + '</td><td>' + complaint.objectionOrSuggestion + '</td><tr>' +
@@ -382,7 +386,8 @@ function getComplaint(){
                         '<tr><td>' + 'Description' + '</td><td>' + complaint.complaintDesc + '</td><tr>' + 
                         '<tr><td>' + 'Status' + '</td><td>' + complaint.status + '</td></tr>';
                 $('#ctable').append(trHTML);  
-                $('#action_div').removeClass('d-none');
+                if($('#user').text() === 'admin')
+                    $('#action_div').removeClass('d-none');
                 $('#c_remarks_div').removeClass('d-none');      
             }
         }
@@ -391,12 +396,12 @@ function getComplaint(){
 function changeStatus(){
     let newStatus = $('#c_new_status').val();
     if (!newStatus) {
-        alert('Please select an option')
+        swal('Please select an option')
         return;
     }
     else {
         if ($('#c_new_status').val() == "Replied" && !$('#c_remarks').val().trim()) {
-            alert('Please Enter Reply comment.');
+            swal('Please Enter Reply comment.');
             return;
         }
         else {
@@ -408,15 +413,15 @@ function changeStatus(){
                 data: { newStatus, remarks },
                 success: (data) => {
                     if (data) {
-                        alert('Status Updated Successfully');
-                        window.location.href = window.location.href;
+                        swal('Status Updated Successfully');
+                        // window.location.href = window.location.href;
                     }
                 },
                 error: (e) => {
                     if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
-                        alert(e.responseJSON.message);
+                        swal(e.responseJSON.message);
                     else
-                        alert('An error occured while communicating with server.\n\nTry refreshing the page.');
+                        swal('An error occured while communicating with server.');
                 }
             })
         }

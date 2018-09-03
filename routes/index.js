@@ -11,12 +11,6 @@ const loggedin = function (req, res, next) {
     res.redirect('/login');
   }
 }
-/* GET home page. */
-router.get('/', (req, res) => {
-  res.render('index', {
-    title: 'Express'
-  });
-});
 // login and signup routes
 router.get('/login', (req, res) => {
   res.render('login');
@@ -26,11 +20,13 @@ router.get('/signup', (req, res) => {
 });
 router.get('/logout', (req, res) => {
   req.logout()
-  res.redirect('/')
+  res.redirect('/login')
 });
 // profile routes
 router.get('/profile', loggedin, (req, res) => {
-  res.render('profile');
+  res.render('profile', {
+    usertype : req.user.userType
+  });
 });
 router.get('/getProfileDetails', loggedin, usersController.fetchLoggedUserDetails);
 router.patch('/profile', loggedin, usersController.editUserDetails);
@@ -45,7 +41,8 @@ router.get('/complaints', loggedin, (req, res) => {
 router.get('/complaint/:_id', loggedin, complaintsController.getComplaint);
 router.get('/view/:_id', loggedin, (req, res) => {
   res.render('preview', {
-    id : req.params._id
+    id : req.params._id,
+    usertype : req.user.userType
   });
 });
 router.get('/getComplaints', loggedin, complaintsController.listAllComplaints);
@@ -68,7 +65,9 @@ router.get('/allComplaints', loggedin, (req, res) => {
 });
 router.get('/getAllComplaints', loggedin, complaintsController.listAllComplaints);
 router.get('/dashboard', loggedin, (req, res) => {
-  res.render('adminDashboard');
+  res.render('adminDashboard', {
+    usertype : req.user.userType
+  });
 });
 router.get('/dashboardComplaints', loggedin, complaintsController.getAllComplaintsForAdmin);
 

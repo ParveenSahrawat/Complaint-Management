@@ -9,28 +9,30 @@
     <% include partials/scripts.ejs %>
 </head>
 
-<body>
+<body class="">
   <% include partials/navbar.ejs %>
   <div class="container text-center">
       <h1 class="display-4">
         Login
       </h1>
   </div>
-   
-
-  <div class="container align-items-center">
-    <form action="/auth/login" class="col-md-5" method="post">
-        <div class="form-group">
-            <label for="">Email :</label>
-            <input autofocus class="form-control" type="email" name="email">
+  <div class="container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <form action="/auth/login" class="col-md-5" method="post">
+                <div class="form-group">
+                    <label for="email" class="label-font">Email :</label>
+                    <input autofocus class="form-control input-font" type="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="label-font">Password : </label>
+                    <input class="form-control input-font" type="password" name="password">
+                </div>
+                <div class="text-center">
+                    <input type="submit" value="Login" class="btn secondary white label-font">
+                    <a href="/signup" class="btn btn-link label-font">Signup</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="">Password : </label>
-            <input class="form-control" type="password" name="password">
-        </div>
-        <input type="submit" value="Login" class="btn secondary white">
-        <a href="/signup" class="btn btn-link">Signup</a>
-    </form>
   </div>
 </body>
 
