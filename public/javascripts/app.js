@@ -1,6 +1,6 @@
 // import swal from 'sweetalert'
 
-var baseUrl = 'http://localhost:3000';
+var baseUrl = 'https://complaint-management26.herokuapp.com/';
 
 function loadAllComplaints(){
     $.ajax({
@@ -19,7 +19,7 @@ function loadAllComplaints(){
                         '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' + 
                         complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
                         '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' + 
-                            complaints.data[i].status + '</td><td>' + `<a href="http://localhost:3000/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
+                            complaints.data[i].status + '</td><td>' + `<a href="https://complaint-management26.herokuapp.com/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
                 });
             //$('#ctable').clear();
             // $('#ctable').removeClass(d-none);
@@ -53,7 +53,7 @@ function loadAllComplaintsForAdmin(){
                         complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + 
                         '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' + 
                             complaints.data[i].status + '</td><td>' + 
-                            `<a href="http://localhost:3000/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
+                            `<a href="https://complaint-management26.herokuapp.com/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
                 });
             //$('#ctable').clear();
             // $('#ctable').removeClass(d-none);
@@ -64,12 +64,12 @@ function loadAllComplaintsForAdmin(){
         },
         error: function(err)
         {
-            alert('FAILED');
+            alert('FAILED in getting data');
         }
     });
 }
 function loadAnalytics(){
-        var baseUrl = 'http://localhost:3000';
+        var baseUrl = 'https://complaint-management26.herokuapp.com/';
         $.ajax({
             url : baseUrl + '/getAllComplaints',
             type : 'GET',
