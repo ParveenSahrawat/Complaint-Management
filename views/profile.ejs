@@ -9,6 +9,7 @@
 </head>
     <body onload="getProfileDetails()">
     <% include partials/navbar.ejs %>
+        <p id="profile-user" class="d-none"><%=usertype  %></p>
         <div class="container mb-5 ">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
@@ -51,9 +52,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <a href="" id="goBack" class="hide_on_edit btn btn-secondary col-lg-3 mt-3 offset-lg-5 btn-rounded px-4">Go Back</a>
-                    </div>
+                    <!-- <div class="text-center">
+                        <a href="" id="goBack" class="hide_on_edit btn btn-secondary">Go Back</a>
+                    </div> -->
                 </div>
             </div>
         </div>

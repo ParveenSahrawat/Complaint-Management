@@ -241,6 +241,11 @@ module.exports.updateStatus = (req, res) => {
     Complaint.findById(complaintId).then((complaint) => {
         if(!complaint){
             res.status(400).send('Complaint with this id doesn\'t exist');
+        } else if(complaint.status === newStatus){
+            res.status(400).send({
+                status : 0,
+                message : `This complaint is already in status ${newStatus}`
+            });
         } else {
             let user = complaint.complainant;
             Complaint.findByIdAndUpdate(complaint._id, {

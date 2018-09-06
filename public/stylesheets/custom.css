@@ -51,7 +51,15 @@ table {
     font-size : 60px;
     font-weight : normal;
 } */
-
+.option-select {
+	width: 100%;
+}
+#save-btn {
+	font-size: 20px;
+}
+#table-custom {
+	margin-top: 15px;
+}
 .label-font {
 	font-size: 20px;
 }
@@ -68,8 +76,8 @@ table {
 .status-box {
 	border-radius: 25%;
 }
-.complaint-heading {
-	position: static;
+a:hover {
+	text-decoration: none;
 }
 #barChart {
 	/* position: relative;
@@ -92,37 +100,109 @@ table {
 	width: 50vw; */
 	border: 2px solid blueviolet;
 }
-/* @media only screen and (min-width : 768px) {
+/* Complaint Progress Bar */
+.contain {
+	width: 100%;
+	margin-bottom: 25px;
+}
+.progressbar {
+
+}
+.progressbar li {
+	list-style-type: none;
+	float: left;
+	width: 33.33%;
+	position: relative;
+	text-align: center;
+}
+.progressbar li:before {
+	content: '';
+	width: 20px;
+	height: 20px;
+	border: 2px solid green;
+	display: block;
+	text-align: center;
+	margin: 0 auto 10px auto;
+	border-radius: 50%;
+	background-color: white;
+}
+.progressbar li:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 4px;
+	background-color: green;
+	top: 8px;
+	left: -50%;
+	z-index: -1;
+}
+.progressbar li:first-child:after {
+	content: none;
+}
+.progressbar li.active {
+	color : green;
+}
+.progressbar li.active:before {
+	background-color : green;
+}
+
+@media (max-width : 768px) {
 	.td-font {
-		font-size: 15px;
+		font-size: 45px;
 	}
 	.th-font {
-		font-size: 18px;
+		font-size: 50px;
+	}
+}
+/* @media (max-width : 768px){
+	#line-pie-container {
+		display: flex;
+	}
+	#myChart {
+		position: relative;
+		margin: auto;
+		height: 60vh;
+		width: 90vw;
+		border: 2px solid gold;
+	}
+	#myPieChart {
+		position: relative;
+		margin: auto;
+		height: 60vh;
+		width: 90vw;
+		border: 2px solid green;
+	}
+	#myLineChart {
+		position: relative;
+		margin: auto;
+		height: 50vh;
+		width: 90vw;
+		border: 2px solid blueviolet;
 	}
 } */
 @media (min-width : 768px){
 	#line-pie-container {
 		display: flex;
 	}
-	#barChart {
+	#myChart {
 		position: relative;
 		margin: auto;
-		height: 75vh;
-		width: 80vw;
+		height: 50vh;
+		width: 90vw;
 		border: 2px solid gold;
 	}
-	#pieChart {
+	#myPieChart {
 		position: relative;
 		margin: auto;
-		height: 50vh;
-		width: 50vw;
+		height: 60vh;
+		width: 30vw;
 		border: 2px solid green;
 	}
-	#lineChart {
+	#myLineChart {
 		position: relative;
 		margin: auto;
-		height: 50vh;
-		width: 50vw;
+		height: 60vh;
+		width: 65vw;
 		border: 2px solid blueviolet;
 	}
 }

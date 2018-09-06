@@ -8,8 +8,10 @@
   <% include partials/scripts.ejs %>
 </head>
 <body>
-    <% include partials/navbar.ejs %>
-      <a class="btn secondary white btn-lg" href="/logout">Logout</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Organization</a>  
+            <a class="btn secondary white btn-lg" href="/logout">Logout</a>
+    </nav>
       <form action="/complaints/newComplaint" method="post" class="container">
           <div class="form-group">
               <label for="objectionOrSuggestion" class="label-font">Whether Objection/Suggestion</label>
