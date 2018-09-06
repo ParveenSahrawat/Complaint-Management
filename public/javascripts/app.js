@@ -1,9 +1,9 @@
 // import swal from 'sweetalert'
 
-// var baseUrl = 'https://complaint-management26.herokuapp.com';
-var baseUrl = 'http://localhost:3000'
+var baseUrl = 'https://complaint-management26.herokuapp.com';
+// var baseUrl = 'http://localhost:3000'
 
-    function loadAllComplaints() {
+function loadAllComplaints() {
         $.ajax({
             url: baseUrl + '/getComplaints',
             type: 'GET',
@@ -34,7 +34,7 @@ var baseUrl = 'http://localhost:3000'
                 alert('FAILED');
             }
         });
-    }
+}
 function loadAllComplaintsForAdmin() {
     $.ajax({
         url: baseUrl + '/dashboardComplaints',
