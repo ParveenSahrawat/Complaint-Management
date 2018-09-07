@@ -1,55 +1,16 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
 
-/* html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+nav {
+	margin-bottom: 10px;
 }
-/* HTML5 display-role reset for older browsers */
-/* article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+main {
+	margin-top: 75px;
 }
-body {
-    line-height: 1;
-    font-size: 100%;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-} */ 
-/* tr {
-    font-size : 60px;
-    font-weight : normal;
+/* .heading {
+	position : fixed;
+	left: 25%;	
+} */
+/* .top-margin-table {
+	margin-top: 180px;
 } */
 .option-select {
 	width: 100%;
@@ -57,8 +18,31 @@ table {
 #save-btn {
 	font-size: 20px;
 }
+table {
+	padding: auto 55px;
+}
 #table-custom {
 	margin-top: 15px;
+}
+/* table {
+	table-layout: fixed;
+	width: 100%;
+}
+th, td {
+	word-wrap: break-word;
+} */
+.complaint-table {
+	overflow-x: auto;
+}
+thead {
+	background-color: #2C3E50;
+	color: white;
+}
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+th {
+	text-align: center;
 }
 .label-font {
 	font-size: 20px;
@@ -67,47 +51,21 @@ table {
 	font-size: 18px;
 	color : black;
 }
-.th-font { 
-	font-size: 20px;
-}
-.td-font {
-	font-size: 15px;
-}
 .status-box {
 	border-radius: 25%;
 }
 a:hover {
 	text-decoration: none;
 }
-#barChart {
-	/* position: relative;
-	margin: auto;
-	height: 50vh;
-	width: 100vw; */
-	border: 2px solid gold;
-}
-#pieChart {
-	/* position: relative;
-	margin: auto;
-	height: 50vh;
-	width: 50vw; */
-	border: 2px solid green;
-}
-#lineChart {
-	/* position: relative;
-	margin: auto;
-	height: 50vh;
-	width: 50vw; */
-	border: 2px solid blueviolet;
-}
+
 /* Complaint Progress Bar */
 .contain {
 	width: 100%;
 	margin-bottom: 25px;
 }
-.progressbar {
+/* .progressbar {
 
-}
+} */
 .progressbar li {
 	list-style-type: none;
 	float: left;
@@ -145,13 +103,50 @@ a:hover {
 .progressbar li.active:before {
 	background-color : green;
 }
-
+/* thead {
+	position: fixed;
+	overflow-x: auto;
+} */
 @media (max-width : 768px) {
+	/* .heading {
+		position : fixed;
+		left: 15%;	
+	} */
+	h1 {
+		font-size: 24px !important;
+	}
 	.td-font {
-		font-size: 45px;
+		font-size: 13px !important;
 	}
 	.th-font {
-		font-size: 50px;
+		font-size: 15px !important;
+	}
+}
+@media (min-width : 768px){
+
+	#line-pie-container {
+		display: flex;
+	}
+	#myChart {
+		position: relative;
+		margin: auto;
+		height: 50vh;
+		width: 90vw;
+		/* border: 2px solid gold; */
+	}
+	#myPieChart {
+		position: relative;
+		margin: auto;
+		height: 60vh;
+		width: 30vw;
+		/* border: 2px solid green; */
+	}
+	#myLineChart {
+		position: relative;
+		margin: auto;
+		height: 60vh;
+		width: 65vw;
+		/* border: 2px solid blueviolet; */
 	}
 }
 /* @media (max-width : 768px){
@@ -180,29 +175,24 @@ a:hover {
 		border: 2px solid blueviolet;
 	}
 } */
-@media (min-width : 768px){
-	#line-pie-container {
-		display: flex;
-	}
-	#myChart {
-		position: relative;
-		margin: auto;
-		height: 50vh;
-		width: 90vw;
-		border: 2px solid gold;
-	}
-	#myPieChart {
-		position: relative;
-		margin: auto;
-		height: 60vh;
-		width: 30vw;
-		border: 2px solid green;
-	}
-	#myLineChart {
-		position: relative;
-		margin: auto;
-		height: 60vh;
-		width: 65vw;
-		border: 2px solid blueviolet;
-	}
+#barChart {
+	/* position: relative;
+	margin: auto;
+	height: 50vh;
+	width: 100vw; */
+	/* border: 2px solid gold; */
+}
+#pieChart {
+	/* position: relative;
+	margin: auto;
+	height: 50vh;
+	width: 50vw; */
+	/* border: 2px solid green; */
+}
+#lineChart {
+	/* position: relative;
+	margin: auto;
+	height: 50vh;
+	width: 50vw; */
+	/* border: 2px solid blueviolet; */
 }

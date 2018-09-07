@@ -16,7 +16,7 @@ var userSchema = new schema({
     },
     mobile: {
         type: String,
-        length: 10,
+        maxlength: 10,
         required: true
     },
     password : {

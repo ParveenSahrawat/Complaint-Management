@@ -23,7 +23,10 @@ module.exports.createUser = (req, res) => {
             res.status(500).send('error occured')
         } else {
             if (doc) {
-                res.status(500).send('User already exists')
+                res.status(500).send({
+                  status : 0,
+                  message : 'User already exists'
+                });
             } else {
                 var record = new User()
                 record.username = req.body.username;
@@ -64,7 +67,8 @@ module.exports.createUser = (req, res) => {
                     });  
                 }).catch((e) => {
                   res.status(500).json({
-                      msg: 'Sever error',
+                    status : 0,
+                      message: 'Sever error',
                       err: e
                   }); 
           });

@@ -4,7 +4,7 @@ module.exports.checkUserFields = (req, res) => {
     // Validating username
     if (typeof (req.body.username) == "undefined") {
         return res.status(400).json({
-            msg: 'username missing',
+            message: 'username missing',
             status: 0,
             request: req.body
         });
@@ -13,7 +13,7 @@ module.exports.checkUserFields = (req, res) => {
         var username = req.body.username;
         if (!validator.trim(username).length) {
             return res.status(400).json({
-                msg: 'username can\'t be empty',
+                message: 'username can\'t be empty',
                 status: 0
             });
         }
@@ -21,14 +21,14 @@ module.exports.checkUserFields = (req, res) => {
     // Validating Email
     if (typeof (req.body.email) == "undefined") {
         return res.status(400).json({
-            msg: 'email missing',
+            message: 'email missing',
             status: 0
         });
     }
     else {
         if (!validator.isEmail(req.body.email)) {
             return res.status(400).json({
-                msg: 'Invalid Email',
+                message: 'Invalid Email',
                 status: 0
             });
         }
@@ -39,14 +39,14 @@ module.exports.checkUserFields = (req, res) => {
     // Validating Aadhar Number
     if (typeof (req.body.aadharNumber) == "undefined") {
         return res.status(400).json({
-            msg: 'aadharNumber missing',
+            message: 'aadharNumber missing',
             status: 0
         });
     }
     else {
         if (!(validator.isNumeric(req.body.aadharNumber) && (validator.trim(req.body.aadharNumber).length == 12))) {
             return res.status(400).json({
-                msg: 'Invalid aadharNumber',
+                message: 'Invalid aadharNumber',
                 status: 0
             });
         }
@@ -57,14 +57,14 @@ module.exports.checkUserFields = (req, res) => {
     // Validating Mobile
     if (typeof (req.body.mobile) == "undefined") {
         return res.status(400).json({
-            msg: 'mobile missing',
+            message: 'mobile missing',
             status: 0
         });
     }
     else {
         if (!validator.isMobilePhone(req.body.mobile, ['en-IN'])) {
             return res.status(400).json({
-                msg: 'Invalid Mobile Number',
+                message: 'Invalid Mobile Number',
                 status: 0
             });
         }

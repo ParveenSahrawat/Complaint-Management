@@ -7,7 +7,7 @@
     <title>Status</title>
     <% include partials/scripts.ejs %>
 </head>
-    <% include partials/navbar.ejs %>
+<% include partials/navbar.ejs %>
     <body onload="getComplaint()">
         <!-- <div class="col-lg-6 text-right">
             <p class="font-weight-bold">Registered :
@@ -20,7 +20,7 @@
             </div>
         </div>  -->
         <p id="uid" style="display : none;"><%= id %></p>
-        <p id="user" style="display : none;"><%= usertype %></p>
+        <p id="user" style="display : none;"> <%= usertype %></p>
         <!-- <div id="status_steps_div" class="container my-5">
             <div class="row" style="border-bottom:0;">
                 <div class="col-xs-3 complete status-box">
@@ -51,18 +51,17 @@
         </div>
         <div class="container">
             <div class="">
-                <table id="table-custom" class="table table-striped table-bordered">
-                        <thead class="thead-dark text-center col-sm-12">
-                            <tr class="">
-                                <th >Complaint</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ctable">
-                        </tbody>
+                <table id="table-custom" class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr class="">
+                            <th colspan="2">Complaint</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ctable">
+                    </tbody>
                 </table>
             </div>
-            
-            <div id="action_div" class=" d-none"> 
+            <div id="action_div" class=" d-none">
                 <div class="form-group">
                     <label class="control-label" for="c_new_status">Mark as :&nbsp;&nbsp;</label>
                     <select name="status" class="form-control" id="c_new_status">
@@ -81,4 +80,4 @@
             </div>
         </div>
     </body>
-</html> 
+</html>
