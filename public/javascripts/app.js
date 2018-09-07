@@ -1,6 +1,6 @@
 // import swal from 'sweetalert'
 
-var baseUrl = 'https://complaint-management26.herokuapp.com/login';
+var baseUrl = 'https://complaint-management26.herokuapp.com/';
 // var baseUrl = 'http://localhost:3000'
 
 function loadAllComplaints() {
