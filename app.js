@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
-const logger = require('morgan');
+// const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -26,16 +26,16 @@ const auth = require('./routes/auth')(passport);
 const complaint = require('./routes/complaints');
 
 var app = express();
-const port = process.env.PORT || 3000;
-app.set('port', port);
+// const port = process.env.PORT || 3000;
+// app.set('port', port);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
@@ -77,11 +77,11 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-app.listen(app.get('port'), (error, result) => {
-  if(error){
-    console.log('Failed in creating server');
-  } else {
-    console.log(`Server is running on port ${app.get('port')}`);
-  }
-})
-// module.exports = app;
+// app.listen(app.get('port'), (error, result) => {
+//   if(error){
+//     console.log('Failed in creating server');
+//   } else {
+//     console.log(`Server is running on port ${app.get('port')}`);
+//   }
+// })
+module.exports = app;
