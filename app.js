@@ -26,8 +26,8 @@ const auth = require('./routes/auth')(passport);
 const complaint = require('./routes/complaints');
 
 var app = express();
-var port = process.env.PORT || '3000';
-app.set('port', port);
+
+app.set('port', (process.env.PORT || 3000));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
