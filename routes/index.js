@@ -25,6 +25,11 @@ router.get('/logout', (req, res) => {
   req.logout()
   res.redirect('/login')
 });
+// reset password
+router.get('/resetPassword', (req, res) => {
+  res.render('forgotPassword');
+});
+router.post('/resetPassword', usersController.resetPassword);
 // profile routes
 router.get('/profile', loggedin, (req, res) => {
   res.render('profile', {

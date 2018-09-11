@@ -1,7 +1,7 @@
 // import swal from 'sweetalert'
 
-var baseUrl = 'https://complaint-management26.herokuapp.com';
-// var baseUrl = 'http://localhost:3000';
+// var baseUrl = 'https://complaint-management26.herokuapp.com';
+var baseUrl = 'http://localhost:3000';
 
 function loadAllComplaints() {
         $.ajax({
@@ -432,5 +432,35 @@ function changeStatus() {
                 }
             })
         }
+    }
+}
+function resetPassword() {
+    let resetEmail = $('#reset-email').val();
+    if(!resetEmail.length){
+        swal({
+            type : 'warning',
+            text : 'Please enter email id'
+        });
+        return;
+    } else {
+        $.ajax({
+            type : 'POST',
+            url : baseUrl + '/resetPassword',
+            data : { resetEmail },
+            success : (data) => {
+                if(data.status){
+                    swal({
+                        type : 'success',
+                        text : 'Password reset successfull'
+                    });
+                }
+            },
+            error: (e) => {
+                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                    swal(e.responseJSON.message);
+                else
+                    swal('An error occured while communicating with server.');   
+            }
+        })
     }
 }

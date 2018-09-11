@@ -13,34 +13,34 @@
     <% include partials/navbar.ejs %>
     <div class="container text-center">
         <h1 class="display-4">
-            Signup
+            Register
         </h1>
     </div>
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
                 <form action="/auth/signup" class="col-md-5 form-horizontal" method="post">
                     <div class="form-group">
-                        <label for="username" class="control-label label-font">Username :</label>
-                        <input autofocus class="form-control input-font" type="text" name="username">
+                        <label for="username" class="control-label label-font">Username </label>
+                        <input autofocus class="form-control input-font" type="text" name="username" placeholder="Enter your firstname" required>
                     </div>
                     <div class="form-group">
-                        <label for="email" class="control-label label-font">Email :</label>
-                        <input class="form-control input-font" type="email" name="email">
+                        <label for="email" class="control-label label-font">Email Id</label>
+                        <input class="form-control input-font" type="email" name="email" placeholder="Enter your email id" required>
                     </div>
                     <div class="form-group">
-                        <label for="aadharNumber" class="control-label label-font">Aadhar No. :</label>
-                        <input class="form-control input-font" type="number" name="aadharNumber">
+                        <label for="aadharNumber" class="control-label label-font">Aadhar Number</label>
+                        <input class="form-control input-font" type="number" name="aadharNumber" placeholder="Enter your 12 digit aadhar number">
                     </div>
                     <div class="form-group">
-                        <label for="mobile" class="control-label label-font">Mobile :</label>
-                        <input class="form-control input-font" type="number" name="mobile">
+                        <label for="mobile" class="control-label label-font">Mobile</label>
+                        <input class="form-control input-font" type="number" name="mobile" placeholder="Enter your 10 digit mobile number" required>
                     </div>
                     <div class="form-group">
-                        <label for="password" class="control-label label-font">Password : </label>
-                        <input class="form-control input-font" type="password" name="password">
+                        <label for="password" class="control-label label-font">Password</label>
+                        <input class="form-control input-font" type="password" name="password" placeholder="Enter your password" required>
                     </div>
                     <div class="text-center">
-                        <input type="submit" value="Signup" class="btn secondary white label-font">
+                        <input type="submit" value="Register" class="btn secondary white label-font">
                         <a href="/login" class="btn btn-link label-font">Login</a>
                     </div>
                 </form>

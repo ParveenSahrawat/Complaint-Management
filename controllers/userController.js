@@ -376,6 +376,17 @@ module.exports.changePassword = (req, res) => {
     });
   }
 }
+module.exports.resetPassword = (req, res) => {
+  if(typeof(req.body.email) === 'undefined'){
+    res.status(400).send({
+      status : 0,
+      message : 'Invalid Request'
+    });
+  } else {
+    let resetEmail = req.body.email;
+    
+  }
+}
 !function(){
   User.findOne({superAdmin : true}).then((doc) => {
     if(doc)
