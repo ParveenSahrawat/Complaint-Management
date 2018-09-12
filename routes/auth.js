@@ -18,7 +18,11 @@ module.exports = (passport) => {
                 console.log(err);
                 res.redirect('/login');
             } else {
-                if(req.user.userType === 'user')
+                console.log(req.user);
+                if(!(req.user.mobileVerified)){
+                    res.redirect('/otp');
+                }
+                else if(req.user.userType === 'user')
                     res.redirect('/complaints');
                 else if(req.user.userType === 'admin')
                     res.redirect('/dashboard');

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const controllers = require('../controllers/userController');
 const complaintsController = require('../controllers/complaintsController');
 const usersController = require('../controllers/userController');
 
@@ -26,10 +25,14 @@ router.get('/logout', (req, res) => {
   res.redirect('/login')
 });
 // reset password
-router.get('/resetPassword', (req, res) => {
+router.get('/forgotPassword', (req, res) => {
   res.render('forgotPassword');
 });
-router.post('/resetPassword', usersController.resetPassword);
+router.post('/forgotPassword', usersController.forgotPassword);
+router.get('/resetPassword', (req, res) => {
+  res.render('resetPassword');
+});
+router.post('/setPassword', usersController.resetPassword);
 // profile routes
 router.get('/profile', loggedin, (req, res) => {
   res.render('profile', {
@@ -58,14 +61,12 @@ router.get('/getComplaints', loggedin, complaintsController.listAllComplaints);
 router.get('/newComplaint', loggedin, (req, res) => {
   res.render('newComplaint');
 });
-// router.get('/view/', loggedin, (req, res) => {
-//   res.render('preview', {
-//     id : req.params._id
-//   });
-// });
+// OTP Verification
+router.get('/sendOTP', usersController.generateOTP);
 router.get('/otp', (req, res) => {
   res.render('otp');
-}, controllers.generateOTP);
+});
+router.post('/otp', usersController.checkOTP);
 
 // Admin routes
 router.get('/allComplaints', loggedin, (req, res) => {

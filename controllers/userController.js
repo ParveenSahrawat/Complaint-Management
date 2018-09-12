@@ -7,7 +7,7 @@ const validateUserFields = require('./userFieldsController');
 // const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
 const { Organization_name } = require('../config/organization');
 const bcrypt = require('bcrypt-nodejs');
-const {adminEmailAddress, adminName} = require('../config/email');
+const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
 module.exports.createUser = (req, res) => {
 
@@ -18,10 +18,7 @@ module.exports.createUser = (req, res) => {
         adminRegistration = true;
     User.findOne({
         email : req.body.email
-    }, (err, doc) => {
-        if (err) {
-            res.status(500).send('error occured')
-        } else {
+    }).then((doc) => {
             if (doc) {
                 res.status(500).send({
                   status : 0,
@@ -34,23 +31,15 @@ module.exports.createUser = (req, res) => {
                 record.mobile = req.body.mobile;
                 record.aadharNumber = req.body.aadharNumber;
                 record.password = record.hashPassword(req.body.password);
-                record.save().then(() => {
+                record.save().then((doc) => {
                             var emailSubject = 'Account Creation Successful.';
                             var emailMessage = `<p>Dear ${record.username},</p>
                                             <p>Your account on ${Organization_name} has successfully been created.</p><br>
                                             <small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
                         nodemailer.createTestAccount((error, account) => {
-                          let transporter = nodemailer.createTransport({
-                            host : 'smtp.gmail.com',
-                            port : 587,
-                            secure : false,
-                            auth : {
-                              user : 'parveen.sahrawat1209@gmail.com',
-                              pass : 'helloeagle23'
-                            }
-                          });
+                          let transporter = nodemailer.createTransport(emailConfig);
                           let mailOptions = {
-                            from : `"Parveen Sahrawat " ${adminEmailAddress}`,
+                            from : `"${adminName}" ${adminEmailAddress}`,
                             to : `${req.body.email}`,
                             subject : emailSubject,
                             html : emailMessage
@@ -58,11 +47,15 @@ module.exports.createUser = (req, res) => {
                           transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
                                 // Ignore
+                                res.send()
                                 console.log('Could not send user-registration email. Error',error);
                             }
                             console.log('Message sent : %s ', info.messageId);
                             console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
-                            res.redirect('/login');
+                            console.log(`This is get when signing up ${doc}`);
+                            // generateOTP(req, res);
+                            // let id = doc._id;
+                            res.redirect(`/login`);
                         });                          
                     });  
                 }).catch((e) => {
@@ -73,10 +66,14 @@ module.exports.createUser = (req, res) => {
                   }); 
           });
         }
-      }
+      }).catch((e) => {
+        res.status(500).send({
+          status : 0,
+          message : 'Error in communicating with the server',
+          errorDetails : e
+        });
     });
 }
-
 module.exports.fetchLoggedUserDetails = (req, res) => {
 
   User.findById(req.user._id).then((doc) => {
@@ -99,9 +96,9 @@ module.exports.fetchLoggedUserDetails = (req, res) => {
     })
 })
 }
-
-module.exports.generateOTP = (req, res, next) => {
-    console.log(req.user);
+module.exports.generateOTP = (req, res) => {
+  console.log(`In generate otp ${req.user}`);
+  console.log(`Body in generateOTP ${req.body.email}`);
   if(req.user.mobileVerified){
       res.status(400).send({
         status : 0,
@@ -115,7 +112,7 @@ module.exports.generateOTP = (req, res, next) => {
       var smsContent = `Dear User,\n Please use ${otp} as OTP for verifying your mobile number. This OTP is valid for next 5 mins.`;
       var smsLink = encodeURI(`http://bhashsms.com/api/sendmsg.php?user=MKUKREJA26&pass=123456&sender=ENBINC&phone=${req.user.mobile}&text=${smsContent}&priority=ndnd&stype=normal`);
 
-      request(smsLink, (error, res, body) => {
+      request(smsLink, (error, result, body) => {
         if(error){
           res.status(500).send({
             status : 0,
@@ -123,36 +120,37 @@ module.exports.generateOTP = (req, res, next) => {
             errorDetails : error
           });
         } else {
-          var refNo = res.body.replace(/\s/g, '');
-          console.log(refNo); 
-          var query = User.findByIdAndUpdate(req.user._id, {
-            $push : {
-              OTP : {
-                otp, validTill, refNo, mobile : req.user.mobile
+            var refNo = result.body.replace(/\s/g, '');
+            console.log(`this is refNo ${refNo}`); 
+            User.findByIdAndUpdate(req.user._id, {
+              $push : {
+                OTP : {
+                  otp, validTill, refNo, mobile : req.user.mobile
+                }
               }
-            }
-          }).then((doc) => {
-            res.send({
-              status : 1,
-              message : `OTP is sent to your mobile`,
-              mobile : req.user.mobile
-            }).catch((error) => {
-              req.status(400).send({
-                status : 0,
-                message : `Error occured while sending OTP`,
-                errorDetails : error
+            }).then((doc) => {
+              res.status(200).send({
+                status : 1,
+                message : `OTP is sent to your mobile`,
+                mobile : req.user.mobile
               });
+            }).catch((error) => {
+                res.status(400).send({
+                  status : 0,
+                  message : `Error occured while sending OTP`,
+                  errorDetails : error
+                });
             });
-          });
-        }
-      });
-      next();
+          };
+        });
+      }
   }
-}
 module.exports.checkOTP = (req, res) => {
-  if(typeof(req.body.otp) !== 'undefined'){
+  console.log(`In check otp ${typeof(req.body.otp)}`);
+  console.log(req.user);
+  if(req.body.otp){
     User.findById(
-      {'_id' : req.user._id},
+      {'_id' : req.user.id},
       {'OTP' :  {
           $elemMatch : {
             'otp' : req.body.otp,
@@ -161,7 +159,8 @@ module.exports.checkOTP = (req, res) => {
         }
     }).then((doc) => {
       if(doc){
-        if(typeof(doc.OTP != 'undefined') && doc.OTP.lenth){
+        console.log(doc.OTP);
+        if(typeof(doc.OTP != undefined) && doc.OTP.length){
           var verifiedMobile = doc.OTP[0].mobile;
           
           User.findByIdAndUpdate(req.user._id, {
@@ -376,7 +375,8 @@ module.exports.changePassword = (req, res) => {
     });
   }
 }
-module.exports.resetPassword = (req, res) => {
+module.exports.forgotPassword = (req, res) => {
+  console.log(`In forgot password`);
   if(typeof(req.body.email) === 'undefined'){
     res.status(400).send({
       status : 0,
@@ -384,8 +384,48 @@ module.exports.resetPassword = (req, res) => {
     });
   } else {
     let resetEmail = req.body.email;
-    
+    User.findOne({email : resetEmail}).then((doc) => {
+      if(!doc){
+        res.status(400).send({
+          status : 0,
+          message : 'Entered email id doesn\'t exists'
+        });
+      } else {
+        let emailSubject = `${Organization_name} account reset password`;
+        let emailMessage = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
+        `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
+        `http://${req.headers.hostname}/resetPassword` +
+        `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+        
+        nodemailer.createTestAccount((err, account) => {
+          let transporter = nodemailer.createTransport(emailConfig);
+          let mailOptions = {
+            from : `"${adminName}"${adminEmailAddress}`,
+            to : `${resetEmail}`,
+            subject : emailSubject,
+            html : emailMessage
+          };
+
+          transporter.sendMail(mailOptions, (err, info) => {
+            if(err)
+              return console.log(`Error in sending reset mail : ${err}`);
+            console.log('Message sent: %s', info.messageId);
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+          });
+        });
+      }
+    }).catch((err) => {
+      res.status(500).send({
+        status : 0,
+        message : `Entered email doesn't exist`,
+        errorDetails : err
+      });
+    });
   }
+}
+module.exports.resetPassword = (req, res) => {
+  console.log('In reset password');
+
 }
 !function(){
   User.findOne({superAdmin : true}).then((doc) => {

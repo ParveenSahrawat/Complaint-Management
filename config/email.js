@@ -4,7 +4,7 @@ module.exports.emailConfig = {
     secure: false, // true for 465, false for other ports
     auth: {
         user : 'parveen.sahrawat1209@gmail.com',
-        pass : 'helloeagle23'
+        pass : 'cricket36@23'
     }
 };
 

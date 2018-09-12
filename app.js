@@ -15,6 +15,7 @@ require('./passport')(passport)
 mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management', (error, data) => {
   if(error){
     console.log('Failed in connecting to database');
+    res
   } else {
     console.log('Database connection succesfull');
   }

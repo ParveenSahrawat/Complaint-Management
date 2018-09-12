@@ -89,7 +89,7 @@ module.exports.registerNewComplaint = (req, res) => {
             });
         }
     }
-    console.log(req.file);
+    // console.log(req.file);
        let newComplaint = new Complaint({
         // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,

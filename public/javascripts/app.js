@@ -1,4 +1,3 @@
-// import swal from 'sweetalert'
 
 // var baseUrl = 'https://complaint-management26.herokuapp.com';
 var baseUrl = 'http://localhost:3000';
@@ -445,7 +444,7 @@ function resetPassword() {
     } else {
         $.ajax({
             type : 'POST',
-            url : baseUrl + '/resetPassword',
+            url : baseUrl + '/forgotPassword',
             data : { resetEmail },
             success : (data) => {
                 if(data.status){
@@ -460,6 +459,71 @@ function resetPassword() {
                     swal(e.responseJSON.message);
                 else
                     swal('An error occured while communicating with server.');   
+            }
+        })
+    }
+}
+function sendOTP(){
+    $.ajax({
+        type : 'GET',
+        url : baseUrl + '/sendOTP',
+        success : (data) => {
+            console.log(data);
+          if(data.status){
+              $('#mobile-number').val(data.mobile);
+              swal({
+                  text : data.message,
+                  type : 'success'
+              });
+          }  
+        },
+        error : (e) => {
+            swal({
+                text : e.message,
+                type : 'warning'
+            });
+        }
+    });
+}
+function verifyOTP(){
+    if($('#otp').val().length!=4){
+        swal({
+            type : 'warning',
+            text : 'Enter Valid OTP'
+        })
+        return;
+    }
+    else{
+        var otp = $('#OTP').val();
+        $.ajax({
+            url: baseUrl + '/otp',
+            type : 'POST',
+            data  : {otp},
+            success : (data)=>{
+                if(data.status){
+                    swal({
+                        type  : 'success',
+                        text : data.message
+                    });
+                }
+                else{
+                    swal({
+                        text: data.message,
+                        type: 'warning'
+                    });
+                }
+            },
+            error : (e)=>{
+                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                    swal({
+                        text: e.responseJSON.message,
+                        type: 'warning'
+                    });
+                else
+                    swal({
+                        text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                        type: 'warning'
+                    });            
             }
         })
     }
