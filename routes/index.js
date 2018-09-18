@@ -68,6 +68,10 @@ router.get('/otp', (req, res) => {
 });
 router.post('/otp', usersController.checkOTP);
 
+//Email Verification
+router.post('/verification/:token', usersController.verifyEmail);
+router.post('/resendEmailVerification', usersController.resendEmailVerificationToken);
+
 // Admin routes
 router.get('/allComplaints', loggedin, (req, res) => {
   res.render('charts');

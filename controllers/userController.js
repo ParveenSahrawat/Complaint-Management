@@ -1,7 +1,9 @@
 const express = require('express');
+const crypto = require('crypto');
 const request = require('request');
 const validator = require('validator');
 const User = require('../db/User');
+const emailToken = require('../db/token');
 const nodemailer = require('nodemailer');
 const validateUserFields = require('./userFieldsController');
 // const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
@@ -13,7 +15,7 @@ module.exports.createUser = (req, res) => {
 
     validateUserFields.checkUserFields(req, res);
     var adminRegistration = false;
-    var adminEmailAddress = `parveen.sahrawat1209@gmail.com`;
+    // var adminEmailAddress = `elevenx099@gmail.com`;
     if(req.originalUrl == '/signup/admin')
         adminRegistration = true;
     User.findOne({
@@ -32,10 +34,25 @@ module.exports.createUser = (req, res) => {
                 record.aadharNumber = req.body.aadharNumber;
                 record.password = record.hashPassword(req.body.password);
                 record.save().then((doc) => {
-                            var emailSubject = 'Account Creation Successful.';
-                            var emailMessage = `<p>Dear ${record.username},</p>
-                                            <p>Your account on ${Organization_name} has successfully been created.</p><br>
-                                            <small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
+                  console.log(doc);
+                  // Create email verification token for the user
+                  var token = new emailToken({
+                    _userId : doc._id,
+                    token : crypto.randomBytes(16).toString('hex')
+                  });
+                  console.log(token);
+                  // Save the above token
+                  token.save((err) => {
+                    console.log(err);
+                    if(err){
+                      return res.status(500).send({status : 0, message : err.message}); 
+                    }
+                  });
+                        var emailSubject = 'Account Verification';
+                        var emailMessage = `<p>Dear ${record.username},</p>`+
+                                        `<p>Your account on ${Organization_name} has successfully been created.</p><br>`+
+                                        '<p>Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n</p>'+ 
+                                        `<small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
                         nodemailer.createTestAccount((error, account) => {
                           let transporter = nodemailer.createTransport(emailConfig);
                           let mailOptions = {
@@ -424,6 +441,65 @@ module.exports.forgotPassword = (req, res) => {
 }
 module.exports.resetPassword = (req, res) => {
   console.log('In reset password');
+}
+module.exports.verifyEmail = (req, res) => {
+  // Find a matching token
+  emailToken.findOne({ token: req.params.token }, function (err, token) {
+    if (!token) return res.status(400).send({ type: 'not-verified', message: 'We were unable to find a valid token. Your token my have expired.' });
+
+    // If we found a token, find a matching user
+    User.findOne({ _id: token._userId }, function (err, user) {
+        if (!user) return res.status(400).send({ message: 'We were unable to find a user for this token.' });
+        if (user.isVerified) return res.status(400).send({ type: 'already-verified', message: 'This user has already been verified.' });
+
+        // Verify and save the user
+        user.isVerified = true;
+        user.save(function (err) {
+            if (err) { return res.status(500).send({ message: err.message }); }
+            res.status(200).send("The account has been verified. Please log in.");
+        });
+    });
+  });
+}
+module.exports.resendEmailVerificationToken = (req, res) => {
+  User.findOne({ email: req.body.email }, function (err, user) {
+    if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
+    if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+
+    // Create a verification token, save it, and send email
+    var token = new emailToken({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+    // Save the token
+    token.save(function (err) {
+        if (err) { return res.status(500).send({ msg: err.message }); }
+        // Send the email
+        var emailSubject = 'Account Verification';
+                        var emailMessage = '<p>Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n</p>'+ 
+                                        `<small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
+                        nodemailer.createTestAccount((error, account) => {
+                          let transporter = nodemailer.createTransport(emailConfig);
+                          let mailOptions = {
+                            from : `"${adminName}" ${adminEmailAddress}`,
+                            to : `${req.body.email}`,
+                            subject : emailSubject,
+                            html : emailMessage
+                          }
+                          transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                // Ignore
+                                res.status(500).send({
+                                  status : 0,
+                                  message : 'An error occured while sending user registration email'
+                                });
+                                console.log('Could not send user-registration email. Error',error);
+                            }
+                            console.log('Message sent : %s ', info.messageId);
+                            console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
+                            console.log(`This is get when signing up ${doc}`);
+                            res.redirect(`/login`);
+                          });                          
+                        });  
+    });
+  });
 }
 !function(){
   User.findOne({superAdmin : true}).then((doc) => {

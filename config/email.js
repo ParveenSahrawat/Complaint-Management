@@ -3,10 +3,10 @@ module.exports.emailConfig = {
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-        user : 'parveen.sahrawat1209@gmail.com',
-        pass : 'cricket36@23'
+        user : 'elevenx099@gmail.com',
+        pass : 'enbenb@123'
     }
 };
 
-module.exports.adminEmailAddress = 'parveen.sahrawat1209@gmail.com';
+module.exports.adminEmailAddress = 'elevenx099@gmail.com';
 module.exports.adminName = 'Complaint Manager';
