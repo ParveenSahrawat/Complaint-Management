@@ -51,7 +51,7 @@ module.exports.createUser = (req, res) => {
                         var emailSubject = 'Account Verification';
                         var emailMessage = `<p>Dear ${record.username},</p>`+
                                         `<p>Your account on ${Organization_name} has successfully been created.</p><br>`+
-                                        '<p>Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/verification\/' + token.token + '.\n</p>'+ 
+                                        '<p>Please verify your account by clicking the link: \nhttps:\/\/' + req.headers.host + '\/verification\/' + token.token + '.\n</p>'+ 
                                         `<small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
                         nodemailer.createTestAccount((error, account) => {
                           let transporter = nodemailer.createTransport(emailConfig);
