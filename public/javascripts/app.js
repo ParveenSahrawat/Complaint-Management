@@ -1,6 +1,6 @@
 
-// var baseUrl = 'https://complaint-management26.herokuapp.com';
-var baseUrl = 'http://localhost:3000';
+var baseUrl = 'https://complaint-management26.herokuapp.com';
+// var baseUrl = 'http://localhost:3000';
 
 function loadAllComplaints() {
         $.ajax({
