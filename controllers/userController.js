@@ -51,7 +51,7 @@ module.exports.createUser = (req, res) => {
                         var emailSubject = 'Account Verification';
                         var emailMessage = `<p>Dear ${record.username},</p>`+
                                         `<p>Your account on ${Organization_name} has successfully been created.</p><br>`+
-                                        '<p>Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n</p>'+ 
+                                        '<p>Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/verification\/' + token.token + '.\n</p>'+ 
                                         `<small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
                         nodemailer.createTestAccount((error, account) => {
                           let transporter = nodemailer.createTransport(emailConfig);
@@ -410,7 +410,7 @@ module.exports.forgotPassword = (req, res) => {
         let emailSubject = `${Organization_name} account reset password`;
         let emailMessage = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
         `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
-        `http://${req.headers.hostname}/resetPassword` +
+        `http://${req.headers.host}/resetPassword` + `\n\n`
         `If you did not request this, please ignore this email and your password will remain unchanged.\n`
         
         nodemailer.createTestAccount((err, account) => {
@@ -445,13 +445,22 @@ module.exports.resetPassword = (req, res) => {
 module.exports.verifyEmail = (req, res) => {
   // Find a matching token
   emailToken.findOne({ token: req.params.token }, function (err, token) {
-    if (!token) return res.status(400).send({ type: 'not-verified', message: 'We were unable to find a valid token. Your token my have expired.' });
-
+    if (!token) 
+      return res.status(400).send({ 
+        type: 'not-verified', 
+        message: 'We were unable to find a valid token. Your token my have expired.' 
+      });
     // If we found a token, find a matching user
     User.findOne({ _id: token._userId }, function (err, user) {
-        if (!user) return res.status(400).send({ message: 'We were unable to find a user for this token.' });
-        if (user.isVerified) return res.status(400).send({ type: 'already-verified', message: 'This user has already been verified.' });
-
+        if (!user) 
+          return res.status(400).send({ 
+            message: 'We were unable to find a user for this token.' 
+          });
+        if (user.isVerified) 
+          return res.status(400).send({ 
+            type: 'already-verified', 
+            message: 'This user has already been verified.' 
+          });
         // Verify and save the user
         user.isVerified = true;
         user.save(function (err) {
