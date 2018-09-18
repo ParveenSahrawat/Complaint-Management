@@ -444,7 +444,7 @@ module.exports.resetPassword = (req, res) => {
 }
 module.exports.verifyEmail = (req, res) => {
   // Find a matching token
-  emailToken.findOne({ token: req.body.token }, function (err, token) {
+  emailToken.findOne({ token: req.params.token }, function (err, token) {
     if (!token) 
       return res.status(400).send({ 
         type: 'not-verified', 
