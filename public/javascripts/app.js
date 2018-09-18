@@ -464,6 +464,19 @@ function resetPassword() {
     }
 }
 function sendOTP(){
+    var timer = document.getElementById('timer');
+    var time = 0;
+    var resendOtpInterval = setInterval(() => {
+        timer.innerHTML = time;
+        time++;
+        if(time > 59){
+            clearInterval(resendOtpInterval);
+            time = 0;
+            timer.innerHTML = '';
+            timer.classList.add('d-none');
+            document.getElementById('resendOtpCode').classList.remove('d-none')
+        }    
+    }, 1000);
     $.ajax({
         type : 'GET',
         url : baseUrl + '/sendOTP',

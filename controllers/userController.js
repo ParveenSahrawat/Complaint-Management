@@ -47,14 +47,15 @@ module.exports.createUser = (req, res) => {
                           transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
                                 // Ignore
-                                res.send()
+                                res.status(500).send({
+                                  status : 0,
+                                  message : 'An error occured while sending user registration email'
+                                });
                                 console.log('Could not send user-registration email. Error',error);
                             }
                             console.log('Message sent : %s ', info.messageId);
                             console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
                             console.log(`This is get when signing up ${doc}`);
-                            // generateOTP(req, res);
-                            // let id = doc._id;
                             res.redirect(`/login`);
                         });                          
                     });  
@@ -75,7 +76,6 @@ module.exports.createUser = (req, res) => {
     });
 }
 module.exports.fetchLoggedUserDetails = (req, res) => {
-
   User.findById(req.user._id).then((doc) => {
     var { username, mobile, email, aadharNumber, mobileVerified } = doc;
     if (doc) {
@@ -84,21 +84,20 @@ module.exports.fetchLoggedUserDetails = (req, res) => {
     else {
         res.status(400).json({
             status: 0,
-            msg: 'User Not Found',
+            message: 'User Not Found',
             code: 'AC - 1'
         })
     }
 }).catch((e) => {
     res.status(400).json({
         status: 0,
-        msg: 'User Not Found',
+        message: 'User Not Found',
         code: 'AC-2'
     })
 })
 }
 module.exports.generateOTP = (req, res) => {
-  console.log(`In generate otp ${req.user}`);
-  console.log(`Body in generateOTP ${req.body.email}`);
+ console.log('in generate otp');
   if(req.user.mobileVerified){
       res.status(400).send({
         status : 0,
@@ -162,7 +161,7 @@ module.exports.checkOTP = (req, res) => {
         console.log(doc.OTP);
         if(typeof(doc.OTP != undefined) && doc.OTP.length){
           var verifiedMobile = doc.OTP[0].mobile;
-          
+
           User.findByIdAndUpdate(req.user._id, {
             $set : {
               mobileVerified : true,
@@ -425,7 +424,6 @@ module.exports.forgotPassword = (req, res) => {
 }
 module.exports.resetPassword = (req, res) => {
   console.log('In reset password');
-
 }
 !function(){
   User.findOne({superAdmin : true}).then((doc) => {

@@ -18,7 +18,7 @@ var userSchema = new schema({
         type: String,
         maxlength: 10,
         required: true,
-        // unique : true
+        unique : true
     },
     password : {
         type : String,
@@ -31,7 +31,8 @@ var userSchema = new schema({
     aadharNumber: { 
         type: Number,
         length: 12,
-        required: true
+        required: true,
+        unique : true
     },
     userType: {
         type: String,

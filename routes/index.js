@@ -62,7 +62,7 @@ router.get('/newComplaint', loggedin, (req, res) => {
   res.render('newComplaint');
 });
 // OTP Verification
-router.get('/sendOTP', usersController.generateOTP);
+router.get('/sendOTP', loggedin, usersController.generateOTP);
 router.get('/otp', (req, res) => {
   res.render('otp');
 });
