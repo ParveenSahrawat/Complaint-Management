@@ -2,7 +2,33 @@
 
 // var baseUrl = 'https://complaint-management26.herokuapp.com';
 var baseUrl = 'http://localhost:3000';
-
+//IIFE Created For Form Validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            ['submit', 'click'].forEach(function(e) {
+               form.addEventListener(e, function(event) {
+                   if (form.checkValidity() === false) {
+                       event.preventDefault();
+                       event.stopPropagation();
+                   }
+                   form.classList.add('was-validated');
+               }, false);
+            });
+            /*form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);*/
+        });
+    }, false);
+})();
 function loadAllComplaints() {
         $.ajax({
             url: baseUrl + '/getComplaints',
@@ -67,6 +93,7 @@ function loadAllComplaintsForAdmin() {
         }
     });
 }
+var flagForProfileDetails;
 function loadAnalytics() {
     $.ajax({
         url: baseUrl + '/getAllComplaints',
@@ -198,6 +225,9 @@ function getProfileDetails() {
         datatype: 'json',
         success: (profileDetails) => {
             if (profileDetails) {
+                 //flagForProfileDetails = Object.assign({} ,profileDetails);
+                flagForProfileDetails = profileDetails;
+
                 var data = profileDetails;
                 populateUserProfileFields(data);
                 // var user = $('#profile-user').text();
@@ -213,10 +243,10 @@ function getProfileDetails() {
     });
 }
 function populateUserProfileFields(data) {
-    $('#username').val(data.username).attr('disabled', 'disabled');
-    $('#mobile').val(data.mobile).attr('disabled', 'disabled');
-    $('#email').val(data.email).attr('disabled', 'disabled');
-    $('#aadharNumber').val(data.aadharNumber).attr('disabled', 'disabled');
+    $('#contact_username').val(data.username).attr('disabled', 'disabled');
+    $('#contact_mobile').val(data.mobile).attr('disabled', 'disabled');
+    $('#contact_email').val(data.email).attr('disabled', 'disabled');
+    $('#contact_aadharNumber').val(data.aadharNumber).attr('disabled', 'disabled');
 }
 function editProfileDetails() {
     $('.editProfileFields').removeAttr('disabled');
@@ -225,11 +255,65 @@ function editProfileDetails() {
     });
 }
 function saveUserProfile() {
-    let username = $("#username").val();
-    let email = $("#email").val();
-    let mobile = $("#mobile").val();
-    let aadharNumber = $("#aadharNumber").val();
-    let err = [];
+    let username = $("#contact_username").val();
+    let email = $("#contact_email").val();
+    let mobile = $("#contact_mobile").val();
+    let aadharNumber = $("#contact_aadharNumber").val();
+
+
+        // open_processing_ur_request_swal();
+        $.ajax({
+            url: baseUrl + '/profile',
+            type: 'PATCH',
+            data: {
+                username: username, email: email, mobile: mobile, aadharNumber: aadharNumber
+            },
+            datatype: 'json',
+            success: (data) => {
+                if (data.status) {
+                    savedDetails = {
+                        username, email, mobile, aadharNumber
+                    };
+                    swal({
+                        icon: 'success',
+                        text: data.message,
+                        timer: 3000
+                    }).then(() => {
+                        closeEditProfile();
+                    }, (dismiss) => {
+                        closeEditProfile();
+                    })
+                }
+            },
+            error: (e) => {
+                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined"){
+                    alert(e.responseJSON.message);
+                    /*swal({
+                        text: e.responseJSON.message,
+                        type: 'warning'
+                    });*/
+                }
+                else {
+                    alert("Errr... Error!!");
+                    /*swal({
+                        text: 'An error occured while saving.\n\nTry refreshing the page.',
+                        type: 'warning'
+                    });*/
+                }
+
+            }
+        })
+
+}
+
+function registerUser() {
+    let username = $("#contact_username").val();
+    let email = $("#contact_email").val();
+    let mobile = $("#contact_mobile").val();
+    let aadharNumber = $("#contact_aadharNumber").val();
+    let password = $("#contact_password").val();
+/*    let err = [];
+
     if (!username.length)
         err.push('Userame can\'t be left empty');
     if (!validate_email(email))
@@ -237,30 +321,35 @@ function saveUserProfile() {
     if (!validate_mobile(mobile)) {
         err.push('Please Enter Valid Mobile Number');
     }
-    if (validate_aadhar(aadharNumber)) {
+    if (!validate_aadhar(aadharNumber)) {
         err.push('Please Enter Valid Aadhar number');
     }
-    if (err.length) {
-        swal({
-            type: 'warning',
-            html: err.join('<li>')
-        })
+    if (!password.length) {
+        err.push('Password can\'t be left empty');
     }
+    if (err.length) {
+        swal("warning",{
+            icon: 'warning',
+            //content: "Problem"
+            //html: err.join('<li>')
+        })
+    }*/
+
     // open_processing_ur_request_swal();
     $.ajax({
-        url: baseUrl + '/profile',
-        type: 'PATCH',
+        url: baseUrl + '/signup',
+        type: 'POST',
         data: {
-            username: username, email: email, mobile: mobile, aadharNumber: aadharNumber
+            username: username, email: email, mobile: mobile, aadharNumber: aadharNumber, password : password
         },
         datatype: 'json',
         success: (data) => {
             if (data.status) {
                 savedDetails = {
-                    username, email, mobile, aadharNumber
+                    username, email, mobile, aadharNumber,password
                 };
                 swal({
-                    type: 'success',
+                    icon: 'success',
                     text: data.message,
                     timer: 3000
                 }).then(() => {
@@ -272,32 +361,73 @@ function saveUserProfile() {
         },
         error: (e) => {
             if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
-                swal({
-                    text: e.responseJSON.message,
-                    type: 'warning'
+                swal(e.responseJSON.message,{
+                    //text: e.responseJSON.message,
+                    icon: 'warning'
                 });
             else
-                swal({
-                    text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
-                    type: 'warning'
+                swal('An error occured while communicating with server.\n\nTry refreshing the page.',{
+                    //text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                    icon: 'warning'
                 });
         }
     })
+
 }
+
+function signInUser() {
+    let email = $("#contact_email").val();
+    let username = $("#contact_username").val();
+    let password = $("#contact_password").val();
+    if (!username.length)
+        err.push('Userame can\'t be left empty');
+    if (!validate_email(email))
+        err.push('Please enter valid Email');
+    if(!password.length)
+        err.push('Password can\'t be left empty');
+
+}
+
 function closeEditProfile() {
-    swal({
-        type: 'warning',
-        text: "You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'Continue',
-        cancelButtonText: 'Cancel'
-    }).then(() => {
-        populateUserProfileFields(savedDetails);
-        show_hide_btns();
-    }, (dismiss) => {
-        return;
-    });
+    let username = $("#contact_username").val();
+    let email = $("#contact_email").val();
+    let mobile = $("#contact_mobile").val();
+    let aadharNumber = parseInt($("#contact_aadharNumber").val());
+    let mobileVerified = false;
+     var data = {username,mobile, email,aadharNumber,mobileVerified};
+    //console.log(data);
+    //console.log(flagForProfileDetails);
+    //console.log("heloo");
+
+    //console.log(JSON.stringify(data) === JSON.stringify(flagForProfileDetails));
+
+    if(JSON.stringify(data) === JSON.stringify(flagForProfileDetails)){
+        $('.editProfileFields').attr('disabled');
+        $('.hide_on_edit').fadeOut(200, () => {
+            $('#editProfileRow').addClass('d-none');
+        });
+        console.log("done");
+    }
+      else
+    {
+        //Alert used here disappears in no time while using swal but does ok when using normal alert
+        alert("You unsaved changes will be lost");
+        /*swal("your unsaved changes would be reverted.", {
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+            closeOnClickOutside: false,
+            timer: 3000,
+        }).then(() => {
+            populateUserProfileFields(savedDetails);
+            show_hide_btns();
+        }, (dismiss) => {
+            return;
+        });*/
+    }
+
+
 
     function show_hide_btns() {
         $('.editProfileFields').attr('disabled', 'disabled');
@@ -389,7 +519,7 @@ function getComplaint() {
                     '<tr><td>' + 'Type' + '</td><td>' + complaint.complaintType + '</td></tr>' +
                     '<tr><td>' + 'Date' + '</td><td>' + moment(complaint.postedOn).format("dddd, Do MMM YY, h:mm a") + '</td></tr>' +
                     '<tr><td>' + 'Location' + '</td><td>' + complaint.location + '</td></tr>' +
-                    '<tr><td>' + 'Relevant Paraclause' + '</td><td>' + complaint.relevantParaClause + '</td></tr>'
+                    '<tr><td>' + 'Relevant Paraclause' + '</td><td>' + complaint.relevantParaClause + '</td></tr>'+
                     '<tr><td>' + 'Description' + '</td><td>' + complaint.complaintDesc + '</td></tr>' +
                     '<tr><td>' + 'Status' + '</td><td>' + complaint.status + '</td></tr>';
                 $('#ctable').append(trHTML);
@@ -464,3 +594,72 @@ function resetPassword() {
         })
     }
 }
+
+
+function validateOnClick(names,formdata) {
+    console.log(names);
+    console.log("abcdefghijklmnop");
+    console.log(formdata);
+    for (var input in formdata){
+        //console.log(form_data[input]['name']);
+        var element=$("#contact_"+formdata[input]['name']);
+        //console.log(element);
+        var valid=element.hasClass("valid");
+        var error_element=$("span", element.parent());
+        if (!valid){error_element.removeClass("error").addClass("error_show"); error_free=false;}
+        else{error_element.removeClass("error_show").addClass("error");}
+    }
+    if (!error_free){
+        //event.preventDefault();
+        console.log("Submitted");
+    }
+    else{
+        alert('No errors: Form will be submitted');
+    }
+}
+
+function isTagEmpty(name) {
+    //validateOnFocus(name);
+    console.log(name.id);
+    var input=$(name);
+    var is_name=input.val();
+    var id = '#'+ name.id;
+    //console.log(id);
+
+        $(id).on("keydown", function (e) {
+            //console.log(e.keyCode);
+            validateForm(this,e);
+            console.log("a");
+        });
+
+
+    if(is_name){input.removeClass("invalid").addClass("valid");}
+    else{input.removeClass("valid").addClass("invalid");
+    }
+
+
+    /*var input=$(this);
+    console.log(input);
+    var re = /^[6-9]{1}[0-9]{9}$/;
+    var is_number=re.test(input.val());*/
+
+/*    var input=$(this);
+  //  var re = /^[0-9]{1}[0-9]{11}$/;
+    var is_number=re.test(input.val());*/
+
+};
+
+/*
+function  validateForm(name) {
+    var input = $(name);
+    console.log(input);
+    var re = /^[6-9]{1}[0-9]{9}$/;
+    var is_number = re.test(input.val());
+    if (is_number) {
+        input.removeClass("invalid").addClass("valid");
+    }
+    else {
+        input.removeClass("valid").addClass("invalid");
+        //console.log(name);
+    }
+};*/

@@ -7,9 +7,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-// const multer = require('multer');
+const multer = require('multer');
 // const ejs = require('ejs');
 // const upload = multer({dest : './public/photo-storage'});
+
 require('./passport')(passport)
 
 mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management', (error, data) => {

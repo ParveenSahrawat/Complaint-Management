@@ -6,24 +6,55 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Welcome</title>
   <% include partials/scripts.ejs %>
+    <!--<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link href="/stylesheets/editor.css" type="text/css" rel="stylesheet"/>-->
+    <!--<script src="https://cdn.ckeditor.com/ckeditor5/11.0.1/classic/ckeditor.js"></script>-->
+    <!--<script src="/ckeditor5-build-classic/ckeditor.js"></script>-->
+    <!--<script src="/javascripts/editor.js"></script>-->
+    <!--<script type="text/javascript">
+        2
+        $(document).ready( function() {
+            3
+            $("#txtEditor").Editor();
+            4
+        });
+        5
+        $('#myForm').on('submit', function(e){
+            $('#myModal').modal('show');
+            e.preventDefault();
+        });
+    </script>-->
+    <!--<script type="text/javascript">
+        $(document).ready( function() {
+            $('#myForm').on('submit', function(e){
+                $('#myModal').modal('show');
+                e.preventDefault();
+            });
+        });
+    </script>-->
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <a class="navbar-brand" href="#">Organization</a>  
             <a class="btn secondary white btn-lg" href="/logout">Logout</a>
     </nav>
-      <form action="/complaints/newComplaint" method="post" class="container">
+      <form action="/complaints/newComplaint" method="post" class="container needs-validation" id="myForm" enctype="multipart/form-data" novalidate>
           <div class="form-group">
               <label for="objectionOrSuggestion" class="label-font">Whether Objection/Suggestion</label>
-              <select name="objectionOrSuggestion">
+              <select required class="form-control container" name="objectionOrSuggestion">
                   <option selected disabled>Choose Option</option>
                   <option value="Objection" class="input-font">Objection</option>
                   <option value="Suggestion" class="input-font">Suggestion</option>
               </select>
+
           </div>
           <div class="form-group">
             <label for="complaintType" class="label-font">Type</label>
-            <select class="form-control container" name="complaintType">
+            <select class="form-control container" name="complaintType" required>
                     <option selected disabled>Choose Complaint Type</option>
                     <option value="Land Use Proposals" class="input-font">Land Use Proposals</option>
                     <option value="Zoning Acquisition" class="input-font">Zoning Acquisition</option>
@@ -34,27 +65,83 @@
                     <option value="Traffic & Transportation" class="input-font">Traffic &amp; Transportation (incl. alignment of Roads)</option>
                     <option value="Others" class="input-font">Others</option>
             </select>
+              <div class="invalid-feedback">
+                  Please fill this field
+              </div>
+              <div class="valid-feedback">
+                  Looks good!
+              </div>
           </div>
           <div class="form-group">
                 <label for="location" class="control-label label-font">Location</label>
-                <input type="text" id="location" class="form-control input-font" name="location" placeholder="Enter location...">
+                <input type="text" id="location" class="form-control input-font" name="location" placeholder="Enter location..." required>
+
+              <div class="invalid-feedback">
+                  Please fill this field
+              </div>
+              <div class="valid-feedback">
+                  Looks good!
+              </div>
           </div>
           <div class="form-group">
                 <label for="paraClause" class="label-font">Relevant Para/Clause</label>
-                <input type="text" class="form-control input-font" name="relevantParaClause" placeholder="">
+                <input type="text" class="form-control input-font" name="relevantParaClause" placeholder="" required>
+              <div class="invalid-feedback">
+                  Please fill this field
+              </div>
+              <div class="valid-feedback">
+                  Looks good!
+              </div>
           </div>
             <div class="form-group">
-                <label for="" class="label-font">Complaint Description</label>
-                <input id="editor" type="text" class="form-control input-font" name="complaintDesc" cols="30" rows="10" placeholder="Type your complaint here">
+                <label for="complaintDesc" class="label-font">Complaint Description</label>
+                <!--<input id="editor" type="text" class="form-control input-font" name="complaintDesc" cols="30" rows="10" placeholder="Type your complaint here">-->
+                <!--<input id="editor" type="text" name="complaintDesc" class="form-control input-font" cols="30" rows="10" placeholder="Type your complaint here">-->
+                <!--<textarea id="txtEditor" name="complaintDesc"></textarea>-->
+                <!--<textarea id="txtEditor"></textarea>-->
+                <textarea name="complaintDesc" class="form-control container" id="editor" required>This is some editor content</textarea>
+                <div class="invalid-feedback">
+                    Please fill this field
+                </div>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="form-group">
-                <label for="image" class="label-font">Image</label>
-                <input type="file" name="image" placeholder="Choose photo">
+                <label for="image" class="label-font">Image(s) Or Relevant Document(s)</label>
+                <small class="alert-danger">Supported File Formats are .docx,.pdf,.jpeg</small>
+                <input type="file" name="image" placeholder="Choose photo" multiple>
+
             </div>
-            <div class="form-group text-center">
-                <input type="submit" class="label-font" value="Submit">
+<!--
+          <div class="form-group">
+
+              <input type="file" name="image" placeholder="Choose photos or Docs" multiple>
+          </div>
+-->
+
+            <div class="form-group text-center"> <!--onsubmit="openModal()"-->
+                <input type="submit" class="label-font" value="Submit" >
             </div>
       </form>
+    <!--<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    &lt;!&ndash;<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>&ndash;&gt;
+                    <input type="button" value="Print this page" onClick="window.print()">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>&lt;!&ndash; /.modal-content &ndash;&gt;
+        </div>&lt;!&ndash; /.modal-dialog &ndash;&gt;
+    </div>-->
     <script>
         function init(){
             var options = {
@@ -64,6 +151,14 @@
             var input = document.getElementById('location');
             var autocomplete = new google.maps.places.Autocomplete(input, options);
         }
+
     </script>
+   <!-- <script>
+        ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>-->
 </body>
 </html>

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "deploy" : "gcloud app deploy"
+    "deploy": "gcloud app deploy"
   },
   "keywords": [
     "heroku"
@@ -34,6 +34,6 @@
   },
   "engines": {
     "node": "8.11.4",
-    "npm" : "6.4.0"
+    "npm": "6.4.0"
   }
 }

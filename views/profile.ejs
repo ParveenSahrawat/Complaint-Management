@@ -7,14 +7,15 @@
     <title>Profile</title>
     <% include partials/scripts.ejs %>
 </head>
-    <body onload="getProfileDetails()">
+<!--Changed the Id to contact_id-->
+<body onload="getProfileDetails()">
     <% include partials/navbar.ejs %>
         <p id="profile-user" class="d-none"><%=usertype  %></p>
         <div class="container mb-5 ">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="card mt-5">
-                        <div class="card-body">
+                        <div class="card-body" novalidate>
                             <div class="row border border-top-0 border-left-0 border-right-0">
                                 <div class="col-lg-12 text-center">
                                     <p class="text-capitalize lead">My Profile</p>
@@ -24,32 +25,74 @@
                                     <button onclick="editProfileDetails()" class="btn btn-link float-right">Edit Profile</button>
                                     <button data-toggle="modal" data-target="#changePassword" class="btn btn-link float-left">Change Password</button>
                             </div>
-                            <div class="row">
+                            <form class="row needs-validation" novalidate>
                                 <div class="col-lg-12">
                                     <table class="table">
-                                        <tr>
+                                        <!--Name-->
+                                        <tr class="form-group">
+                                            <!--Name-->
                                             <td class="font-weight-bold">Name</td>
-                                            <td><input type="text" id="username" class="editProfileFields form-control" disabled></td>
+                                            <td>
+                                                <input type="text" id="contact_username" class="editProfileFields form-control" required disabled>
+                                                <div class="invalid-feedback">
+                                                    Please fill this field
+                                                </div>
+                                                <div class="valid-feedback">
+                                                    Looks good!
+                                                </div>
+                                            </td>
+
                                         </tr>
-                                        <tr>
+                                        <!--Email-->
+                                        <tr class="form-group">
+                                            <!--Email-->
                                             <td class="font-weight-bold">Email</td>
-                                            <td><input type="email" id="email" class="editProfileFields form-control" disabled></td>
+                                            <td>
+                                                <input type="email" id="contact_email" class="editProfileFields form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"  required disabled>
+                                                <div class="invalid-feedback">
+                                                    Please fill this field
+                                                </div>
+                                                <div class="valid-feedback">
+                                                    Looks good!
+                                                </div>
+                                            </td>
                                         </tr>
-                                        <tr>
+                                        <!--Mobile-->
+                                        <tr class="form-group">
+                                            <!--Mobile-->
                                             <td class="font-weight-bold">Mobile</td>
-                                            <td><input type="number" id="mobile" class="editProfileFields form-control" disabled></td>
+                                            <td>
+                                                <input type="text" id="contact_mobile" class="editProfileFields form-control" pattern="[6-9]{1}[0-9]{9}" maxlength="10" minlength="10" required disabled>
+                                                <div class="invalid-feedback">
+                                                    Please fill this field
+                                                </div>
+                                                <div class="valid-feedback">
+                                                    Looks good!
+                                                </div>
+                                            </td>
                                         </tr>
-                                        <tr>
+                                        <!--Aadhar Number-->
+                                        <tr class="form-group">
+                                            <!--Aadhar Number-->
                                             <td class="font-weight-bold">Aadhar Number</td>
-                                            <td><input type="number" id="aadharNumber" class="editProfileFields form-control" disabled></td>
+                                            <td>
+                                                <input type="text" id="contact_aadharNumber" class="editProfileFields form-control" pattern="[1-9]{1}[0-9]{11}" maxlength="12" minlength="12" required disabled>
+                                                <div class="invalid-feedback">
+                                                    Please fill this field
+                                                </div>
+                                                <div class="valid-feedback">
+                                                    Looks good!
+                                                </div>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
-                            </div>
-                            <div id="editProfileRow" class="row d-none" >
-                                    <button class="col-lg-3 mt-3 offset-lg-3 btn btn-muted btn-rounded" onclick="closeEditProfile()">Cancel</button> 
-                                    <button type="submit" class="col-lg-3 mt-3 btn btn-primary btn-rounded" onclick="saveUserProfile()">Save Details</button> 
-                            </div>
+                                <div id="editProfileRow" class="row d-none" >
+                                    <button class="col-lg-3 mt-3 offset-lg-3 btn btn-muted btn-rounded" onclick="closeEditProfile()">Cancel</button>
+                                    <button type="submit" class="col-lg-3 mt-3 btn btn-primary btn-rounded" onclick="saveUserProfile()">Save Details</button>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                     <!-- <div class="text-center">
@@ -64,7 +107,7 @@
 
     <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
+            <form class="modal-content needs-validation" novalidate>
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -75,15 +118,15 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label for="oldPassword">Enter Current Password :</label>
-                            <input required type="password" class="form-control" id="oldPassword" aria-describedby="oldPassHelp" placeholder="Enter Current Password">
+                            <input required type="password" class="form-control" id="oldPassword" aria-describedby="oldPassHelp" placeholder="Enter Current Password" minlength="6" maxlength="16">
                         </div>
                         <div class="form-group">
                             <label for="newPassword">Enter New Password :</label>
-                            <input required type="password" class="form-control" id="newPassword" aria-describedby="newPassHelp" placeholder="Enter New Password">
+                            <input required type="password" class="form-control" id="newPassword" aria-describedby="newPassHelp" placeholder="Enter New Password"  minlength="6" maxlength="16">
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password :</label>
-                            <input required type="password" class="form-control" id="confirmPassword" aria-describedby="confirmPasshelp" placeholder="Confirm Above Password">
+                            <input required type="password" class="form-control" id="confirmPassword" aria-describedby="confirmPasshelp" placeholder="Confirm Above Password"  minlength="6" maxlength="16">
                         </div>
                     </div>
                 </div>
@@ -91,7 +134,7 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" onclick="saveNewPassword()" class="btn btn-primary">Save</button>
                 </div>
-                </div>
+                </form>
             </div>
         </div>
     </body>

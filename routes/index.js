@@ -18,6 +18,9 @@ router.get('/', (req, res) => {
 router.get('/login', (req, res) => {
   res.render('login');
 });
+router.get('/validation', (req, res) => {
+    res.render('validation');
+});
 router.get('/signup', (req, res) => {
   res.render('signup');
 });

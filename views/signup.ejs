@@ -6,10 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Signup</title>
+    <style>
+        /*Add star around required fields*/
+        .form-group:before{
+            content: " *";
+            color: red;
+        }
+        /* Adds a box around the numeric value in Safari and Chrome */
+        input[type=number]::-webkit-textfield-decoration-container {
+            border: 1px #ccc solid;
+            background: #efefef;
+        }
+        /*!* Remove controls from Firefox *!
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+*/
+        /*!* Re-applies the controls on :hover and :focus *!
+        input[type="number"]:hover,
+        input[type="number"]:focus {
+            -moz-appearance: number-input;
+        }*/
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance : none;
+            margin: 0;
+        }
+        #contact label{
+            display: inline-block;
+
+        }
+        #contact_submit{
+            padding-left: 100px;
+        }
+        #contact div{
+            margin-top: 1em;
+        }
+        textarea{
+            vertical-align: top;
+            height: 5em;
+        }
+
+        .error{
+            display: none;
+            margin-left: 10px;
+        }
+
+        .error_show{
+            color: red;
+            margin-left: 10px;
+        }
+        input.invalid{
+            border: 2px solid red;
+        }
+
+        input.valid{
+            border: 2px solid green;
+        }
+
+    </style>
     <% include partials/scripts.ejs %>
 </head>
 
-<body>
+<body onload="curr_validation()">
     <% include partials/navbar.ejs %>
     <div class="container text-center">
         <h1 class="display-4">
@@ -18,34 +80,205 @@
     </div>
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-                <form action="/auth/signup" class="col-md-5 form-horizontal" method="post">
+                <form action="/auth/signup"  id="contact" class="col-md-5 form-horizontal needs-validation"  novalidate method="post">
+                    <!--UserName-->
                     <div class="form-group">
                         <label for="username" class="control-label label-font">Username </label>
-                        <input autofocus class="form-control input-font" type="text" name="username" placeholder="Enter your firstname" required>
+                        <input class="form-control input-font" id="contact_username"  type="text"   name="username" placeholder="Enter your firstname" minlength="3" required>
+                        <div class="invalid-feedback">
+                            Please fill this field
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <!--<span class="error">This field is required</span>-->
                     </div>
+                    <!--Email-->
                     <div class="form-group">
                         <label for="email" class="control-label label-font">Email Id</label>
-                        <input class="form-control input-font" type="email" name="email" placeholder="Enter your email id" required>
+                        <input class="form-control input-font" id="contact_email" type="email" name="email" placeholder="Enter your email id" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
+                        <!--<span class="error">A valid email address is required</span>-->
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please choose a email.
+                        </div>
                     </div>
+                    <!--Aadhaar Number-->
                     <div class="form-group">
                         <label for="aadharNumber" class="control-label label-font">Aadhar Number</label>
-                        <input class="form-control input-font" type="number" name="aadharNumber" placeholder="Enter your 12 digit aadhar number">
+                        <input class="form-control input-font" id="contact_aadharNumber" type="text" pattern="[1-9]{1}[0-9]{11}" name="aadharNumber" placeholder="Enter your 12 digit aadhar number" maxlength="12" minlength="12" required>
+                        <!--<span class="error">A valid aadhar number is required</span>-->
+                        <div class="invalid-feedback">
+                            Please fill this field
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
+                    <!--Mobile-->
                     <div class="form-group">
                         <label for="mobile" class="control-label label-font">Mobile</label>
-                        <input class="form-control input-font" type="number" name="mobile" placeholder="Enter your 10 digit mobile number" required>
+                        <input class="form-control input-font" id="contact_mobile" type="text" pattern="[6-9]{1}[0-9]{9}" name="mobile" placeholder="Enter your 10 digit mobile number" maxlength="10" minlength="10" required>
+                        <!--<span class="error">A valid number is required</span>-->
+                        <div class="invalid-feedback">
+                            Please fill this field
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
+                    <!--Password-->
                     <div class="form-group">
                         <label for="password" class="control-label label-font">Password</label>
-                        <input class="form-control input-font" type="password" name="password" placeholder="Enter your password" required>
+                        <input class="form-control input-font" id="contact_password" type="password" name="password" placeholder="Enter your password" maxlength="16" minlength="6" required>
+                        <!--<span class="error">This field is required</span>-->
+                        <div class="invalid-feedback">
+                            Please fill this field
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
+                    <!--Register Button-->
                     <div class="text-center">
-                        <input type="submit" value="Register" class="btn secondary white label-font">
-                        <a href="/login" class="btn btn-link label-font">Login</a>
+                        <input type="submit" onsubmit="registerUser()" id="contact_submit" value="Register" class="btn secondary white label-font">
+
                     </div>
                 </form>
+            <input href="/login" id="toLogin"  class="btn btn-link label-font">Login</input>
         </div>
     </div>
+
+    <!--<script src="/javascripts/app.js"></script>-->
+
+    <!--<script>
+        $(document).ready(function() {
+            //console.log($(this.data));
+
+            $("input").on("focus", function (e) {
+                isTagEmpty(e.target);
+            });
+
+            $("#contact_submit").on("click", function (e) {
+                    var formData = $("#contact").serializeArray();
+                    validateOnClick(e, formData);
+                })
+        });
+    </script>-->
+
+        <!--<script>
+        $(document).ready(function() {
+            //jQuery code goes here
+
+            // Name can't be blank
+
+            $('#contact_username').on('focus',function() {
+                var input=$(this);
+                var is_name=input.val();
+                if(is_name){input.removeClass("invalid").addClass("valid");}
+                else{input.removeClass("valid").addClass("invalid");}
+            });
+            $("#contact_mobile").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                    // Allow: Ctrl/cmd+A
+                    (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: Ctrl/cmd+C
+                    (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: Ctrl/cmd+X
+                    (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+            $('#contact_mobile').on('focus',function() {
+                var input=$(this);
+                console.log(input);
+                var re = /^[6-9]{1}[0-9]{9}$/;
+                var is_number=re.test(input.val());
+
+                if(is_number){input.removeClass("invalid").addClass("valid");}
+                else{input.removeClass("valid").addClass("invalid");}
+            });
+
+            //Aadhar
+            $("#contact_aadharNumber").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                    // Allow: Ctrl/cmd+A
+                    (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: Ctrl/cmd+C
+                    (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: Ctrl/cmd+X
+                    (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+
+            $('#contact_aadharNumber').focus('focus',function() {
+                var input=$(this);
+                var re = /^[0-9]{1}[0-9]{11}$/;
+                var is_number=re.test(input.val());
+
+                if(is_number){input.removeClass("invalid").addClass("valid");}
+                else{input.removeClass("valid").addClass("invalid");}
+            });
+
+            // Email must be an email
+            $('#contact_email').on('focus',function() {
+                var input=$(this);
+                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                var is_email=re.test(input.val());
+                if(is_email){input.removeClass("invalid").addClass("valid");}
+                else{input.removeClass("valid").addClass("invalid");}
+            });
+
+            // Password must be something
+            $('#contact_password').on('focus',function(event) {
+                var input=$(this);
+                var message=$(this).val();
+                console.log(message);
+                if(message){input.removeClass("invalid").addClass("valid");}
+                else{input.removeClass("valid").addClass("invalid");}
+            });
+            // After Form Submitted Validation
+            $("#contact_submit").click(function(event){
+                var form_data=$("#contact").serializeArray();
+                var error_free=true;
+                for (var input in form_data){
+                    console.log(form_data[input]['name']);
+                    var element=$("#contact_"+form_data[input]['name']);
+                    console.log(element);
+                    var valid=element.hasClass("valid");
+                    var error_element=$("span", element.parent());
+                    if (!valid){error_element.removeClass("error").addClass("error_show"); error_free=false;}
+                    else{error_element.removeClass("error_show").addClass("error");}
+                }
+                if (!error_free){
+                    event.preventDefault();
+                }
+                else{
+                    alert('No errors: Form will be submitted');
+                }
+            });
+
+        });
+    </script>-->
 </body>
 
 </html>

@@ -12,20 +12,21 @@ module.exports.registerNewComplaint = (req, res) => {
     // console.log(req.sessionID);
     // console.log(req.user._id);
     // console.log(`form body is ${req.body}`);
-    // console.log(req.user);
+    console.log(req);
+
     if (typeof (req.body.complaintType) == "undefined") {
         return res.status(400).json({
             status: 0,
-            msg: 'Complaint Type required'
+            message: 'Complaint Type required'
         });
     }
     else {
-        if (["Land Use Proposals", "Zoning Acquisition", "Infrastructure Provisions", 
-             "Demographic & Population Projections", "Environment Related", "MCA/Control Area/Village Boundary", 
-             "Traffic & Transportation", "Others"].indexOf(validator.trim(req.body.complaintType)) == -1) {
+        if (["Land Use Proposals", "Zoning Acquisition", "Infrastructure Provisions",
+                "Demographic & Population Projections", "Environment Related", "MCA/Control Area/Village Boundary",
+                "Traffic & Transportation", "Others"].indexOf(validator.trim(req.body.complaintType)) == -1) {
             return res.status(400).json({
                 status: 0,
-                msg: 'Complaint Type required'
+                message: 'Complaint Type required'
             });
         }
     }
@@ -33,14 +34,14 @@ module.exports.registerNewComplaint = (req, res) => {
     if (typeof (req.body.location) == "undefined") {
         return res.status(400).json({
             status: 0,
-            msg: 'Location iiis required'
+            message: 'Location iiis required'
         });
     }
     else {
         if (!validator.trim(req.body.location)) {
             return res.status(400).json({
                 status: 0,
-                msg: 'Location is required'
+                message: 'Location is required'
             });
         }
     }
@@ -48,14 +49,14 @@ module.exports.registerNewComplaint = (req, res) => {
     if (typeof (req.body.relevantParaClause) == "undefined") {
         return res.status(400).json({
             status: 0,
-            msg: 'Please enter relevant Para/Clause'
+            message: 'Please enter relevant Para/Clause'
         });
     }
     else {
         if (!validator.trim(req.body.relevantParaClause)) {
             return res.status(400).json({
                 status: 0,
-                msg: 'Please enter relevant Para/Clause'
+                message: 'Please enter relevant Para/Clause'
             });
         }
     }
@@ -63,14 +64,14 @@ module.exports.registerNewComplaint = (req, res) => {
     if (typeof (req.body.complaintDesc) == "undefined") {
         return res.status(400).json({
             status: 0,
-            msg: 'Complaint Description is required'
+            message: 'Complaint Description is required'
         });
     }
     else {
         if (!validator.trim(req.body.complaintDesc)) {
             return res.status(400).json({
                 status: 0,
-                msg: 'Complaint Description is required'
+                message: 'Complaint Description is required'
             });
         }
     }
@@ -78,29 +79,30 @@ module.exports.registerNewComplaint = (req, res) => {
     if (typeof (req.body.objectionOrSuggestion) == "undefined") {
         return res.status(400).json({
             status: 0,
-            msg: 'Select whether its a complaint or suggestion.'
+            message: 'Select whether its a complaint or suggestion.'
         });
     }
     else {
         if (['Objection', 'Suggestion'].indexOf(validator.trim(req.body.objectionOrSuggestion)) === -1) {
             return res.status(400).json({
                 status: 0,
-                msg: 'Select whether its a complaint or suggestion.'
+                message: 'Select whether its a complaint or suggestion.'
             });
         }
     }
     console.log(req.file);
-       let newComplaint = new Complaint({
+    let newComplaint = new Complaint({
         // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,
         location : req.body.location,
         relevantParaClause : req.body.relevantParaClause,
         complaintDesc : req.body.complaintDesc,
         objectionOrSuggestion : req.body.objectionOrSuggestion,
-        // image : {
-        //     path : req.file,
-        //     originalName : req.file.originalname
-        // },
+        image : {
+
+             path : req.files.path,
+             originalName : req.files.originalName
+         },
         complainant : req.user._id,
         actionTrail : [{
             user : req.user._id,
@@ -112,16 +114,17 @@ module.exports.registerNewComplaint = (req, res) => {
     console.log(`It's going on`);
     newComplaint.save((err, registeredComplaint) => {
         if (err) {
+            console.log(err);
             res.status(500).json({
                 status: 0,
-                msg: 'Server Error while saving new complaint',
+                message: 'Server Error while saving new complaint',
                 errorDetails: err
             });
         }
         else {
             res.json({
                 status: 1,
-                msg: `Your ${registeredComplaint.objectionOrSuggestion} is successfully registered.`,
+                message: `Your ${registeredComplaint.objectionOrSuggestion} is successfully registered.`,
                 refNo: registeredComplaint.complaintNumber
             });
         }
@@ -139,7 +142,7 @@ module.exports.listAllComplaints = (req, res, next) => {
                 data: allcomplaints
             })
         }).catch((e) => {
-            return res.status(500).json({   
+            return res.status(500).json({
                 status: 0,
                 message: 'Server Error',
                 errorDetails: e
@@ -177,7 +180,7 @@ module.exports.listAllComplaints = (req, res, next) => {
                 for(var i=0; i < result.length; i++){
                     if(result[i].status === 'Replied'){
                         repliedCount++;
-                    } else 
+                    } else
                         pendingCount++;
                 }
                 var statusCount = [pendingCount,repliedCount];
@@ -187,8 +190,8 @@ module.exports.listAllComplaints = (req, res, next) => {
                     results : {counts, statusCount, monthArray}
                 });
             }
-        });   
-    }  
+        });
+    }
 }
 module.exports.getAllComplaintsForAdmin = (req, res) => {
     if(req.user.userType === 'admin'){
@@ -230,7 +233,7 @@ module.exports.getComplaint = (req, res, next) => {
             .json(doc);
         // next(doc);
     });
-}    
+}
 module.exports.updateStatus = (req, res) => {
     if(typeof(req.body.newStatus !== 'undefined') && ['Under Consideration', 'Replied'].indexOf(validator.trim(req.body.newStatus)) !== -1){
         var newStatus = req.body.newStatus;
@@ -271,42 +274,42 @@ module.exports.updateStatus = (req, res) => {
                         message: 'No further action is possible as it has been marked as Replied.'
                     });
                 } else {
-                     User.findById(user).then((doc) => {
-                         let receiverEmailAddress = doc.email;
-                    var transporter = nodemailer.createTransport(emailConfig);
+                    User.findById(user).then((doc) => {
+                        let receiverEmailAddress = doc.email;
+                        var transporter = nodemailer.createTransport(emailConfig);
 
-                    var mailOptions = {
-                        from: `"${adminName}"${adminEmailAddress}`,
-                        to: `${receiverEmailAddress}`,
-                        subject: `Sharing ${complaint.objectionOrSuggestion}`,
-                        html: `Your complaint has been revieved please check it on website`
-                    };
+                        var mailOptions = {
+                            from: `"${adminName}"${adminEmailAddress}`,
+                            to: `${receiverEmailAddress}`,
+                            subject: `Sharing ${complaint.objectionOrSuggestion}`,
+                            html: `Your complaint has been revieved please check it on website`
+                        };
 
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            res.status(500).send({
-                                status: 0,
-                                message: 'Could Not Email the complaint.',
-                                errorDetails: error
-                            })
-                        }
-                        else {
-                            res.send({
-                                status: 1,
-                                message: 'Email Sent successfully',
-                                details: info.response
-                            })
-                        }
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                res.status(500).send({
+                                    status: 0,
+                                    message: 'Could Not Email the complaint.',
+                                    errorDetails: error
+                                })
+                            }
+                            else {
+                                res.send({
+                                    status: 1,
+                                    message: 'Email Sent successfully',
+                                    details: info.response
+                                })
+                            }
+                        });
+                    }).catch((err) => {
+                        res.status(500).send({
+                            status : 0,
+                            message : 'Error in finding user of this complaint'
+                        });
                     });
-                     }).catch((err) => {
-                         res.status(500).send({
-                             status : 0,
-                             message : 'Error in finding user of this complaint'
-                         });
-                     });
                     return res.status(200).send({
                         status : 1,
-                         message : 'Status updated successfully'
+                        message : 'Status updated successfully'
                     });
                 }
             }).catch((err) =>{

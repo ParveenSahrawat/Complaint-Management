@@ -13,7 +13,7 @@ module.exports.createUser = (req, res) => {
 
     validateUserFields.checkUserFields(req, res);
     var adminRegistration = false;
-    var adminEmailAddress = `parveen.sahrawat1209@gmail.com`;
+    var adminEmailAddress = `elevenx099@gmail.com`;
     if(req.originalUrl == '/signup/admin')
         adminRegistration = true;
     User.findOne({
@@ -46,7 +46,7 @@ module.exports.createUser = (req, res) => {
                             secure : false,
                             auth : {
                               user : 'parveen.sahrawat1209@gmail.com',
-                              pass : 'helloeagle23'
+                              pass : 'cricket36@23'
                             }
                           });
                           let mailOptions = {
@@ -80,9 +80,9 @@ module.exports.createUser = (req, res) => {
 module.exports.fetchLoggedUserDetails = (req, res) => {
 
   User.findById(req.user._id).then((doc) => {
-    var { username, mobile, email, aadharNumber, mobileVerified } = doc;
+    var { username, mobile, email, aadharNumber,mobileVerified } = doc;
     if (doc) {
-        res.json({ username, mobile, email, aadharNumber, mobileVerified });
+        res.json({ username, mobile, email, aadharNumber,mobileVerified });
     }
     else {
         res.status(400).json({
