@@ -464,11 +464,16 @@ function changeStatus() {
 function setPassword(){
     let newPass = $('#reset-password').val();
     let confirmPass = $('#confirm-password').val();
-    if(newPass !== confirmPass){
+    if(!newPass.length)
+        return;
+    else if(!confirmPass.length)
+        return;    
+    else if(newPass !== confirmPass){
         swal({
             icon : 'error',
             text : 'New Password and Confirm Password don\'t match'
         });
+        return;
     } else {
         let currentUrl = window.location.href;
         console.log(currentUrl);
