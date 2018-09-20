@@ -39,7 +39,7 @@
                                             <td class="font-weight-bold">Mobile</td>
                                             <td><input type="number" id="mobile" class="editProfileFields form-control" disabled></td>
                                         </tr>
-                                        <tr>
+                                        <tr id="aadharRow">
                                             <td class="font-weight-bold">Aadhar Number</td>
                                             <td><input type="number" id="aadharNumber" class="editProfileFields form-control" disabled></td>
                                         </tr>
@@ -75,15 +75,15 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label for="oldPassword">Enter Current Password :</label>
-                            <input required type="password" class="form-control" id="oldPassword" aria-describedby="oldPassHelp" placeholder="Enter Current Password">
+                            <input required minlength="6" maxlength="16" type="password" class="form-control" id="oldPassword" aria-describedby="oldPassHelp" placeholder="Enter Current Password">
                         </div>
                         <div class="form-group">
                             <label for="newPassword">Enter New Password :</label>
-                            <input required type="password" class="form-control" id="newPassword" aria-describedby="newPassHelp" placeholder="Enter New Password">
+                            <input required minlength="6" maxlength="16" type="password" class="form-control" id="newPassword" aria-describedby="newPassHelp" placeholder="Enter New Password">
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password :</label>
-                            <input required type="password" class="form-control" id="confirmPassword" aria-describedby="confirmPasshelp" placeholder="Confirm Above Password">
+                            <input required minlength="6" maxlength="16" type="password" class="form-control" id="confirmPassword" aria-describedby="confirmPasshelp" placeholder="Confirm Above Password">
                         </div>
                     </div>
                 </div>

@@ -3,12 +3,13 @@ const crypto = require('crypto');
 const request = require('request');
 const validator = require('validator');
 const User = require('../db/User');
+const passwordResetToken = require('../db/resetToken');
 const emailToken = require('../db/token');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt-nodejs');
 const validateUserFields = require('./userFieldsController');
 // const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
 const { Organization_name } = require('../config/organization');
-const bcrypt = require('bcrypt-nodejs');
 const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
 module.exports.createUser = (req, res) => {
@@ -199,7 +200,7 @@ module.exports.checkOTP = (req, res) => {
                   mobileVerified : false
                 }
               }).then((doc) => {
-                res.status(200).send({
+                return res.status(200).json({
                   status : 1,
                   message : `Mobile number ${verifiedMobile} is verified`
                   })
@@ -340,20 +341,18 @@ module.exports.changePassword = (req, res) => {
       if(doc){
         bcrypt.compare(oldPassword, doc.password, (error, passwordMatched) => {
           if(error){
-            res.status(400).json({
+            res.status(400).send({
               status : 0,
-              message : 'Password not matched',
-              errorDetails : 'An error occured while processing your request',
-              error
+              message : 'OldPassword not matched'
+              // errorDetails : 'An error occured while processing your request'
             });
           } else if(passwordMatched){
             let salt = bcrypt.genSalt(10, (error, salt) => {
               if(error){
-                res.status(400).json({
+                res.status(400).send({
                   status : 0,
-                  message : 'An error occured while changing password',
-                  errorDetails : 'An error occured while changing password',
-                  error
+                  message : 'An error occured while changing password'
+                  // errorDetails : 'An error occured while changing password'
                 });
               } else {
                 let hash = bcrypt.hashSync(newPassword, salt);
@@ -363,17 +362,16 @@ module.exports.changePassword = (req, res) => {
                   }
                 }).then((passwordChanged) => {
                   if(passwordChanged){
-                    res.status(200).json({
+                    res.status(200).send({
                       status : 1,
                       message : 'Password changed successfully',
                     });
                   }
                 }).catch((error) => {
-                  res.status(400).json({
+                  res.status(400).send({
                     status : 0,
-                    message : 'An error occured while processing your request',
-                    errorDetails : 'An error occured while processing your request',
-                    error
+                    message : 'An error occured while processing your request'
+                    // errorDetails : 'An error occured while processing your request'
                   });
                 });
               }
@@ -382,11 +380,11 @@ module.exports.changePassword = (req, res) => {
         });
       }
     }).catch((error) => {
-      res.status(404).json({
+      res.status(404).send({
         status : 0,
-        message : 'user not found',
-        errorDetails : 'User not found',
-        error
+        message : 'user not found'
+        // errorDetails : 'User not found',
+        // error
       });
     });
   }
@@ -407,30 +405,52 @@ module.exports.forgotPassword = (req, res) => {
           message : 'Entered email id doesn\'t exists'
         });
       } else {
-        let emailSubject = `${Organization_name} account reset password`;
-        let emailMessage = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
-        `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
-        `http://${req.headers.host}/resetPassword` + `\n\n`
-        `If you did not request this, please ignore this email and your password will remain unchanged.\n`
-        
-        nodemailer.createTestAccount((err, account) => {
-          let transporter = nodemailer.createTransport(emailConfig);
-          let mailOptions = {
-            from : `"${adminName}"${adminEmailAddress}`,
-            to : `${resetEmail}`,
-            subject : emailSubject,
-            html : emailMessage
-          };
+        // Create forgot password token for the user
+        var token = new passwordResetToken({
+          _userId : doc._id,
+          token : crypto.randomBytes(16).toString('hex')
+        });
+        console.log(token);
+        // Save the above token
+        token.save((err) => {
+          if(err){
+            console.log(err);
+            return res.status(500).send({status : 0, message : err.message}); 
+          } else {
+            console.log('Hello' + token);
+            let emailSubject = `${Organization_name} account reset password`;
+            let emailMessage = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
+            `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
+            `https://${req.headers.host}/resetPassword/${token.token}` + `\n\n` +
+            `If you did not request this, please ignore this email and your password will remain unchanged.\n`
 
-          transporter.sendMail(mailOptions, (err, info) => {
-            if(err)
-              return console.log(`Error in sending reset mail : ${err}`);
-            console.log('Message sent: %s', info.messageId);
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-          });
+            nodemailer.createTestAccount((err, account) => {
+              let transporter = nodemailer.createTransport(emailConfig);
+              let mailOptions = {
+                from : `"${adminName}"${adminEmailAddress}`,
+                to : `${resetEmail}`,
+                subject : emailSubject,
+                html : emailMessage
+              };
+            
+              transporter.sendMail(mailOptions, (err, info) => {
+                if(err)
+                  return console.log(`Error in sending reset mail : ${err}`);
+                else {
+                  console.log('Message sent: %s', info.messageId);
+                  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+                  res.status(200).send({
+                    status : 1,
+                    message : 'Reset Password email is sent your registered email'
+                  });
+                }  
+              });
+            });
+          }
         });
       }
     }).catch((err) => {
+      console.log('In errrrrr')
       res.status(500).send({
         status : 0,
         message : `Entered email doesn't exist`,
@@ -441,9 +461,70 @@ module.exports.forgotPassword = (req, res) => {
 }
 module.exports.resetPassword = (req, res) => {
   console.log('In reset password');
+  console.log(req.params.token);
+  var newPassword = req.body.newPass;
+  var confirmPassword = req.body.confirmPass;
+  if(newPassword !== confirmPassword){
+    res.status(400).send({
+      status : 0,
+      message : 'NewPassword and ConfirmPassword doesn\'t match'
+    });
+  } else {
+    passwordResetToken.findOne({token : req.params.token}).then((doc) => {
+      console.log(`reset token doc ${doc}`);
+      if(!doc){
+        res.status(404).send({
+          status : 0,
+          message : 'This token is either expired or invalid'
+        });
+      } else {
+        var userId = doc._userId;
+        console.log(userId);
+        var hash = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)); 
+        console.log(`this is password hash ${hash}`);
+        if(hash !== null){
+          User.findByIdAndUpdate(
+            {_id : userId},
+            {
+              $set : { password : hash}
+            }
+          ).then((thisUser) => {
+            if(!thisUser){
+              res.status(500).json({
+                status : 0,
+                message : 'An errorrrrr has occured on the server'
+              });
+            } else {
+              console.log("Password changed");
+              res.status(200).send({
+                status : 1,
+                message : 'Password is changed successfully'
+              })
+            }
+          }).catch((err) => {
+            res.status(500).json({
+              status : 0,
+              message : err.message
+            });
+          });
+        } else {
+          res.status(500).json({
+            status : 0,
+            message : 'Error in resetting password - 1'
+          });
+        }   
+      }
+    }).catch((err) => {
+      res.status(500).json({
+        status : 0,
+        message : err.message
+      });
+    });
+  }
 }
 module.exports.verifyEmail = (req, res) => {
   // Find a matching token
+  console.log(" in verify email");
   emailToken.findOne({ token: req.params.token }, function (err, token) {
     if (!token) 
       return res.status(400).send({ 

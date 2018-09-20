@@ -29,14 +29,14 @@ router.get('/forgotPassword', (req, res) => {
   res.render('forgotPassword');
 });
 router.post('/forgotPassword', usersController.forgotPassword);
-router.get('/resetPassword', (req, res) => {
+router.get('/resetPassword/:token', (req, res) => {
   res.render('resetPassword');
 });
-router.post('/setPassword', usersController.resetPassword);
+router.patch('/resetPassword/:token', usersController.resetPassword);
 // profile routes
 router.get('/profile', loggedin, (req, res) => {
   res.render('profile', {
-    usertype : req.user.userType
+    usertype: req.user.userType
   });
 });
 router.get('/getProfileDetails', loggedin, usersController.fetchLoggedUserDetails);
@@ -46,14 +46,14 @@ router.patch('/changePassword', loggedin, usersController.changePassword);
 router.post('/complaints/updateStatus/:_id', loggedin, complaintsController.updateStatus);
 router.get('/complaints', loggedin, (req, res) => {
   res.render('allComplaints', {
-    user : req.user.username
+    user: req.user.username
   });
 });
 router.get('/complaint/:_id', loggedin, complaintsController.getComplaint);
 router.get('/view/:_id', loggedin, (req, res) => {
   res.render('preview', {
-    id : req.params._id,
-    usertype : req.user.userType
+    id: req.params._id,
+    usertype: req.user.userType
   });
 });
 router.get('/getComplaints', loggedin, complaintsController.listAllComplaints);
@@ -79,7 +79,7 @@ router.get('/allComplaints', loggedin, (req, res) => {
 router.get('/getAllComplaints', loggedin, complaintsController.listAllComplaints);
 router.get('/dashboard', loggedin, (req, res) => {
   res.render('adminDashboard', {
-    usertype : req.user.userType
+    usertype: req.user.userType
   });
 });
 router.get('/dashboardComplaints', loggedin, complaintsController.getAllComplaintsForAdmin);

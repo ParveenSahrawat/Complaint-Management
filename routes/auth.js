@@ -6,7 +6,6 @@ const passport = require('passport');
 
 module.exports = (passport) => {
     router.post('/signup', controllers.createUser);
-
     router.post('/login', passport.authenticate('local'), (req, res) => {
         // console.log("executed login!");
         // console.log(req.user._id);
