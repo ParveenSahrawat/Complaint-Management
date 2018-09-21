@@ -28,6 +28,10 @@ module.exports.createUser = (req, res) => {
                 });
             } else {
                 var record = new User()
+                if(req.user){
+                  if(req.user.superAdmin === true)
+                    record.userType = 'admin'
+                }
                 record.username = req.body.username;
                 record.email = req.body.email;
                 record.mobile = req.body.mobile;

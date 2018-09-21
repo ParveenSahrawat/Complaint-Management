@@ -29,7 +29,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.location) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -44,7 +43,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.relevantParaClause) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -59,7 +57,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.complaintDesc) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -74,7 +71,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.objectionOrSuggestion) == "undefined") {
         return res.status(400).json({
             status: 0,
