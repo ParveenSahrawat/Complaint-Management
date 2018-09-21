@@ -3,76 +3,16 @@ const Complaint = require('../db/complaints');
 const User = require('../db/User');
 const _ = require('lodash');
 const validator = require('validator');
-var pdfMakePrinter = require('pdfmake/src/printer');
 const moment = require('moment');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
-const blobStream = require('blob-stream');
 const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
-const docDefinition = {
-    content: ['This will show up in the file created']
-};
-
-/*function generatePDF(docDefinition, successCallback, errorCallback){
-    try{
-        const fontDescriptors = {
-            Roboto: {
-                normal: 'fonts/Roboto-Regular.ttf',
-                bold: 'fonts/Roboto-Medium.ttf',
-                italics: 'fonts/Roboto-Italic.ttf',
-                bolditalics: 'fonts/Roboto-MediumItalic.ttf'
-            }
-        };
-        const printer = new pdfMakePrinter(fontDescriptors);
-        const   doc = printer.createPdfKitDocument(docDefinition);
-
-        doc.pipe(
-            fs.createWriteStream('docs/filename.pdf').on("error", (err) => {
-                errorCallback(err.message);
-            })
-        );
-        doc.on('end', () => {
-            res("PDF successfully created and stored");
-        });
-
-        doc.end();
-    }catch(err) {
-        throw(err);
-    }
-};*/
-
-/*module.exports.showPDF = (req,res) =>{
-    
-    var filename = 'filename.pdf';        
-    res.setResponseHeaders(res,filename);
-    res.attachment('docs/filename.pdf');
-    
-    res.json({
-        status: 1,
-        message: `Your ${req.body.objectionOrSuggestion} is successfully registered.`,
-        refNo: req.body.complaintNumber
-    });
-
-}*/
-
-/*function setResponseHeaders(res, filename) {
-    res.header('Content-disposition', 'inline; filename=' + filename);
-    res.header('Content-type', 'application/pdf');
-  }*/
 module.exports.registerNewComplaint = (req,res,next) => {
-    // var req.body = _.pick(req.body, ['complaintType', 'location', 'relevantParaClause', 'objectionOrSuggestion', 'complaintDesc', 'paraClauseLink']);
-    // console.log(req.sessionID);
-    // console.log(req.user._id);
-    // console.log(`form body is ${req.body}`);
-    //console.log(req);
-    
+
     var pathObj = req.files;
     var patharr=[];
     pathObj.forEach(function(item) {patharr.push(item.path);});
-
-
-
     if (typeof (req.body.complaintType) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -149,14 +89,8 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-<<<<<<< HEAD
     console.log(req.file);
-
     let newComplaint = new Complaint({
-=======
-    // console.log(req.file);
-       let newComplaint = new Complaint({
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
         // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,
         location : req.body.location,
@@ -176,11 +110,9 @@ module.exports.registerNewComplaint = (req,res,next) => {
         }],
         postedOn : Date.now()
     });
-    //console.log(image.path);
     console.log(`It's going on`);
     newComplaint.save((err, registeredComplaint) => {
         if (err) {
-            console.log(err);
             res.status(500).json({
                 status: 0,
                 message: 'Server Error while saving new complaint',
@@ -188,16 +120,12 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
         else {
-
             res.json({
                 status: 1,
                 message: `Your ${req.body.objectionOrSuggestion} is successfully registered.`,
                 refNo: req.body.complaintNumber
             });
-
-            
         }
-       // 
     });
 };
 module.exports.listAllComplaints = (req, res, next) => {

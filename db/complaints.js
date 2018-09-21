@@ -7,10 +7,7 @@ var imageSchema = new mongoose.Schema({
         required: true,
 
     }
-    // originalname: {
-    //     type: String,
-    //     required: true
-    // }
+
 });
 var complaintSchema = new mongoose.Schema({
     counter : {
