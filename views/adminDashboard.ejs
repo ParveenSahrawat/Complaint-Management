@@ -14,18 +14,22 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/profile">Profile <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/profile">Profile <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/allComplaints">Analytics</a>
+                <a class="nav-link" href="/allComplaints">Analytics</a>
+            </li>
+            <li class="nav-item d-none" id="addAdmin">
+                <a class="nav-link" href="/signup">Add Admin</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
+                <a class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>
         </div>
     </nav>
     <!-- complaints -->
+    <p id="adminCheck"><%= superAdmin %></p>
     <main>
         <div class="heading">
             <h1 class="text-center">All Suggestions &amp; Objections</h1>
@@ -41,8 +45,7 @@
                                     <th scope="col" class="th-font">Type</th>
                                     <th scope="col" class="th-font">DateTime</th>
                                     <th scope="col" class="th-font">Location</th>
-                                    <th scope="col" class="th-font">Relevant ParaClause</th>
-                                    <th scope="col" class="th-font">Description</th>
+                                    <th scope="col" class="th-font">Relevant ParaClause</th>                                
                                     <th scope="col" class="th-font">Status</th>
                                     <th scope="col" class="th-font">Preview</th>
                                 </tr>

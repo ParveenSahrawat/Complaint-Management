@@ -1,7 +1,6 @@
 
-<<<<<<< HEAD
-// var baseUrl = 'https://complaint-management26.herokuapp.com';
-var baseUrl = 'http://localhost:3000';
+// const baseUrl = 'https://complaint-management26.herokuapp.com';
+const baseUrl = 'http://localhost:3000';
 //IIFE Created For Form Validation
 (function() {
     'use strict';
@@ -29,19 +28,12 @@ var baseUrl = 'http://localhost:3000';
         });
     }, false);
 })();
-=======
-var baseUrl = 'https://complaint-management26.herokuapp.com';
-// var baseUrl = 'http://localhost:3000';
-
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
 function loadAllComplaints() {
         $.ajax({
             url: baseUrl + '/getComplaints',
             type: 'GET',
             datatype: 'json',
             success: (complaints) => {
-                //var comp= complaints.data
-                //debugger;
                 if (complaints) {
                     var trHTML = '';
                     $.each(complaints.data, function (i, item) {
@@ -49,8 +41,7 @@ function loadAllComplaints() {
                         trHTML += '<tr class="td-font"><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion +
                             '</td><td>' + complaints.data[i].complaintType +
                             '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' +
-                            complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause +
-                            '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' +
+                            complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + '</td><td>' +
                             complaints.data[i].status + '</td><td>' + `<a href="${baseUrl}/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
                     });
                     //$('#ctable').clear();
@@ -58,7 +49,7 @@ function loadAllComplaints() {
                     $('#ctable').append(trHTML);
 
                 } else {
-
+                    
                 }
             },
             error: function (err) {
@@ -67,13 +58,13 @@ function loadAllComplaints() {
         });
 }
 function loadAllComplaintsForAdmin() {
+    if($('#adminCheck').text() === 'true')
+        $('#addAdmin').removeClass('d-none');
     $.ajax({
         url: baseUrl + '/dashboardComplaints',
         type: 'GET',
         datatype: 'json',
         success: (complaints) => {
-            //var comp= complaints.data
-            //debugger;
             if (complaints.status) {
                 var trHTML = '';
                 $.each(complaints.data, function (i, item) {
@@ -81,13 +72,10 @@ function loadAllComplaintsForAdmin() {
                     trHTML += '<tr class="td-font"><td>' + complaints.data[i]._id + '</td><td>' + complaints.data[i].objectionOrSuggestion +
                         '</td><td>' + complaints.data[i].complaintType +
                         '</td><td>' + moment(complaints.data[i].postedOn).format("dddd, Do MMM YY, h:mm a") + '</td><td>' +
-                        complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause +
-                        '</td><td>' + complaints.data[i].complaintDesc + '</td><td>' +
+                        complaints.data[i].location + '</td><td>' + complaints.data[i].relevantParaClause + '</td><td>' +
                         complaints.data[i].status + '</td><td>' +
                         `<a href="${baseUrl}/view/${complaints.data[i]._id}">View</a>` + '</td></tr>';
                 });
-                //$('#ctable').clear();
-                // $('#ctable').removeClass(d-none);
                 $('#ctable').append(trHTML);
             } else {
                 swal({
@@ -267,12 +255,10 @@ function editProfileDetails() {
     });
 }
 function saveUserProfile() {
-<<<<<<< HEAD
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
     let mobile = $("#contact_mobile").val();
     let aadharNumber = $("#contact_aadharNumber").val();
-
 
         // open_processing_ur_request_swal();
         $.ajax({
@@ -349,13 +335,6 @@ function registerUser() {
         })
     }*/
 
-=======
-    let username = $("#username").val();
-    let email = $("#email").val();
-    let mobile = $("#mobile").val();
-    let aadharNumber = $("#aadharNumber").val();
-    
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
     // open_processing_ur_request_swal();
     $.ajax({
         url: baseUrl + '/signup',
@@ -410,7 +389,6 @@ function signInUser() {
 }
 
 function closeEditProfile() {
-<<<<<<< HEAD
     $("#aadharRow").removeClass("d-none");
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
@@ -451,24 +429,6 @@ function closeEditProfile() {
         });*/
     }
 
-
-
-=======
-    swal({
-        icon: 'warning',
-        text: "You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'Continue',
-        cancelButtonText: 'Cancel'
-    }).then(() => {
-        populateUserProfileFields(savedDetails);
-        $('#aadharRow').removeClass('d-none');
-        show_hide_btns();
-    }, (dismiss) => {
-        return;
-    });
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
     function show_hide_btns() {
         $('.editProfileFields').attr('disabled', 'disabled');
         $('.hide_on_edit').fadeIn();
@@ -495,15 +455,6 @@ function saveNewPassword() {
         return;
     } else if(oldPassword === newPassword){
         swal({
-<<<<<<< HEAD
-=======
-            icon : 'error',
-            text : 'OldPassword and NewPassword shouldn\'t be same'
-        });
-        return;
-    } else if (newPassword != confirmPassword) {
-        swal({
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
             icon: 'warning',
             text: 'New Password and Confirm Password do not match'
         });
@@ -576,7 +527,6 @@ function getComplaint() {
                     '<tr><td>' + 'Date' + '</td><td>' + moment(complaint.postedOn).format("dddd, Do MMM YY, h:mm a") + '</td></tr>' +
                     '<tr><td>' + 'Location' + '</td><td>' + complaint.location + '</td></tr>' +
                     '<tr><td>' + 'Relevant Paraclause' + '</td><td>' + complaint.relevantParaClause + '</td></tr>'+
-                    '<tr><td>' + 'Description' + '</td><td>' + complaint.complaintDesc + '</td></tr>' +
                     '<tr><td>' + 'Status' + '</td><td>' + complaint.status + '</td></tr>';
                 $('#ctable').append(trHTML);
                 if ($('#user').text() === 'admin')
@@ -629,13 +579,8 @@ function setPassword(){
         return;    
     else if(newPass !== confirmPass){
         swal({
-<<<<<<< HEAD
             icon : 'warning',
             text : 'Please enter email id'
-=======
-            icon : 'error',
-            text : 'New Password and Confirm Password don\'t match'
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
         });
         return;
     } else {
@@ -652,16 +597,7 @@ function setPassword(){
                 if(data.status){
                     swal({
                         icon : 'success',
-<<<<<<< HEAD
                         text : 'Password reset successfull'
-=======
-                        text : 'Your Password is successfully changed'
-                    });
-                } else { 
-                    swal({
-                        icon : 'error',
-                        text : 'Password change failed'
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
                     });
                 }
             },
@@ -760,9 +696,6 @@ function verifyOTP(){
         })
     }
 }
-<<<<<<< HEAD
-
-
 function validateOnClick(names,formdata) {
     console.log(names);
     console.log("abcdefghijklmnop");
@@ -784,7 +717,6 @@ function validateOnClick(names,formdata) {
         alert('No errors: Form will be submitted');
     }
 }
-
 function isTagEmpty(name) {
     //validateOnFocus(name);
     console.log(name.id);
@@ -815,22 +747,6 @@ function isTagEmpty(name) {
     var is_number=re.test(input.val());*/
 
 };
-
-/*
-function  validateForm(name) {
-    var input = $(name);
-    console.log(input);
-    var re = /^[6-9]{1}[0-9]{9}$/;
-    var is_number = re.test(input.val());
-    if (is_number) {
-        input.removeClass("invalid").addClass("valid");
-    }
-    else {
-        input.removeClass("valid").addClass("invalid");
-        //console.log(name);
-    }
-};*/
-=======
 function emailVerification(){
     let currentUrl = window.location.href;
     let emailToken = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
@@ -862,4 +778,17 @@ function emailVerification(){
         }
     });
 }
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
+/*
+function  validateForm(name) {
+    var input = $(name);
+    console.log(input);
+    var re = /^[6-9]{1}[0-9]{9}$/;
+    var is_number = re.test(input.val());
+    if (is_number) {
+        input.removeClass("invalid").addClass("valid");
+    }
+    else {
+        input.removeClass("valid").addClass("invalid");
+        //console.log(name);
+    }
+};*/

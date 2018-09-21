@@ -14,11 +14,7 @@ module.exports.createUser = (req, res) => {
 
     validateUserFields.checkUserFields(req, res);
     var adminRegistration = false;
-<<<<<<< HEAD
     var adminEmailAddress = `elevenx099@gmail.com`;
-=======
-    // var adminEmailAddress = `elevenx099@gmail.com`;
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
     if(req.originalUrl == '/signup/admin')
         adminRegistration = true;
     User.findOne({
@@ -31,6 +27,10 @@ module.exports.createUser = (req, res) => {
                 });
             } else {
                 var record = new User()
+                if(req.user){
+                  if(req.user.superAdmin === true)
+                    record.userType = 'admin'
+                }
                 record.username = req.body.username;
                 record.email = req.body.email;
                 record.mobile = req.body.mobile;
@@ -57,7 +57,6 @@ module.exports.createUser = (req, res) => {
                                         '<p>Please verify your account by clicking the link: \nhttps:\/\/' + req.headers.host + '\/verification\/' + token.token + '.\n</p>'+ 
                                         `<small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
                         nodemailer.createTestAccount((error, account) => {
-<<<<<<< HEAD
                           let transporter = nodemailer.createTransport({
                             host : 'smtp.gmail.com',
                             port : 587,
@@ -67,9 +66,6 @@ module.exports.createUser = (req, res) => {
                               pass : 'cricket36@23'
                             }
                           });
-=======
-                          let transporter = nodemailer.createTransport(emailConfig);
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
                           let mailOptions = {
                             from : `"${adminName}" ${adminEmailAddress}`,
                             to : `${req.body.email}`,

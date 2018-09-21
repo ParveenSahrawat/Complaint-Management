@@ -86,7 +86,8 @@ router.get('/allComplaints', loggedin, (req, res) => {
 router.get('/getAllComplaints', loggedin, complaintsController.listAllComplaints);
 router.get('/dashboard', loggedin, (req, res) => {
   res.render('adminDashboard', {
-    usertype: req.user.userType
+    usertype: req.user.userType,
+    superAdmin : req.user.superAdmin
   });
 });
 router.get('/dashboardComplaints', loggedin, complaintsController.getAllComplaintsForAdmin);

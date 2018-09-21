@@ -61,17 +61,10 @@ const docDefinition = {
     res.header('Content-type', 'application/pdf');
   }*/
 module.exports.registerNewComplaint = (req,res,next) => {
-    // var req.body = _.pick(req.body, ['complaintType', 'location', 'relevantParaClause', 'objectionOrSuggestion', 'complaintDesc', 'paraClauseLink']);
-    // console.log(req.sessionID);
-    // console.log(req.user._id);
-    // console.log(`form body is ${req.body}`);
-    //console.log(req);
     
     var pathObj = req.files;
     var patharr=[];
     pathObj.forEach(function(item) {patharr.push(item.path);});
-
-
 
     if (typeof (req.body.complaintType) == "undefined") {
         return res.status(400).json({
@@ -89,7 +82,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.location) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -104,7 +96,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.relevantParaClause) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -119,7 +110,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.complaintDesc) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -134,7 +124,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-
     if (typeof (req.body.objectionOrSuggestion) == "undefined") {
         return res.status(400).json({
             status: 0,
@@ -149,14 +138,9 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
-<<<<<<< HEAD
     console.log(req.file);
 
     let newComplaint = new Complaint({
-=======
-    // console.log(req.file);
-       let newComplaint = new Complaint({
->>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
         // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,
         location : req.body.location,
@@ -188,16 +172,12 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
         else {
-
             res.json({
                 status: 1,
                 message: `Your ${req.body.objectionOrSuggestion} is successfully registered.`,
                 refNo: req.body.complaintNumber
-            });
-
-            
+            }); 
         }
-       // 
     });
 };
 module.exports.listAllComplaints = (req, res, next) => {
