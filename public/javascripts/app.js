@@ -1,6 +1,6 @@
 
-// var baseUrl = 'https://complaint-management26.herokuapp.com';
-var baseUrl = 'http://localhost:3000';
+var baseUrl = 'https://complaint-management26.herokuapp.com';
+// var baseUrl = 'http://localhost:3000';
 
 function loadAllComplaints() {
         $.ajax({
@@ -575,8 +575,8 @@ function emailVerification(){
         url : baseUrl + `/verification/${emailToken}`,
         type : 'POST',
         data : {},
-        success : (data) => {
-            if(data.status){
+        success : (emailVerificationData) => {
+            if(emailVerificationData.status){
                 let loginlink = $('#loginLink');
                 let anchorTag = `<a href="${baseUrl}/login">Please Login</a>`
                 loginlink.append(anchorTag);
