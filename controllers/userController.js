@@ -1,4 +1,3 @@
-const express = require('express');
 const crypto = require('crypto');
 const request = require('request');
 const validator = require('validator');
@@ -8,7 +7,6 @@ const emailToken = require('../db/token');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt-nodejs');
 const validateUserFields = require('./userFieldsController');
-// const { emailConfig, adminEmailAddress, adminName } = require('./../config/email');
 const { Organization_name } = require('../config/organization');
 const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
@@ -527,26 +525,36 @@ module.exports.verifyEmail = (req, res) => {
   console.log(" in verify email");
   emailToken.findOne({ token: req.params.token }, function (err, token) {
     if (!token) 
-      return res.status(400).send({ 
+      return res.status(400).json({ 
+        status : 0,
         type: 'not-verified', 
-        message: 'We were unable to find a valid token. Your token my have expired.' 
+        message: 'We were unable to find a valid token. Your token may have expired.' 
       });
     // If we found a token, find a matching user
     User.findOne({ _id: token._userId }, function (err, user) {
         if (!user) 
-          return res.status(400).send({ 
+          return res.status(400).json({ 
             message: 'We were unable to find a user for this token.' 
           });
-        if (user.isVerified) 
-          return res.status(400).send({ 
+        if (user.emailVerified) 
+          return res.status(400).json({ 
             type: 'already-verified', 
             message: 'This user has already been verified.' 
           });
         // Verify and save the user
-        user.isVerified = true;
+        user.emailVerified = true;
         user.save(function (err) {
-            if (err) { return res.status(500).send({ message: err.message }); }
-            res.status(200).send("The account has been verified. Please log in.");
+            if(err){ 
+              return res.status(500).json({ 
+                status : 0,
+                message: err.message 
+              }); 
+            } else {
+              res.status(200).json({
+                status : 1,
+                message : "The account has been verified. Please log in."
+              });
+            }
         });
     });
   });

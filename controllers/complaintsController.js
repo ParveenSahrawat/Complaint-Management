@@ -217,17 +217,17 @@ module.exports.getComplaint = (req, res, next) => {
     Complaint.findById(complaintId).exec((error, doc) => {
         if(error){
             console.log('Error in finding complaint');
-            res
-                .status(500)
-                .json(error);
+            res.status(500).json({
+                status : 0,
+                message : 'Error in finding complaint'
+            });
         } else if(!doc){
-            res
-                .status(404)
-                .json("Complaint Id not found");
+            res.status(404).json({
+                status : 0,
+                message : 'Complaint not found'
+            });
         }
-        res
-            .status(200)
-            .json(doc);
+        res.status(200).json(doc);
         // next(doc);
     });
 }    

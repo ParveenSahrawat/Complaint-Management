@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <% include partials/scripts.ejs %>
+</head>
+    <body onload="emailVerification()">
+        <% include partials/navbar.ejs %>
+        <main>
+            <div class="container">
+                <div class="d-none" id="emailVerified">
+                   <p class="text-success">Congrats! Your email is verified successfully.</p>
+                   <a href="http://localhost:3000/login">Please Login</a> 
+                </div>
+                <div class="d-none" id="emailNotVerified">
+                    <p class="text-danger">Sorry! There is a problem in verifying your email.</p>
+                    <p>You can resend email for verification.</p>
+                    <a href="">Resend Email</a>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

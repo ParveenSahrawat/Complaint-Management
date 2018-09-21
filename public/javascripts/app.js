@@ -1,6 +1,6 @@
 
-var baseUrl = 'https://complaint-management26.herokuapp.com';
-// var baseUrl = 'http://localhost:3000';
+// var baseUrl = 'https://complaint-management26.herokuapp.com';
+var baseUrl = 'http://localhost:3000';
 
 function loadAllComplaints() {
         $.ajax({
@@ -42,7 +42,7 @@ function loadAllComplaintsForAdmin() {
         success: (complaints) => {
             //var comp= complaints.data
             //debugger;
-            if (complaints) {
+            if (complaints.status) {
                 var trHTML = '';
                 $.each(complaints.data, function (i, item) {
 
@@ -58,11 +58,17 @@ function loadAllComplaintsForAdmin() {
                 // $('#ctable').removeClass(d-none);
                 $('#ctable').append(trHTML);
             } else {
-
+                swal({
+                    icon : 'error',
+                    text : 'Error in loading complaints'
+                })
             }
         },
         error: function (err) {
-            alert('FAILED in getting data');
+            swal({
+                icon : 'error',
+                text : err,message
+            })
         }
     });
 }
@@ -431,36 +437,6 @@ function changeStatus() {
         }
     }
 }
-// function resetPassword() {
-//     let resetEmail = $('#reset-email').val();
-//     if(!resetEmail.length){
-//         swal({
-//             type : 'warning',
-//             text : 'Please enter email id'
-//         });
-//         return;
-//     } else {
-//         $.ajax({
-//             type : 'POST',
-//             url : baseUrl + '/forgotPassword',
-//             data : { resetEmail },
-//             success : (data) => {
-//                 if(data.status){
-//                     swal({
-//                         type : 'success',
-//                         text : 'Password reset successfull'
-//                     });
-//                 }
-//             },
-//             error: (e) => {
-//                 if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
-//                     swal(e.responseJSON.message);
-//                 else
-//                     swal('An error occured while communicating with server.');   
-//             }
-//         })
-//     }
-// }
 function setPassword(){
     let newPass = $('#reset-password').val();
     let confirmPass = $('#confirm-password').val();
@@ -592,34 +568,30 @@ function verifyOTP(){
         })
     }
 }
-function init_forgotPassword(){
-    var resetPasswordEmail = $('#reset-email').val();
+function emailVerification(){
+    let currentUrl = window.location.href;
+    let emailToken = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
     $.ajax({
-        url : baseUrl + '/forgotPass',
-        type : 'GET',
+        url : baseUrl + `/verification/${emailToken}`,
+        type : 'POST',
+        data : {},
         success : (data) => {
-            if(data.status){
+            if(data.status)
+                $('#emailVerified').removeClass('d-none');
+            else
+                $('#emailNotVerified').removeClass('d-none');    
+        },
+        error : (err) => {
+            if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
                 swal({
-                    icon : 'success',
-                    text : 'Forgot Password email is sent on your registered account. Please reset password.'
-                });
-            } else {
-                swal({
-                    icon : 'error',
-                    text : data.message
-                });
-            }
-        }, error : (e)=>{
-            if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
-                swal({
-                    text: e.responseJSON.message,
+                    text: err.responseJSON.message,
                     icon: 'warning'
                 });
             else
                 swal({
-                    text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                    text: 'An error occured while communicating with server.',
                     icon: 'warning'
-                });            
+                });    
         }
-    })
+    });
 }

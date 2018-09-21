@@ -69,6 +69,9 @@ router.get('/otp', (req, res) => {
 router.post('/otp', usersController.checkOTP);
 
 //Email Verification
+router.get('/verification/:token', (req, res) => {
+  res.render('emailVerification');
+});
 router.post('/verification/:token', usersController.verifyEmail);
 router.post('/resendEmailVerification', usersController.resendEmailVerificationToken);
 
