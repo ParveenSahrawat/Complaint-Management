@@ -576,10 +576,14 @@ function emailVerification(){
         type : 'POST',
         data : {},
         success : (data) => {
-            if(data.status)
+            if(data.status){
+                let loginlink = $('#loginLink');
+                let anchorTag = `<a href="${baseUrl}/login">Please Login</a>`
+                loginlink.append(anchorTag);
                 $('#emailVerified').removeClass('d-none');
-            else
-                $('#emailNotVerified').removeClass('d-none');    
+            } else {
+                $('#emailNotVerified').removeClass('d-none');
+            }
         },
         error : (err) => {
             if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
