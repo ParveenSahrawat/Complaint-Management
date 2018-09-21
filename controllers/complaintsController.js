@@ -149,9 +149,14 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
     }
+<<<<<<< HEAD
     console.log(req.file);
 
     let newComplaint = new Complaint({
+=======
+    // console.log(req.file);
+       let newComplaint = new Complaint({
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
         // complaintNumber : req.body.counter,
         complaintType : req.body.complaintType,
         location : req.body.location,
@@ -285,17 +290,17 @@ module.exports.getComplaint = (req, res, next) => {
     Complaint.findById(complaintId).exec((error, doc) => {
         if(error){
             console.log('Error in finding complaint');
-            res
-                .status(500)
-                .json(error);
+            res.status(500).json({
+                status : 0,
+                message : 'Error in finding complaint'
+            });
         } else if(!doc){
-            res
-                .status(404)
-                .json("Complaint Id not found");
+            res.status(404).json({
+                status : 0,
+                message : 'Complaint not found'
+            });
         }
-        res
-            .status(200)
-            .json(doc);
+        res.status(200).json(doc);
         // next(doc);
     });
 }

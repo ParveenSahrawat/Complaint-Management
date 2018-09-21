@@ -14,13 +14,22 @@ const multer = require('multer');
 
 require('./passport')(passport)
 
-mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management', (error, data) => {
-  if(error){
-    console.log('Failed in connecting to database');
-  } else {
-    console.log('Database connection succesfull');
+mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-management', 
+  {
+    // retry to connect for 60 times
+    reconnectTries : 60,
+    // wait for 2 second before retrying
+    reconnectInterval : 2000
+  },
+  (error, data) => {
+    if (error) {
+      console.log('Failed in connecting to database');
+      throw error;
+    } else {
+      console.log('Database connection succesfull');
+    }
   }
-})
+)
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -54,7 +63,7 @@ app.use(session({
 }));
 
 app.use(passport.initialize());
-app.use(passport.session()); 
+app.use(passport.session());
 
 app.use('/', index);
 app.use('/users', users);

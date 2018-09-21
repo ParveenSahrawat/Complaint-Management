@@ -6,7 +6,6 @@ const passport = require('passport');
 
 module.exports = (passport) => {
     router.post('/signup', controllers.createUser);
-
     router.post('/login', passport.authenticate('local'), (req, res) => {
         // console.log("executed login!");
         // console.log(req.user._id);
@@ -18,7 +17,11 @@ module.exports = (passport) => {
                 console.log(err);
                 res.redirect('/login');
             } else {
-                if(req.user.userType === 'user')
+                console.log(req.user);
+                if(!(req.user.mobileVerified)){
+                    res.redirect('/otp');
+                }
+                else if(req.user.userType === 'user')
                     res.redirect('/complaints');
                 else if(req.user.userType === 'admin')
                     res.redirect('/dashboard');

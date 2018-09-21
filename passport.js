@@ -31,6 +31,7 @@ module.exports = function (passport) {
                             // "req.user._id" : doc._id,
                             username : doc.username,
                             userType : doc.userType,
+                            mobileVerified : doc.mobileVerified,
                             _id: doc._id
                         })
                     } else {

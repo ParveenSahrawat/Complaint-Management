@@ -1,5 +1,5 @@
-// import swal from 'sweetalert'
 
+<<<<<<< HEAD
 // var baseUrl = 'https://complaint-management26.herokuapp.com';
 var baseUrl = 'http://localhost:3000';
 //IIFE Created For Form Validation
@@ -29,6 +29,11 @@ var baseUrl = 'http://localhost:3000';
         });
     }, false);
 })();
+=======
+var baseUrl = 'https://complaint-management26.herokuapp.com';
+// var baseUrl = 'http://localhost:3000';
+
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
 function loadAllComplaints() {
         $.ajax({
             url: baseUrl + '/getComplaints',
@@ -69,7 +74,7 @@ function loadAllComplaintsForAdmin() {
         success: (complaints) => {
             //var comp= complaints.data
             //debugger;
-            if (complaints) {
+            if (complaints.status) {
                 var trHTML = '';
                 $.each(complaints.data, function (i, item) {
 
@@ -85,11 +90,17 @@ function loadAllComplaintsForAdmin() {
                 // $('#ctable').removeClass(d-none);
                 $('#ctable').append(trHTML);
             } else {
-
+                swal({
+                    icon : 'error',
+                    text : 'Error in loading complaints'
+                })
             }
         },
         error: function (err) {
-            alert('FAILED in getting data');
+            swal({
+                icon : 'error',
+                text : err,message
+            })
         }
     });
 }
@@ -256,6 +267,7 @@ function editProfileDetails() {
     });
 }
 function saveUserProfile() {
+<<<<<<< HEAD
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
     let mobile = $("#contact_mobile").val();
@@ -337,6 +349,13 @@ function registerUser() {
         })
     }*/
 
+=======
+    let username = $("#username").val();
+    let email = $("#email").val();
+    let mobile = $("#mobile").val();
+    let aadharNumber = $("#aadharNumber").val();
+    
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
     // open_processing_ur_request_swal();
     $.ajax({
         url: baseUrl + '/signup',
@@ -391,6 +410,7 @@ function signInUser() {
 }
 
 function closeEditProfile() {
+<<<<<<< HEAD
     $("#aadharRow").removeClass("d-none");
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
@@ -433,6 +453,22 @@ function closeEditProfile() {
 
 
 
+=======
+    swal({
+        icon: 'warning',
+        text: "You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.",
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel'
+    }).then(() => {
+        populateUserProfileFields(savedDetails);
+        $('#aadharRow').removeClass('d-none');
+        show_hide_btns();
+    }, (dismiss) => {
+        return;
+    });
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
     function show_hide_btns() {
         $('.editProfileFields').attr('disabled', 'disabled');
         $('.hide_on_edit').fadeIn();
@@ -455,11 +491,19 @@ function saveNewPassword() {
         swal({
             icon: 'warning',
             text: 'New Password has to be of atleast 6 chars.'
-        })
+        });
         return;
-    }
-    else if (newPassword != confirmPassword) {
+    } else if(oldPassword === newPassword){
         swal({
+<<<<<<< HEAD
+=======
+            icon : 'error',
+            text : 'OldPassword and NewPassword shouldn\'t be same'
+        });
+        return;
+    } else if (newPassword != confirmPassword) {
+        swal({
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
             icon: 'warning',
             text: 'New Password and Confirm Password do not match'
         });
@@ -487,10 +531,18 @@ function saveNewPassword() {
                 }
             },
             error: (e) => {
-                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
-                    swal(e.responseJSON.message);
-                else
-                    swal('An error occured while communicating with server.\n\nTry refreshing the page.')
+                // if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined"){
+                //     swal({
+                //         icon : 'error',
+                //         text : e.responseJSON.message
+                //     });
+                // } else 
+                {
+                    swal({
+                        icon : 'error',
+                        text : e.message
+                    })
+                }        
             }
         })
     }
@@ -564,40 +616,151 @@ function changeStatus() {
                     else
                         swal('An error occured while communicating with server.');
                 }
-            })
+            });
         }
     }
 }
-function resetPassword() {
-    let resetEmail = $('#reset-email').val();
-    if(!resetEmail.length){
+function setPassword(){
+    let newPass = $('#reset-password').val();
+    let confirmPass = $('#confirm-password').val();
+    if(!newPass.length)
+        return;
+    else if(!confirmPass.length)
+        return;    
+    else if(newPass !== confirmPass){
         swal({
+<<<<<<< HEAD
             icon : 'warning',
             text : 'Please enter email id'
+=======
+            icon : 'error',
+            text : 'New Password and Confirm Password don\'t match'
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
         });
         return;
     } else {
+        let currentUrl = window.location.href;
+        console.log(currentUrl);
+        let token = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
+        console.log(token);
         $.ajax({
-            type : 'POST',
-            url : baseUrl + '/resetPassword',
-            data : { resetEmail },
+            url : baseUrl + `/resetPassword/${token}`,
+            type : 'PATCH',
+            data : {newPass, confirmPass},
+            datatype : 'json',
             success : (data) => {
                 if(data.status){
                     swal({
                         icon : 'success',
+<<<<<<< HEAD
                         text : 'Password reset successfull'
+=======
+                        text : 'Your Password is successfully changed'
+                    });
+                } else { 
+                    swal({
+                        icon : 'error',
+                        text : 'Password change failed'
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
                     });
                 }
             },
             error: (e) => {
                 if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
-                    swal(e.responseJSON.message);
+                    swal({
+                        icon : 'error',
+                        text : e.responseJSON.message
+                    });
                 else
-                    swal('An error occured while communicating with server.');   
+                    swal({
+                        icon : 'error',
+                        text : 'An error occured while communicating with server.'});   
+            }
+        });
+    }
+}   
+function sendOTP(){
+    var timer = document.getElementById('timer');
+    var time = 0;
+    var resendOtpInterval = setInterval(() => {
+        timer.innerHTML = time;
+        time++;
+        if(time > 59){
+            clearInterval(resendOtpInterval);
+            time = 0;
+            timer.innerHTML = '';
+            timer.classList.add('d-none');
+            document.getElementById('resendOtpCode').classList.remove('d-none')
+        }    
+    }, 1000);
+    $.ajax({
+        type : 'GET',
+        url : baseUrl + '/sendOTP',
+        success : (data) => {
+            console.log(data);
+          if(data.status){
+              $('#mobile-number').val(data.mobile);
+              swal({
+                  text : data.message,
+                  type : 'success'
+              });
+          }  
+        },
+        error : (e) => {
+            swal({
+                text : e.message,
+                type : 'warning'
+            });
+        }
+    });
+}
+function verifyOTP(){
+    if($('#otp').val().length!=4){
+        swal({
+            icon : 'warning',
+            text : 'Enter Valid OTP'
+        })
+        return;
+    }
+    else{
+        var otp = $('#OTP').val();
+        $.ajax({
+            url: baseUrl + '/otp',
+            type : 'POST',
+            data  : {otp},
+            success : (data) => {
+                if(data.status){
+                    console.log(data.status)
+                    swal({
+                        icon  : 'success',
+                        text : data.message
+                    }).then(() => {
+                        window.location.href = './complaints'
+                    });
+                }
+                else{
+                    swal({
+                        text: data.message,
+                        icon: 'warning'
+                    });
+                }
+            },
+            error : (e)=>{
+                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                    swal({
+                        text: e.responseJSON.message,
+                        icon: 'warning'
+                    });
+                else
+                    swal({
+                        text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                        icon: 'warning'
+                    });            
             }
         })
     }
 }
+<<<<<<< HEAD
 
 
 function validateOnClick(names,formdata) {
@@ -667,3 +830,36 @@ function  validateForm(name) {
         //console.log(name);
     }
 };*/
+=======
+function emailVerification(){
+    let currentUrl = window.location.href;
+    let emailToken = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
+    $.ajax({
+        url : baseUrl + `/verification/${emailToken}`,
+        type : 'POST',
+        data : {},
+        success : (emailVerificationData) => {
+            if(emailVerificationData.status){
+                let loginlink = $('#loginLink');
+                let anchorTag = `<a href="${baseUrl}/login">Please Login</a>`
+                loginlink.append(anchorTag);
+                $('#emailVerified').removeClass('d-none');
+            } else {
+                $('#emailNotVerified').removeClass('d-none');
+            }
+        },
+        error : (err) => {
+            if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+                swal({
+                    text: err.responseJSON.message,
+                    icon: 'warning'
+                });
+            else
+                swal({
+                    text: 'An error occured while communicating with server.',
+                    icon: 'warning'
+                });    
+        }
+    });
+}
+>>>>>>> d21a6175a9583ff9c1c300adcc8cea30bc6ab3a9
