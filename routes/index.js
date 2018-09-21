@@ -4,6 +4,7 @@ const controllers = require('../controllers/userController');
 const complaintsController = require('../controllers/complaintsController');
 const usersController = require('../controllers/userController');
 
+
 const loggedin = function (req, res, next) {
   if (req.isAuthenticated()) {
     next();
@@ -81,6 +82,7 @@ router.get('/dashboard', loggedin, (req, res) => {
   });
 });
 router.get('/dashboardComplaints', loggedin, complaintsController.getAllComplaintsForAdmin);
+
 
 
 module.exports = router;

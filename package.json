@@ -12,7 +12,9 @@
   "git repository": "https://ParveenSahrawat@bitbucket.org/ParveenSahrawat/complaint-management.git",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
+    "blob-stream": "^0.1.3",
     "body-parser": "1.18.2",
+    "browserify": "^16.2.2",
     "cookie-parser": "1.4.3",
     "debug": "2.6.9",
     "ejs": "2.6.1",
@@ -27,6 +29,8 @@
     "normalize.css": "8.0.0",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
+    "pdfkit": "^0.8.3",
+    "pdfmake": "^0.1.38",
     "request": "2.87.0",
     "serve-favicon": "2.4.5",
     "sweetalert": "2.1.0",

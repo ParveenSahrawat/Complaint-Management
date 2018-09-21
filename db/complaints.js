@@ -3,14 +3,14 @@ var Counter = require('./counter');
 
 var imageSchema = new mongoose.Schema({
     path: {
-        type: String,
+        type: Array,
         required: true,
-        trim: true
-    },
-    originalname: {
-        type: String,
-        required: true
+
     }
+    // originalname: {
+    //     type: String,
+    //     required: true
+    // }
 });
 var complaintSchema = new mongoose.Schema({
     counter : {

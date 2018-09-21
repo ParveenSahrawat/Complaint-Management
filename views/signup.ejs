@@ -80,7 +80,7 @@
     </div>
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-                <form action="/auth/signup"  id="contact" class="col-md-5 form-horizontal needs-validation"  novalidate method="post">
+                <form action="/auth/signup" autocomplete="off" id="contact" class="col-md-5 form-horizontal needs-validation"  novalidate method="post">
                     <!--UserName-->
                     <div class="form-group">
                         <label for="username" class="control-label label-font">Username </label>
@@ -147,7 +147,8 @@
 
                     </div>
                 </form>
-            <input href="/login" id="toLogin"  class="btn btn-link label-font">Login</input>
+
+            <a href="/login" id="toLogin"  class="btn btn-link label-font">Login</a>
         </div>
     </div>
 

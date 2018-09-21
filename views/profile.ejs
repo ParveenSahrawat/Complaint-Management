@@ -22,10 +22,14 @@
                                 </div>
                             </div>
                             <div class="hide_on_edit row">
-                                    <button onclick="editProfileDetails()" class="btn btn-link float-right">Edit Profile</button>
+                                <div class="col-6">
+                                <button onclick="editProfileDetails()" class="btn btn-link float-right">Edit Profile</button>
+                                </div>
+                                <div class="col-6">
                                     <button data-toggle="modal" data-target="#changePassword" class="btn btn-link float-left">Change Password</button>
-                            </div>
-                            <form class="row needs-validation" novalidate>
+                                </div>
+                                </div>
+                            <form class="row needs-validation" autocomplete="off" novalidate>
                                 <div class="col-lg-12">
                                     <table class="table">
                                         <!--Name-->
@@ -72,7 +76,7 @@
                                             </td>
                                         </tr>
                                         <!--Aadhar Number-->
-                                        <tr class="form-group">
+                                        <tr class="form-group" id="aadharRow">
                                             <!--Aadhar Number-->
                                             <td class="font-weight-bold">Aadhar Number</td>
                                             <td>
@@ -107,34 +111,52 @@
 
     <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form class="modal-content needs-validation" novalidate>
+            <div class="modal-content" >
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <form class="modal-body needs-validation" autocomplete="off" novalidate>
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label for="oldPassword">Enter Current Password :</label>
                             <input required type="password" class="form-control" id="oldPassword" aria-describedby="oldPassHelp" placeholder="Enter Current Password" minlength="6" maxlength="16">
+                            <div class="invalid-feedback">
+                                Please fill this field
+                            </div>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="newPassword">Enter New Password :</label>
                             <input required type="password" class="form-control" id="newPassword" aria-describedby="newPassHelp" placeholder="Enter New Password"  minlength="6" maxlength="16">
+                            <div class="invalid-feedback">
+                                Please fill this field
+                            </div>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password :</label>
                             <input required type="password" class="form-control" id="confirmPassword" aria-describedby="confirmPasshelp" placeholder="Confirm Above Password"  minlength="6" maxlength="16">
+                            <div class="invalid-feedback">
+                                Please fill this field
+                            </div>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" onclick="saveNewPassword()" class="btn btn-primary">Save</button>
                 </div>
-                </form>
+                </div>
             </div>
         </div>
     </body>

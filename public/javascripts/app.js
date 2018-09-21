@@ -250,6 +250,7 @@ function populateUserProfileFields(data) {
 }
 function editProfileDetails() {
     $('.editProfileFields').removeAttr('disabled');
+    $('#aadharRow').addClass('d-none');
     $('.hide_on_edit').fadeOut(200, () => {
         $('#editProfileRow').removeClass('d-none');
     });
@@ -290,14 +291,15 @@ function saveUserProfile() {
                     alert(e.responseJSON.message);
                     /*swal({
                         text: e.responseJSON.message,
-                        type: 'warning'
+                        icon: 'warning'
                     });*/
                 }
                 else {
-                    alert("Errr... Error!!");
+                    //var a=e.responseJSON.message
+                    alert("Errr... Error!!"+a );
                     /*swal({
                         text: 'An error occured while saving.\n\nTry refreshing the page.',
-                        type: 'warning'
+                        icon: 'warning'
                     });*/
                 }
 
@@ -389,9 +391,11 @@ function signInUser() {
 }
 
 function closeEditProfile() {
+    $("#aadharRow").removeClass("d-none");
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
     let mobile = $("#contact_mobile").val();
+
     let aadharNumber = parseInt($("#contact_aadharNumber").val());
     let mobileVerified = false;
      var data = {username,mobile, email,aadharNumber,mobileVerified};
@@ -442,21 +446,21 @@ function saveNewPassword() {
 
     if (!oldPassword.length) {
         swal({
-            type: 'warning',
+            icon: 'warning',
             text: 'Please Enter current Password'
         });
         return;
     }
     if (newPassword.length < 6) {
         swal({
-            type: 'warning',
+            icon: 'warning',
             text: 'New Password has to be of atleast 6 chars.'
         })
         return;
     }
     else if (newPassword != confirmPassword) {
         swal({
-            type: 'warning',
+            icon: 'warning',
             text: 'New Password and Confirm Password do not match'
         });
         return;
@@ -473,7 +477,7 @@ function saveNewPassword() {
             success: (data) => {
                 if (data.status) {
                     swal({
-                        type: 'success',
+                        icon: 'success',
                         text: data.message
                     }).then(() => {
                         $('#changePassword button[data-dismiss="modal"]').click();
@@ -568,7 +572,7 @@ function resetPassword() {
     let resetEmail = $('#reset-email').val();
     if(!resetEmail.length){
         swal({
-            type : 'warning',
+            icon : 'warning',
             text : 'Please enter email id'
         });
         return;
@@ -580,7 +584,7 @@ function resetPassword() {
             success : (data) => {
                 if(data.status){
                     swal({
-                        type : 'success',
+                        icon : 'success',
                         text : 'Password reset successfull'
                     });
                 }
