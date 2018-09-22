@@ -7,6 +7,15 @@ const userSchema = new schema({
         type:String,
         required:true,
     },
+    middleName : {
+        type : String,
+        required : false,
+        default : null
+    },
+    lastName : {
+        type : String,
+        required : true,
+    },
     email : {
         type : String,
         unique : true,

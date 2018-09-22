@@ -80,11 +80,11 @@
     </div>
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-                <form action="/auth/signup" autocomplete="off" id="contact" class="col-md-5 form-horizontal needs-validation"  novalidate method="post">
-                    <!--UserName-->
+                <form action="/auth/signup" autocomplete="off" id="contact" class="col-md-5 form-horizontal needs-validation" novalidate method="post">
+                    <!--First Name-->
                     <div class="form-group">
-                        <label for="username" class="control-label label-font">Username </label>
-                        <input class="form-control input-font" id="contact_username"  type="text"   name="username" placeholder="Enter your firstname" minlength="3" required>
+                        <label for="username" class="control-label label-font">First Name</label>
+                        <input class="form-control input-font" id="contact_username" type="text" name="username" placeholder="Enter your firstname" minlength="3" required>
                         <div class="invalid-feedback">
                             Please fill this field
                         </div>
@@ -92,6 +92,28 @@
                             Looks good!
                         </div>
                         <!--<span class="error">This field is required</span>-->
+                    </div>
+                    <!-- Middle Name -->
+                    <div class="form-group">
+                        <label for="username" class="control-label label-font">Middle Name</label>
+                        <input class="form-control input-font" id="contact_username" type="text" name="middleName" placeholder="Enter your firstname" minlength="3">
+                        <div class="invalid-feedback">
+                            Please fill this field
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                    <!-- Last Name -->
+                    <div class="form-group">
+                        <label for="username" class="control-label label-font">Last Name</label>
+                        <input class="form-control input-font" id="contact_username"  type="text"   name="lastName" placeholder="Enter your firstname" minlength="3" required>
+                        <div class="invalid-feedback">
+                            Please fill this field
+                        </div>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
                     <!--Email-->
                     <div class="form-group">
@@ -144,141 +166,10 @@
                     <!--Register Button-->
                     <div class="text-center">
                         <input type="submit" onsubmit="registerUser()" id="contact_submit" value="Register" class="btn secondary white label-font">
-
                     </div>
                 </form>
-
             <a href="/login" id="toLogin"  class="btn btn-link label-font">Login</a>
         </div>
-    </div>
-
-    <!--<script src="/javascripts/app.js"></script>-->
-
-    <!--<script>
-        $(document).ready(function() {
-            //console.log($(this.data));
-
-            $("input").on("focus", function (e) {
-                isTagEmpty(e.target);
-            });
-
-            $("#contact_submit").on("click", function (e) {
-                    var formData = $("#contact").serializeArray();
-                    validateOnClick(e, formData);
-                })
-        });
-    </script>-->
-
-        <!--<script>
-        $(document).ready(function() {
-            //jQuery code goes here
-
-            // Name can't be blank
-
-            $('#contact_username').on('focus',function() {
-                var input=$(this);
-                var is_name=input.val();
-                if(is_name){input.removeClass("invalid").addClass("valid");}
-                else{input.removeClass("valid").addClass("invalid");}
-            });
-            $("#contact_mobile").keydown(function (e) {
-                // Allow: backspace, delete, tab, escape, enter
-                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
-                    // Allow: Ctrl/cmd+A
-                    (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    // Allow: Ctrl/cmd+C
-                    (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    // Allow: Ctrl/cmd+X
-                    (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    // Allow: home, end, left, right
-                    (e.keyCode >= 35 && e.keyCode <= 39)) {
-                    // let it happen, don't do anything
-                    return;
-                }
-                // Ensure that it is a number and stop the keypress
-                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                    e.preventDefault();
-                }
-            });
-            $('#contact_mobile').on('focus',function() {
-                var input=$(this);
-                console.log(input);
-                var re = /^[6-9]{1}[0-9]{9}$/;
-                var is_number=re.test(input.val());
-
-                if(is_number){input.removeClass("invalid").addClass("valid");}
-                else{input.removeClass("valid").addClass("invalid");}
-            });
-
-            //Aadhar
-            $("#contact_aadharNumber").keydown(function (e) {
-                // Allow: backspace, delete, tab, escape, enter
-                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
-                    // Allow: Ctrl/cmd+A
-                    (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    // Allow: Ctrl/cmd+C
-                    (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    // Allow: Ctrl/cmd+X
-                    (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    // Allow: home, end, left, right
-                    (e.keyCode >= 35 && e.keyCode <= 39)) {
-                    // let it happen, don't do anything
-                    return;
-                }
-                // Ensure that it is a number and stop the keypress
-                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                    e.preventDefault();
-                }
-            });
-
-            $('#contact_aadharNumber').focus('focus',function() {
-                var input=$(this);
-                var re = /^[0-9]{1}[0-9]{11}$/;
-                var is_number=re.test(input.val());
-
-                if(is_number){input.removeClass("invalid").addClass("valid");}
-                else{input.removeClass("valid").addClass("invalid");}
-            });
-
-            // Email must be an email
-            $('#contact_email').on('focus',function() {
-                var input=$(this);
-                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                var is_email=re.test(input.val());
-                if(is_email){input.removeClass("invalid").addClass("valid");}
-                else{input.removeClass("valid").addClass("invalid");}
-            });
-
-            // Password must be something
-            $('#contact_password').on('focus',function(event) {
-                var input=$(this);
-                var message=$(this).val();
-                console.log(message);
-                if(message){input.removeClass("invalid").addClass("valid");}
-                else{input.removeClass("valid").addClass("invalid");}
-            });
-            // After Form Submitted Validation
-            $("#contact_submit").click(function(event){
-                var form_data=$("#contact").serializeArray();
-                var error_free=true;
-                for (var input in form_data){
-                    console.log(form_data[input]['name']);
-                    var element=$("#contact_"+form_data[input]['name']);
-                    console.log(element);
-                    var valid=element.hasClass("valid");
-                    var error_element=$("span", element.parent());
-                    if (!valid){error_element.removeClass("error").addClass("error_show"); error_free=false;}
-                    else{error_element.removeClass("error_show").addClass("error");}
-                }
-                if (!error_free){
-                    event.preventDefault();
-                }
-                else{
-                    alert('No errors: Form will be submitted');
-                }
-            });
-
-        });
-    </script>-->
+    </div>  
 </body>
 </html>

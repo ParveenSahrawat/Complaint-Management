@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,20 +7,21 @@
     <title>Login</title>
     <% include partials/scripts.ejs %>
 </head>
-
 <body class="">
-  <% include partials/navbar.ejs %>
-  <div class="container text-center">
-      <h1 class="display-4">
-        Login
-      </h1>
-  </div>
-  <div class="container h-100">
+    <% include partials/navbar.ejs %>
+    <div class="container text-center">
+        <h1 class="display-4">
+            Login
+        </h1>
+    </div>
+    <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
             <form action="/auth/login" autocomplete="off" class="col-md-5 needs-validation" method="post" novalidate>
                 <div class="form-group">
                     <label for="email" class="label-font">Email Id</label>
-                    <input id="contact_email" autofocus class="form-control input-font" type="email" name="email" placeholder="Enter your email id here" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
+                    <input id="contact_email" autofocus class="form-control input-font" type="email" name="email"
+                        placeholder="Enter your email id here" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+                        required>
                     <small></small>
                     <div class="invalid-feedback">
                         Please fill this field
@@ -32,7 +32,8 @@
                 </div>
                 <div class="form-group">
                     <label for="password" class="label-font">Password </label>
-                    <input id="contact_password" class="form-control input-font" type="password" name="password" placeholder="Enter password here" maxlength="16" minlength="6" required>
+                    <input id="contact_password" class="form-control input-font" type="password" name="password"
+                        placeholder="Enter password here" maxlength="16" minlength="6" required>
                     <div class="invalid-feedback">
                         Please fill this field
                     </div>
@@ -42,13 +43,11 @@
                 </div>
                 <div class="text-center">
                     <input type="submit" value="Login" class="btn secondary white label-font">
-                    <a href="/signup" class="btn btn-link label-font">Register</a>
                 </div>
             </form>
         </div>
+        <a href="/signup" class="btn btn-link label-font">Register</a>
         <small><a href="/forgotPassword">Forgot Password</a></small>
-  </div>
-
+    </div>
 </body>
-
 </html>

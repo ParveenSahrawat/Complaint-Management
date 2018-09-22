@@ -13,10 +13,6 @@ const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 module.exports.createUser = (req, res) => {
 
     validateUserFields.checkUserFields(req, res);
-    var adminRegistration = false;
-    var adminEmailAddress = `elevenx099@gmail.com`;
-    if(req.originalUrl == '/signup/admin')
-        adminRegistration = true;
     User.findOne({
         email : req.body.email
     }).then((doc) => {
@@ -32,6 +28,8 @@ module.exports.createUser = (req, res) => {
                     record.userType = 'admin'
                 }
                 record.username = req.body.username;
+                record.middleName = req.body.middleName;
+                record.lastName = req.body.lastName;
                 record.email = req.body.email;
                 record.mobile = req.body.mobile;
                 record.aadharNumber = req.body.aadharNumber;
