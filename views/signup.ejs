@@ -6,72 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Signup</title>
-    <style>
-        /*Add star around required fields*/
-        .form-group:before{
-            content: " *";
-            color: red;
-        }
-        /* Adds a box around the numeric value in Safari and Chrome */
-        input[type=number]::-webkit-textfield-decoration-container {
-            border: 1px #ccc solid;
-            background: #efefef;
-        }
-        /*!* Remove controls from Firefox *!
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-*/
-        /*!* Re-applies the controls on :hover and :focus *!
-        input[type="number"]:hover,
-        input[type="number"]:focus {
-            -moz-appearance: number-input;
-        }*/
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            appearance : none;
-            margin: 0;
-        }
-        #contact label{
-            display: inline-block;
-
-        }
-        #contact_submit{
-            padding-left: 100px;
-        }
-        #contact div{
-            margin-top: 1em;
-        }
-        textarea{
-            vertical-align: top;
-            height: 5em;
-        }
-
-        .error{
-            display: none;
-            margin-left: 10px;
-        }
-
-        .error_show{
-            color: red;
-            margin-left: 10px;
-        }
-        input.invalid{
-            border: 2px solid red;
-        }
-
-        input.valid{
-            border: 2px solid green;
-        }
-
-    </style>
     <% include partials/scripts.ejs %>
 </head>
 
-<body onload="curr_validation()">
+<body>
     <% include partials/navbar.ejs %>
     <div class="container text-center">
         <h1 class="display-4">
@@ -170,6 +108,10 @@
                 </form>
             <a href="/login" id="toLogin"  class="btn btn-link label-font">Login</a>
         </div>
+<<<<<<< HEAD
     </div>  
+=======
+    </div>
+>>>>>>> bb286481fc9a55c0fef9770699e07e3b1e4253f7
 </body>
 </html>

@@ -55,15 +55,7 @@ module.exports.createUser = (req, res) => {
                                         '<p>Please verify your account by clicking the link: \nhttps:\/\/' + req.headers.host + '\/verification\/' + token.token + '.\n</p>'+ 
                                         `<small>In Case you haven't created this account. Kindly contact on ${adminEmailAddress}</small>`;
                         nodemailer.createTestAccount((error, account) => {
-                          let transporter = nodemailer.createTransport({
-                            host : 'smtp.gmail.com',
-                            port : 587,
-                            secure : false,
-                            auth : {
-                              user : 'parveen.sahrawat1209@gmail.com',
-                              pass : 'cricket36@23'
-                            }
-                          });
+                          let transporter = nodemailer.createTransport(emailConfig);
                           let mailOptions = {
                             from : `"${adminName}" ${adminEmailAddress}`,
                             to : `${req.body.email}`,

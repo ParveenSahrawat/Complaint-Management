@@ -1,5 +1,4 @@
 
-// const baseUrl = 'https://complaint-management26.herokuapp.com';
 const baseUrl = 'http://localhost:3000';
 //IIFE Created For Form Validation
 (function() {
@@ -28,6 +27,7 @@ const baseUrl = 'http://localhost:3000';
         });
     }, false);
 })();
+
 function loadAllComplaints() {
         $.ajax({
             url: baseUrl + '/getComplaints',
@@ -224,17 +224,11 @@ function getProfileDetails() {
         datatype: 'json',
         success: (profileDetails) => {
             if (profileDetails) {
-                 //flagForProfileDetails = Object.assign({} ,profileDetails);
                 flagForProfileDetails = profileDetails;
-
+                delete flagForProfileDetails.mobileVerified;
                 var data = profileDetails;
                 populateUserProfileFields(data);
-                // var user = $('#profile-user').text();
-                // if(user === 'admin'){
-                //     $('#goBack').attr('href').val = '/dashboard';
-                // } else if(user === 'user'){
-                //     $('#goBack').attr('href').val = '/allComplaints';
-                // }
+
             } else {
                 alert('User details are not fetched');
             }
@@ -285,22 +279,18 @@ function saveUserProfile() {
                 }
             },
             error: (e) => {
-                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined"){
-                    alert(e.responseJSON.message);
-                    /*swal({
+                if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined") {
+                    swal({
                         text: e.responseJSON.message,
-                        icon: 'warning'
-                    });*/
+                        type: 'warning'
+                    });
                 }
                 else {
-                    //var a=e.responseJSON.message
-                    alert("Errr... Error!!"+a );
-                    /*swal({
-                        text: 'An error occured while saving.\n\nTry refreshing the page.',
-                        icon: 'warning'
-                    });*/
+                    swal({
+                        text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                        type: 'warning'
+                    });
                 }
-
             }
         })
 
@@ -312,28 +302,6 @@ function registerUser() {
     let mobile = $("#contact_mobile").val();
     let aadharNumber = $("#contact_aadharNumber").val();
     let password = $("#contact_password").val();
-/*    let err = [];
-
-    if (!username.length)
-        err.push('Userame can\'t be left empty');
-    if (!validate_email(email))
-        err.push('Please enter valid Email');
-    if (!validate_mobile(mobile)) {
-        err.push('Please Enter Valid Mobile Number');
-    }
-    if (!validate_aadhar(aadharNumber)) {
-        err.push('Please Enter Valid Aadhar number');
-    }
-    if (!password.length) {
-        err.push('Password can\'t be left empty');
-    }
-    if (err.length) {
-        swal("warning",{
-            icon: 'warning',
-            //content: "Problem"
-            //html: err.join('<li>')
-        })
-    }*/
 
     // open_processing_ur_request_swal();
     $.ajax({
@@ -389,40 +357,35 @@ function signInUser() {
 }
 
 function closeEditProfile() {
+
     $("#aadharRow").removeClass("d-none");
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
     let mobile = $("#contact_mobile").val();
 
     let aadharNumber = parseInt($("#contact_aadharNumber").val());
-    let mobileVerified = false;
-     var data = {username,mobile, email,aadharNumber,mobileVerified};
-    //console.log(data);
-    //console.log(flagForProfileDetails);
-    //console.log("heloo");
-
-    //console.log(JSON.stringify(data) === JSON.stringify(flagForProfileDetails));
-
+     var data = {username,mobile, email,aadharNumber};
     if(JSON.stringify(data) === JSON.stringify(flagForProfileDetails)){
         $('.editProfileFields').attr('disabled');
         $('.hide_on_edit').fadeOut(200, () => {
             $('#editProfileRow').addClass('d-none');
         });
-        console.log("done");
+        //console.log("done");
     }
       else
     {
         //Alert used here disappears in no time while using swal but does ok when using normal alert
         alert("You unsaved changes will be lost");
-        /*swal("your unsaved changes would be reverted.", {
-            buttons: {
-                cancel: true,
-                confirm: true,
-            },
-            closeOnClickOutside: false,
-            timer: 3000,
+        /*swal({
+            text: 'You have unsaved changes. On Clicking continue, your unsaved changes would be reverted.',
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Continue',
+            cancelButtonText: 'Cancel'
         }).then(() => {
             populateUserProfileFields(savedDetails);
+            $('#aadharRow').removeClass('d-none');
             show_hide_btns();
         }, (dismiss) => {
             return;
@@ -455,6 +418,12 @@ function saveNewPassword() {
         return;
     } else if(oldPassword === newPassword){
         swal({
+            icon : 'error',
+            text : 'OldPassword and NewPassword shouldn\'t be same'
+        });
+        return;
+    } else if (newPassword != confirmPassword) {
+        swal({
             icon: 'warning',
             text: 'New Password and Confirm Password do not match'
         });
@@ -482,17 +451,20 @@ function saveNewPassword() {
                 }
             },
             error: (e) => {
-                // if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined"){
-                //     swal({
-                //         icon : 'error',
-                //         text : e.responseJSON.message
-                //     });
-                // } else 
+                 if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined"){
+                     swal({
+                         icon : 'error',
+                         text : e.responseJSON.message
+                     });
+                 }
+                 else
                 {
-                    swal({
-                        icon : 'error',
-                        text : e.message
-                    })
+                    if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
+                        swal(e.responseJSON.message);
+                    else
+                        swal('An error occured while communicating with server.\n\nTry refreshing the page.',{
+                            type: warning,
+                        })
                 }        
             }
         })
@@ -579,8 +551,8 @@ function setPassword(){
         return;    
     else if(newPass !== confirmPass){
         swal({
-            icon : 'warning',
-            text : 'Please enter email id'
+            icon : 'error',
+            text : 'New Password and Confirm Password don\'t match'
         });
         return;
     } else {
@@ -597,7 +569,12 @@ function setPassword(){
                 if(data.status){
                     swal({
                         icon : 'success',
-                        text : 'Password reset successfull'
+                        text : 'Your Password is successfully changed'
+                    });
+                } else { 
+                    swal({
+                        icon : 'error',
+                        text : 'Password change failed'
                     });
                 }
             },
@@ -696,57 +673,6 @@ function verifyOTP(){
         })
     }
 }
-function validateOnClick(names,formdata) {
-    console.log(names);
-    console.log("abcdefghijklmnop");
-    console.log(formdata);
-    for (var input in formdata){
-        //console.log(form_data[input]['name']);
-        var element=$("#contact_"+formdata[input]['name']);
-        //console.log(element);
-        var valid=element.hasClass("valid");
-        var error_element=$("span", element.parent());
-        if (!valid){error_element.removeClass("error").addClass("error_show"); error_free=false;}
-        else{error_element.removeClass("error_show").addClass("error");}
-    }
-    if (!error_free){
-        //event.preventDefault();
-        console.log("Submitted");
-    }
-    else{
-        alert('No errors: Form will be submitted');
-    }
-}
-function isTagEmpty(name) {
-    //validateOnFocus(name);
-    console.log(name.id);
-    var input=$(name);
-    var is_name=input.val();
-    var id = '#'+ name.id;
-    //console.log(id);
-
-        $(id).on("keydown", function (e) {
-            //console.log(e.keyCode);
-            validateForm(this,e);
-            console.log("a");
-        });
-
-
-    if(is_name){input.removeClass("invalid").addClass("valid");}
-    else{input.removeClass("valid").addClass("invalid");
-    }
-
-
-    /*var input=$(this);
-    console.log(input);
-    var re = /^[6-9]{1}[0-9]{9}$/;
-    var is_number=re.test(input.val());*/
-
-/*    var input=$(this);
-  //  var re = /^[0-9]{1}[0-9]{11}$/;
-    var is_number=re.test(input.val());*/
-
-};
 function emailVerification(){
     let currentUrl = window.location.href;
     let emailToken = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
@@ -778,17 +704,3 @@ function emailVerification(){
         }
     });
 }
-/*
-function  validateForm(name) {
-    var input = $(name);
-    console.log(input);
-    var re = /^[6-9]{1}[0-9]{9}$/;
-    var is_number = re.test(input.val());
-    if (is_number) {
-        input.removeClass("invalid").addClass("valid");
-    }
-    else {
-        input.removeClass("valid").addClass("invalid");
-        //console.log(name);
-    }
-};*/

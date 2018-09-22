@@ -96,33 +96,13 @@
                 <label for="image" class="label-font">Image(s) Or Relevant Document(s)</label>
                 <small class="alert-danger">Supported File Formats are .docx,.pdf,.jpeg</small>
                 <input type="file" name="image" placeholder="Choose photo" multiple>
-
             </div>
 
 
             <div class="form-group text-center"> <!--onsubmit="openModal()"-->
-                <input type="submit" src="/" class="label-font" value="Submit" onsubmit="createPDF()" >
+                <input type="submit" class="label-font" value="Submit">
             </div>
-
       </form>
-    <!--<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Modal title</h4>
-                </div>
-                <div class="modal-body">
-                    <p>One fine body&hellip;</p>
-                </div>
-                <div class="modal-footer">
-                    &lt;!&ndash;<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>&ndash;&gt;
-                    <input type="button" value="Print this page" onClick="window.print()">
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>&lt;!&ndash; /.modal-content &ndash;&gt;
-        </div>&lt;!&ndash; /.modal-dialog &ndash;&gt;
-    </div>-->
     <script>
         function init(){
             var options = {
@@ -134,13 +114,5 @@
         }
 
     </script>
-
-   <!-- <script>
-        ClassicEditor
-            .create( document.querySelector( '#editor' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-    </script>-->
 </body>
 </html>
