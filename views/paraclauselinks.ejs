@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Relevant Paralinks</title>
+
+    <% include partials/scripts.ejs %>
+</head>
+<% include partials/navbar.ejs %>
+    <body onload="getParaClauseLinks()">
+        <p id="usertype" class="d-none"><%= usertype %></p>
+        <h2 class="text-center">Relevant Paraclauses</h1>
+        <main class="container">
+            <div>
+                <ol id="paralinksList">
+                </ol>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="link" class="label-font">Add Link Url</label>
+                    <input type="url" name="paraClauseLink" class="form-control input-font" id="paralinkUrl" placeholder="Please add link url here">
+                </div>
+                <button id="addParaLink" onclick="relevantParaClauseLinks()" class="btn-success">Add</button>
+                <button id="cancelAddingLinks" onclick="closeAddingLink()" class="">Cancel</button>
+            </div>
+        </main>
+    </body>
+</html>

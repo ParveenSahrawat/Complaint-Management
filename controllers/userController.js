@@ -11,7 +11,6 @@ const { Organization_name } = require('../config/organization');
 const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
 module.exports.createUser = (req, res) => {
-
     validateUserFields.checkUserFields(req, res);
     User.findOne({
         email : req.body.email
@@ -22,7 +21,21 @@ module.exports.createUser = (req, res) => {
                   message : 'User already exists'
                 });
             } else {
-                var record = new User()
+              User.findOne({aadharNumber : req.body.aadharNumber}).then((doc) => {
+                if(doc){
+                  res.status(400).send({
+                    status : 0,
+                    message : 'Entered aadhar number already exists'
+                  });
+                } else {
+                  User.findOne({mobile : req.body.mobile}).then((doc) => {
+                    if(doc){
+                      res.status(400).send({
+                        status : 0,
+                        message : 'Entered mobile number already exists'
+                      });
+                    } else {
+                      var record = new User()
                 if(req.user){
                   if(req.user.superAdmin === true)
                     record.userType = 'admin'
@@ -71,19 +84,33 @@ module.exports.createUser = (req, res) => {
                                 });
                                 console.log('Could not send user-registration email. Error',error);
                             }
-                            console.log('Message sent : %s ', info.messageId);
-                            console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
-                            console.log(`This is get when signing up ${doc}`);
+                            // console.log('Message sent : %s ', info.messageId);
+                            // console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
+                            // console.log(`This is get when signing up ${doc}`);
                             res.redirect(`/login`);
                         });                          
                     });  
                 }).catch((e) => {
                   res.status(500).json({
                     status : 0,
-                      message: 'Sever error',
-                      err: e
+                    message: 'Sever error',
+                    err: e
                   }); 
-          });
+                });
+                    }
+                  }).catch((err) => {
+                    res.status(500).send({
+                      status : 0,
+                      message : 'Error in creating account-2'
+                    });
+                  });
+                }
+              }).catch((err) => {
+                res.status(500).send({
+                  status : 0,
+                  message : 'Error in creating account'
+                });
+              });    
         }
       }).catch((e) => {
         res.status(500).send({
@@ -161,7 +188,7 @@ module.exports.generateOTP = (req, res) => {
           };
         });
       }
-  }
+}
 module.exports.checkOTP = (req, res) => {
   console.log(`In check otp ${typeof(req.body.otp)}`);
   console.log(req.user);
@@ -186,24 +213,10 @@ module.exports.checkOTP = (req, res) => {
               mobile : verifiedMobile
             }
           }).then((doc) => {
-            // unset mob verified for previous verified user (if any)
-            User.updateMany(
-              {
-                $and : [
-                  { '_id' : {$ne : req.user._id }},
-                  { mobile : verifiedMobile },
-                  { mobileVerified : true }
-                ]
-              },
-              {
-                $set : {
-                  mobileVerified : false
-                }
-              }).then((doc) => {
-                return res.status(200).json({
+                res.status(200).json({
                   status : 1,
                   message : `Mobile number ${verifiedMobile} is verified`
-                  })
+                  });
                 }).catch((error) => {
                   res.status(500).send({
                     status : 0,
@@ -211,13 +224,13 @@ module.exports.checkOTP = (req, res) => {
                     errorDetails : 'OTP_5'
                   });
               });
-          }).catch((error) => {
-            res.status(500).send({
-              status : 0,
-              message : `An error occured while processing your request`,
-              errorDetails : 'OTP-4'
-            })
-          })
+          // }).catch((error) => {
+          //   res.status(500).send({
+          //     status : 0,
+          //     message : `An error occured while processing your request`,
+          //     errorDetails : 'OTP-4'
+          //   })
+          // })
         } else {
           //Invalid OTP
           res.status(500).send({

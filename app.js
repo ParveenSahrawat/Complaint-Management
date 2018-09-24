@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const multer = require('multer');
 // const ejs = require('ejs');
 // const upload = multer({dest : './public/photo-storage'});
 
@@ -19,7 +18,7 @@ mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-
     // retry to connect for 60 times
     reconnectTries : 60,
     // wait for 2 second before retrying
-    reconnectInterval : 2000
+    reconnectInterval : 1000
   },
   (error, data) => {
     if (error) {

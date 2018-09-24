@@ -65,6 +65,17 @@ router.get('/getComplaints', loggedin, complaintsController.listAllComplaints);
 router.get('/newComplaint', loggedin, (req, res) => {
   res.render('newComplaint');
 });
+
+// Relevant Paralinks
+router.get('/paraclauselinks', loggedin, (req, res) => {
+  res.render('paraclauselinks', {
+    usertype : req.user.userType
+  });
+});
+router.get('/paralinks', loggedin,  complaintsController.getParalinks);
+router.post('/paraclauselinks', loggedin, complaintsController.addParalinks);
+router.delete('/paraclauselinks', loggedin, complaintsController.deleteParaClauseLink);
+
 // OTP Verification
 router.get('/sendOTP', loggedin, usersController.generateOTP);
 router.get('/otp', (req, res) => {
@@ -91,7 +102,5 @@ router.get('/dashboard', loggedin, (req, res) => {
   });
 });
 router.get('/dashboardComplaints', loggedin, complaintsController.getAllComplaintsForAdmin);
-
-
 
 module.exports = router;

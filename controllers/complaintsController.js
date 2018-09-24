@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Complaint = require('../db/complaints');
 const User = require('../db/User');
+const paralinks = require('../db/paraClause');
 const _ = require('lodash');
 const validator = require('validator');
 const moment = require('moment');
@@ -9,7 +10,6 @@ const nodemailer = require('nodemailer');
 const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
 module.exports.registerNewComplaint = (req,res,next) => {
-
     var pathObj = req.files;
     var patharr=[];
     pathObj.forEach(function(item) {patharr.push(item.path);});
@@ -316,6 +316,64 @@ module.exports.updateStatus = (req, res) => {
         }
     });
 }
-module.exports.getStats = (req, res) => {
-
+module.exports.addParalinks = (req, res) => {
+    console.log('in add paralinks')
+    let link = req.body.paraClauseLink;
+    console.log(`this is link ${link}`);
+    
+    paralinks.findOne({ paraClauseLink : link}).then((doc) => {
+        if(!doc){
+            console.log('Hello');
+            let newLink = new paralinks();
+            newLink.paraClauseLink = link;
+            newLink.save().then((doc) => {
+                if(doc){
+                    res.status(200).json({
+                        status : 1,
+                        message : 'Link added successfully'
+                    });
+                } else {
+                    res.status(500).json({
+                        status : 0,
+                        message : 'An error occured while adding link-2'
+                    });
+                }
+            }).catch((err) => {
+                res.status(500).json({
+                    status : 0,
+                    message : 'An error occured in adding link-1'
+                });
+            });
+        } else {
+            res.status(400).json({
+                status : 0,
+                message : 'This link already exists'
+            });
+        }
+    }).catch((err) => {
+        res.status(500).json({
+            status : 0,
+            message : 'An error occured whileeeeee communicating with the server'
+        });
+    });
+}
+module.exports.getParalinks = (req, res) => {
+    paralinks.find({}).exec((err, result) => {
+        if(err){
+            console.log('error in getting paralinks');
+            return res.send({
+                status : 0,
+                message : 'Error in getting paralinks'
+            });
+        } else if(result){
+            console.log('links found');
+            res.status(200).send({
+                status : 1,
+                data : result
+            });
+        }
+    });
+}
+module.exports.deleteParaClauseLink = (req, res) => {
+    
 }

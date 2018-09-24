@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +7,6 @@
     <title>Signup</title>
     <% include partials/scripts.ejs %>
 </head>
-
 <body>
     <% include partials/navbar.ejs %>
     <div class="container text-center">
@@ -34,9 +32,9 @@
                     <!-- Middle Name -->
                     <div class="form-group">
                         <label for="username" class="control-label label-font">Middle Name</label>
-                        <input class="form-control input-font" id="contact_username" type="text" name="middleName" placeholder="Enter your firstname" minlength="3">
+                        <input class="form-control input-font" id="contact_middlename" type="text" name="middleName" placeholder="Enter your firstname" minlength="3">
                         <div class="invalid-feedback">
-                            Please fill this field
+                            Please fill this field 
                         </div>
                         <div class="valid-feedback">
                             Looks good!
@@ -45,7 +43,7 @@
                     <!-- Last Name -->
                     <div class="form-group">
                         <label for="username" class="control-label label-font">Last Name</label>
-                        <input class="form-control input-font" id="contact_username"  type="text"   name="lastName" placeholder="Enter your firstname" minlength="3" required>
+                        <input class="form-control input-font" id="contact_lastname"  type="text"   name="lastName" placeholder="Enter your firstname" minlength="3" required>
                         <div class="invalid-feedback">
                             Please fill this field
                         </div>
@@ -103,15 +101,11 @@
                     </div>
                     <!--Register Button-->
                     <div class="text-center">
-                        <input type="submit" onsubmit="registerUser()" id="contact_submit" value="Register" class="btn secondary white label-font">
+                        <input type="submit" onsubmit="registerUser()" value="Register" class="btn secondary white label-font">
                     </div>
                 </form>
-            <a href="/login" id="toLogin"  class="btn btn-link label-font">Login</a>
+            <a href="/login" id="toLogin" class="btn btn-link label-font">Login</a>
         </div>
-<<<<<<< HEAD
     </div>  
-=======
-    </div>
->>>>>>> bb286481fc9a55c0fef9770699e07e3b1e4253f7
 </body>
 </html>

@@ -5,9 +5,7 @@ var imageSchema = new mongoose.Schema({
     path: {
         type: Array,
         required: true,
-
     }
-
 });
 var complaintSchema = new mongoose.Schema({
     counter : {
@@ -32,11 +30,11 @@ var complaintSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    paraClauseLink: {
-        type: String,
-        required: false,
-        trim: true
-    },
+    // paraClauseLink: {
+    //     type: String,
+    //     required: false,
+    //     trim: true
+    // },
     objectionOrSuggestion: {
         type: String,
         enum: ['Objection', 'Suggestion'],

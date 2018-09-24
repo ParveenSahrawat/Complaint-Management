@@ -7,11 +7,10 @@
     <title>Status</title>
     <% include partials/scripts.ejs %>
 </head>
-<% include partials/navbar.ejs %>
     <body onload="getComplaint()">
-        <p id="uid" style="display : none;"><%= id %></p>
-        <p id="user" style="display : none;"> <%= usertype %></p>
-
+        <% include partials/navbar.ejs %>
+        <p id="uid" class="d-none"><%= id %></p>
+        <p id="user" class="d-none"> <%= usertype %></p>
         <div class="contain">
             <ul class="progressbar">
                 <li id="registered">Registered</li>
@@ -33,7 +32,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="action_div" class="d-none">
+            <div id="action_div" class="">
                 <div class="form-group">
                     <label class="control-label" for="c_new_status">Mark as :&nbsp;&nbsp;</label>
                     <select name="status" class="form-control" id="c_new_status">

@@ -295,20 +295,21 @@ function saveUserProfile() {
         })
 
 }
-
 function registerUser() {
     let username = $("#contact_username").val();
+    let middleName = $("#contact_middlename").val();
+    let lastName = $("#contact_lastname").val();
     let email = $("#contact_email").val();
     let mobile = $("#contact_mobile").val();
     let aadharNumber = $("#contact_aadharNumber").val();
     let password = $("#contact_password").val();
 
-    // open_processing_ur_request_swal();
     $.ajax({
         url: baseUrl + '/signup',
         type: 'POST',
         data: {
-            username: username, email: email, mobile: mobile, aadharNumber: aadharNumber, password : password
+            username: username, middleName : middleName, lastName : lastName,
+            email: email, mobile: mobile, aadharNumber: aadharNumber, password : password
         },
         datatype: 'json',
         success: (data) => {
@@ -320,29 +321,29 @@ function registerUser() {
                     icon: 'success',
                     text: data.message,
                     timer: 3000
-                }).then(() => {
-                    closeEditProfile();
-                }, (dismiss) => {
-                    closeEditProfile();
-                })
+                });
+            } else {
+                swal({
+                    icon : 'error',
+                    text : data.message
+                });
             }
         },
         error: (e) => {
             if (typeof e.responseJSON != "undefined" && typeof e.responseJSON.message != "undefined")
                 swal(e.responseJSON.message,{
-                    //text: e.responseJSON.message,
+                    text: e.responseJSON.message,
                     icon: 'warning'
                 });
             else
-                swal('An error occured while communicating with server.\n\nTry refreshing the page.',{
-                    //text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
+                swal({
+                    text: 'An error occured while communicating with server.\n\nTry refreshing the page.',
                     icon: 'warning'
                 });
         }
     })
 
 }
-
 function signInUser() {
     let email = $("#contact_email").val();
     let username = $("#contact_username").val();
@@ -355,9 +356,7 @@ function signInUser() {
         err.push('Password can\'t be left empty');
 
 }
-
 function closeEditProfile() {
-
     $("#aadharRow").removeClass("d-none");
     let username = $("#contact_username").val();
     let email = $("#contact_email").val();
@@ -503,7 +502,6 @@ function getComplaint() {
                 $('#ctable').append(trHTML);
                 if ($('#user').text() === 'admin')
                     $('#action_div').removeClass('d-none');
-                $('#c_remarks_div').removeClass('d-none');
             }
         }
     });
@@ -615,14 +613,14 @@ function sendOTP(){
               $('#mobile-number').val(data.mobile);
               swal({
                   text : data.message,
-                  type : 'success'
+                  icon : 'success'
               });
           }  
         },
         error : (e) => {
             swal({
                 text : e.message,
-                type : 'warning'
+                icon : 'warning'
             });
         }
     });
@@ -650,7 +648,7 @@ function verifyOTP(){
                     }).then(() => {
                         window.location.href = './complaints'
                     });
-                }
+            }
                 else{
                     swal({
                         text: data.message,
@@ -703,4 +701,84 @@ function emailVerification(){
                 });    
         }
     });
+}
+function relevantParaClauseLinks(){
+    let paraClauseLink = $('#paralinkUrl').val();
+    console.log(paraClauseLink);
+    if(paraClauseLink !== ''){
+        $.ajax({
+            url : baseUrl + '/paraclauselinks',
+            type : 'POST',
+            data : { paraClauseLink : paraClauseLink },
+            datatype : 'json',
+            success : (data) => {
+                if(data.status){
+                    // if($('#usertype').text() === 'admin')
+                        let linkListItem = `<li><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a><button id='${paraClauseLink}' onclick='removeParaClauseLink()'>Remove</button></li>`;
+                    // else 
+                    //     let linkListItem = `<li><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a></li>`;
+                    $('#paralinksList').append(linkListItem);
+                    $('#paralinkUrl').val() = '';
+                } else {
+                    swal({
+                        icon : 'error',
+                        text : 'An error occured in adding paralink'
+                    });
+                }
+            },
+            error : (err) => {
+                if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+                    swal({
+                        text: err.responseJSON.message,
+                        icon: 'warning'
+                    });
+                else
+                    swal({
+                        text: 'An error occured while communicating with server.',
+                        icon: 'warning'
+                    });  
+            }
+        });
+    } else {
+        $('#addParalink').attr('disabled');
+    }
+}
+function getParaClauseLinks(){
+    $.ajax({
+        url : baseUrl + '/paralinks',
+        type : 'GET',
+        success : (links) => {
+            if(links.status){
+                var listItems = '';
+                // if($('#usertype' === 'admin')){
+                //     $.each(links.data, (i, link) => {
+                //         listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button onclick='removeParaClauseLink()'>Remove</button></li>`
+                //     });
+                // }else {
+                    $.each(links.data, (i, link) => {
+                        listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a></li>`
+                    // });
+                })
+                $('#paralinksList').append(listItems);
+            }
+            else {
+                swal({
+                    icon : 'error',
+                    text : 'links.message'     
+                });
+            }
+        }
+    });
+}
+function closeAddingLink(){
+    swal({
+        icon : 'warning',
+        text : 'Are you sure, you don\'t want to add links',
+        buttons : true
+    }).then(() => {
+        window.location.href = './dashboard'
+    });
+}
+function removeParaClauseLink(){
+
 }
