@@ -11,8 +11,12 @@
 </head>
 <body onload="getParaClauseLinks()">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="#">Organization</a>  
+            <a class="navbar-brand" href="#">
+                <img src="images/logo-hry1.png" width="110" height="100" alt="Organisation">
+            </a>
+        <div class="collapse navbar-collapse justify-content-end">
             <a class="btn secondary white btn-lg" href="/logout">Logout</a>
+        </div>
     </nav>
       <form action="/complaints/newComplaint" autocomplete="off" method="post" class="container needs-validation" id="myForm" enctype="multipart/form-data" novalidate>
           <div class="form-group">
@@ -97,8 +101,8 @@
 
 
             <div class="form-group text-center"> <!--onsubmit="openModal()"-->
-                <input type="submit" class="label-font" value="Submit">
-                <button type="button"onclick="html2Pdf()">PDF</button>
+                <input type="submit" class="label-font" value="Submit" onclick="html2Pdf()">
+                <button type="button" onclick="html2Pdf()">PDF</button>
             </div>
       </form>
     <script>
@@ -147,7 +151,7 @@
                     },
 
 
-                    {text: 'Headers', pageBreak: 'before', style: 'subheader'},
+                    /*{text: 'Headers', pageBreak: 'before', style: 'subheader'},
                     'You can declare how many rows should be treated as a header. Headers are automatically repeated on the following pages',
                     {text: 'Styling tables', style: 'subheader'},
                     'You can provide a custom styler for the table. Currently it supports:',
@@ -157,42 +161,45 @@
                             'line colors',
                             'cell paddings',
                         ]
-                    },
+                    },*/
                     'with more options coming soon...\n\npdfmake currently has a few predefined styles (see them on the next page)',
-                    {text: 'noBorders:', fontSize: 14, bold: true, pageBreak: 'before', margin: [0, 0, 0, 8]},
+                    {text: 'noBorders:', fontSize: 28, bold: true, pageBreak: 'before', margin: [0, 0, 0, 8]},
                     {
                         style: 'tableExample',
                         table: {
+                            widths: ['*', 'auto'],
                             headerRows: 1,
                             body: [
-                                [{text: 'Header 1', style: 'tableHeader'}, {text: 'Header 2', style: 'tableHeader'}, {text: 'Header 3', style: 'tableHeader'}],
-                                ['Objection/Suggestion', objOrSug, 'Sample value 3'],
-                                ['Objection Type', type, 'Sample value 3'],
-                                ['Location', location, 'Sample value 3'],
-                                ['Relevant Para/Clause', relParClause, 'Sample value 3'],
-                                ['Complaint Description', compDesc, 'Sample value 3'],
+                                [{text: '', style: 'tableHeader'}, {text: '', style: 'tableHeader'}],
+                                ['Objection/Suggestion', objOrSug],
+                                ['Objection Type', type],
+                                ['Location', location],
+                                ['Relevant Para/Clause', relParClause],
+                                ['Complaint Description', compDesc],
                             ]
                         },
                         layout: 'noBorders'
                     },
-                    {text: 'headerLineOnly:', fontSize: 14, bold: true, margin: [0, 20, 0, 8]},
+                    /*{text: 'headerLineOnly:', fontSize: 14, bold: true, margin: [0, 20, 0, 8]},
                     {
                         style: 'tableExample',
                         table: {
                             headerRows: 1,
                             body: [
-                                [{text: 'Header 1', style: 'tableHeader'}, {text: 'Header 2', style: 'tableHeader'}, {text: 'Header 3', style: 'tableHeader'}],
-                                ['Sample value 1', 'Sample value 2', 'Sample value 3'],
-                                ['Sample value 1', 'Sample value 2', 'Sample value 3'],
-                                ['Sample value 1', 'Sample value 2', 'Sample value 3'],
-                                ['Sample value 1', 'Sample value 2', 'Sample value 3'],
-                                ['Sample value 1', 'Sample value 2', 'Sample value 3'],
+                                [{text: 'Header 1', style: 'tableHeader'}, {text: 'Header 2', style: 'tableHeader'}],
+                                ['Sample value 1', 'Sample value 2'],
+                                ['Sample value 1', 'Sample value 2'],
+                                ['Sample value 1', 'Sample value 2'],
+                                ['Sample value 1', 'Sample value 2'],
+                                ['Sample value 1', 'Sample value 2'],
                             ]
                         },
-                        layout: 'headerLineOnly'
-                    },
+                        layout: {
+                            defaultBorder: false,
+                        }
+                    },*/
                     {text: 'Optional border', fontSize: 14, bold: true, pageBreak: 'before', margin: [0, 0, 0, 8]},
-                    'Each cell contains an optional border property: an array of 4 booleans for left border, top border, right border, bottom border.',
+                    /*'Each cell contains an optional border property: an array of 4 booleans for left border, top border, right border, bottom border.',
                     {
                         style: 'tableExample',
                         table: {
@@ -260,42 +267,73 @@
                         layout: {
                             defaultBorder: false,
                         }
-                    },
+                    },*/
                     'For every cell without a border property, whether it has all borders or not is determined by layout.defaultBorder, which is false in the table above and true (by default) in the table below.',
                     {
                         style: 'tableExample',
                         table: {
+                            width: ['*','auto'],
                             body: [
                                 [
                                     {
                                         border: [false, false, false, false],
                                         fillColor: '#eeeeee',
-                                        text: 'border:\n[false, false, false, false]'
+                                        text: 'kkkkk'+'\nborder:\n[false, false, false, false]'
                                     },
                                     {
                                         fillColor: '#dddddd',
-                                        text: 'border:\nundefined'
+                                        text: objOrSug+ '\nborder:\nundefined'
                                     },
-                                    {
-                                        fillColor: '#eeeeee',
-                                        text: 'border:\nundefined'
-                                    },
+
                                 ],
                                 [
                                     {
-                                        fillColor: '#dddddd',
-                                        text: 'border:\nundefined'
-                                    },
-                                    {
+                                        border: [false, false, false, false],
                                         fillColor: '#eeeeee',
-                                        text: 'border:\nundefined'
+                                        text: 'kkkk'+ '\nborder:\n[false, false, false, false]'
                                     },
                                     {
-                                        border: [true, true, false, false],
                                         fillColor: '#dddddd',
-                                        text: 'border:\n[true, true, false, false]'
+                                        text: type+ '\nborder:\nundefined'
                                     },
-                                ]
+
+                                ],
+                                [
+                                    {
+                                        border: [false, false, false, false],
+                                        fillColor: '#eeeeee',
+                                        text: 'kkk'+ '\nborder:\n[false, false, false, false]'
+                                    },
+                                    {
+                                        fillColor: '#dddddd',
+                                        text: location+ '\nborder:\nundefined'
+                                    },
+
+                                ],
+                                [
+                                    {
+                                        border: [false, false, false, false],
+                                        fillColor: '#eeeeee',
+                                        text: 'kk'+ '\nborder:\n[false, false, false, false]'
+                                    },
+                                    {
+                                        fillColor: '#dddddd',
+                                        text: relParClause+ '\nborder:\nundefined'
+                                    },
+
+                                ],
+                                [
+                                    {
+                                        border: [false, false, false, false],
+                                        fillColor: '#eeeeee',
+                                        text: 'k'+ '\nborder:\n[false, false, false, false]'
+                                    },
+                                    {
+                                        fillColor: '#dddddd',
+                                        text: compDesc+ '\nborder:\nundefined'
+                                    },
+
+                                ],
                             ]
                         }
                     },

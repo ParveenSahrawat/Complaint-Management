@@ -8,12 +8,14 @@
 <% include partials/scripts.ejs %>
     <body onload="loadAllComplaints()">
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-            <a class="navbar-brand" href="#">Organisation</a>
+            <a class="navbar-brand" href="#">
+                <img src="images/logo-hry1.png" class="img-responsive" width="110em" height="100em" alt="Organisation">
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+              <ul class="navbar-nav">
                 <li class="nav-item">
                   <a class="nav-link" href="/profile">Profile <span class="sr-only">(current)</span></a>
                 </li>
@@ -26,14 +28,14 @@
               </ul>
             </div>
         </nav>
-        <main>
+        <main class="inline-block">
             <!-- complaints -->
             <div class="container">
                 <div id="complaint-heading">
                     <h1 class="text-center">All Suggestions &amp; Objections</h1>
                 </div>
                 <div class="complaint-table">
-                    <table class="" cellspacing="">
+                    <table class="table-" cellspacing="" cellpadding="10">
                         <thead class="">
                             <tr>
                                 <th scope="col" class="th-font">Id</th>
