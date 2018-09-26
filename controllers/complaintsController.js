@@ -127,6 +127,9 @@ module.exports.registerNewComplaint = (req,res,next) => {
                 status : registeredComplaint.status,
                 postedOn : registeredComplaint.postedOn,
                 location : registeredComplaint.location,
+                relevantParaClause : registeredComplaint.relevantParaClause,
+                name : req.user.username,
+                email : req.user.email
             }
             return res.status(200).json({
                 status: 1,
