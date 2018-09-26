@@ -12,10 +12,11 @@
             <a class="navbar-brand" href="#">Organization</a>  
             <a class="btn secondary white btn-lg" href="/logout">Logout</a>
     </nav>
-      <form action="/complaints/newComplaint" autocomplete="off" method="post" class="container needs-validation" id="myForm" enctype="multipart/form-data" novalidate>
-          <div class="form-group">
+      <!-- <form action="/complaints/newComplaint" autocomplete="off" method="post" class="container needs-validation" id="myForm" enctype="multipart/form-data" novalidate> -->
+        <div class="container">  
+            <div class="form-group">
               <label for="objectionOrSuggestion" class="label-font">Whether Objection/Suggestion</label>
-              <select required class="form-control container" name="objectionOrSuggestion">
+              <select required class="form-control container" id="objectionOrSuggestion" name="objectionOrSuggestion">
                   <option value="" style="display:none" selected disabled>Choose Option</option>
                   <option value="Objection" class="input-font" >Objection</option>
                   <option value="Suggestion" class="input-font">Suggestion</option>
@@ -26,10 +27,10 @@
               <div class="valid-feedback">
                   Looks good!
               </div>
-          </div>
-          <div class="form-group">
-            <label for="complaintType" class="label-font">Type</label>
-            <select class="form-control container" name="complaintType" required>
+            </div>
+            <div class="form-group">
+                <label for="complaintType" class="label-font">Type</label>
+                <select class="form-control container" id="complaintType" name="complaintType" required>
                     <option value="" style="display:none" selected disabled>Choose Complaint Type</option>
                     <option value="Land Use Proposals" class="input-font">Land Use Proposals</option>
                     <option value="Zoning Acquisition" class="input-font">Zoning Acquisition</option>
@@ -39,15 +40,15 @@
                     <option value="MCA/Control Area/Village Boundary" class="input-font">MCA/Control Area/Village Boundary</option>
                     <option value="Traffic & Transportation" class="input-font">Traffic &amp; Transportation (incl. alignment of Roads)</option>
                     <option value="Others" class="input-font">Others</option>
-            </select>
-              <div class="invalid-feedback">
-                  Please fill this field
-              </div>
-              <div class="valid-feedback">
-                  Looks good!
-              </div>
-          </div>
-          <div class="form-group">
+                </select>
+                  <div class="invalid-feedback">
+                      Please fill this field
+                  </div>
+                  <div class="valid-feedback">
+                      Looks good!
+                  </div>
+            </div>
+            <div class="form-group">
                 <label for="location" class="control-label label-font">Location</label>
                 <input type="text" id="location" class="form-control input-font" name="location" placeholder="Enter location..." required>
 
@@ -57,10 +58,10 @@
               <div class="valid-feedback">
                   Looks good!
               </div>
-          </div>
-          <div class="form-group">
+            </div>
+            <div class="form-group">
                 <label for="paraClause" class="label-font">Relevant Para/Clause</label>
-                <input type="text" class="form-control input-font" name="relevantParaClause" placeholder="" required>
+                <input type="text" class="form-control input-font" id="relevantParaClause" name="relevantParaClause" placeholder="" required>
               <div class="invalid-feedback">
                   Please fill this field
               </div>
@@ -71,14 +72,10 @@
                     <ol id="paralinksList">
                     </ol>
                 </div>
-          </div>
-          <div class="form-group">
+            </div>
+            <div class="form-group">
                 <label for="complaintDesc" class="label-font">Complaint Description</label>
-                <!--<input id="editor" type="text" class="form-control input-font" name="complaintDesc" cols="30" rows="10" placeholder="Type your complaint here">-->
-                <!--<input id="editor" type="text" name="complaintDesc" class="form-control input-font" cols="30" rows="10" placeholder="Type your complaint here">-->
-                <!--<textarea id="txtEditor" name="complaintDesc"></textarea>-->
-                <!--<textarea id="txtEditor"></textarea>-->
-                <textarea name="complaintDesc" class="form-control container" id="editor" required>This is some editor content</textarea>
+                <textarea name="complaintDesc" id="complaintDesc" class="form-control container" required></textarea>
                 <div class="invalid-feedback">
                     Please fill this field
                 </div>
@@ -86,17 +83,16 @@
                     Looks good!
                 </div>
             </div>
-          <div class="form-group">
+            <div class="form-group">
                 <label for="image" class="label-font">Image(s) Or Relevant Document(s)</label>
                 <small class="alert-danger">Supported File Formats are .docx,.pdf,.jpeg</small>
                 <input type="file" name="image" placeholder="Choose photo" multiple>
             </div>
-
-
             <div class="form-group text-center"> <!--onsubmit="openModal()"-->
-                <input type="submit" class="label-font" value="Submit">
+                <input onclick="registerComplaint()" type="submit" class="label-font" value="Submit">
             </div>
-      </form>
+        </div>
+      <!-- </form> -->
     <script>
         function init(){
             var options = {

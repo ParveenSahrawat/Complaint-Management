@@ -32,7 +32,7 @@ module.exports = function (passport) {
                             username : doc.username,
                             userType : doc.userType,
                             mobileVerified : doc.mobileVerified,
-                            _id: doc._id
+                            _id : doc._id
                         })
                     } else {
                         done(null, false)

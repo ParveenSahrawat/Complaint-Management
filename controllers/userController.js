@@ -17,21 +17,21 @@ module.exports.createUser = (req, res) => {
     }).then((doc) => {
             if (doc) {
                 res.status(500).send({
-                  status : 0,
-                  message : 'User already exists'
+                  status : 4,
+                  message : 'This email id is already used'
                 });
             } else {
               User.findOne({aadharNumber : req.body.aadharNumber}).then((doc) => {
                 if(doc){
                   res.status(400).send({
-                    status : 0,
+                    status : 2,
                     message : 'Entered aadhar number already exists'
                   });
                 } else {
                   User.findOne({mobile : req.body.mobile}).then((doc) => {
                     if(doc){
                       res.status(400).send({
-                        status : 0,
+                        status : 3,
                         message : 'Entered mobile number already exists'
                       });
                     } else {
@@ -87,7 +87,10 @@ module.exports.createUser = (req, res) => {
                             // console.log('Message sent : %s ', info.messageId);
                             // console.log('Preview URL : %s ',nodemailer.getTestMessageUrl(info));
                             // console.log(`This is get when signing up ${doc}`);
-                            res.redirect(`/login`);
+                            res.status(200).json({
+                              status : 1,
+                              message : 'Account is successfully created.A verification email is sent to your registered email id. Please login'
+                            });
                         });                          
                     });  
                 }).catch((e) => {

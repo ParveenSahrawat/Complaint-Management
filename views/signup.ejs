@@ -16,7 +16,8 @@
     </div>
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-                <form action="/auth/signup" autocomplete="off" id="contact" class="col-md-5 form-horizontal needs-validation" novalidate method="post">
+                <!-- <form action="/auth/signup" autocomplete="off" id="contact" class="col-md-5 form-horizontal needs-validation" novalidate method="post"> -->
+                <div class="form-horizontal needs-validation" novalidate>
                     <!--First Name-->
                     <div class="form-group">
                         <label for="username" class="control-label label-font">First Name</label>
@@ -43,7 +44,7 @@
                     <!-- Last Name -->
                     <div class="form-group">
                         <label for="username" class="control-label label-font">Last Name</label>
-                        <input class="form-control input-font" id="contact_lastname"  type="text"   name="lastName" placeholder="Enter your firstname" minlength="3" required>
+                        <input class="form-control input-font" id="contact_lastname"  type="text"   name="lastName" placeholder="Enter your firstname" minlength="3">
                         <div class="invalid-feedback">
                             Please fill this field
                         </div>
@@ -59,8 +60,11 @@
                         <div class="valid-feedback">
                             Looks good!
                         </div>
+                        <div id="usedEmail" class="d-none">
+                            Enter a different email id
+                        </div>
                         <div class="invalid-feedback">
-                            Please choose a email.
+                            Please fill this field
                         </div>
                     </div>
                     <!--Aadhaar Number-->
@@ -70,6 +74,9 @@
                         <!--<span class="error">A valid aadhar number is required</span>-->
                         <div class="invalid-feedback">
                             Please fill this field
+                        </div>
+                        <div id="usedAadhar" class="d-none">
+                            Enter a different aadhar number
                         </div>
                         <div class="valid-feedback">
                             Looks good!
@@ -82,6 +89,9 @@
                         <!--<span class="error">A valid number is required</span>-->
                         <div class="invalid-feedback">
                             Please fill this field
+                        </div>
+                        <div id="usedMobile" class="invalid-feedback d-none">
+                            Enter a different mobile
                         </div>
                         <div class="valid-feedback">
                             Looks good!
@@ -101,9 +111,10 @@
                     </div>
                     <!--Register Button-->
                     <div class="text-center">
-                        <input type="submit" onsubmit="registerUser()" value="Register" class="btn secondary white label-font">
+                        <input onclick="registerUser()" value="Register" class="btn secondary white label-font">
                     </div>
-                </form>
+                </div>
+                <!-- </form> -->
             <a href="/login" id="toLogin" class="btn btn-link label-font">Login</a>
         </div>
     </div>  

@@ -11,6 +11,20 @@ const loggedin = function (req, res, next) {
     res.redirect('/login');
   }
 }
+
+const multer = require('multer');
+let storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads')
+    },
+    filename: function(req, file, cb) {
+        console.log("ABCED");
+        cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+    }
+});
+const upload = multer({ storage : storage });
+
+router.route('/newComplaint').post(upload.any(), complaintsController.registerNewComplaint);
 // login and signup routes
 router.get('/', (req, res) => {
   res.render('index');
@@ -79,7 +93,10 @@ router.delete('/paraclauselinks', loggedin, complaintsController.deleteParaClaus
 // OTP Verification
 router.get('/sendOTP', loggedin, usersController.generateOTP);
 router.get('/otp', (req, res) => {
-  res.render('otp');
+  res.render('otp', {
+    usertype : req.user.userType,
+    mobileVerified : req.user.mobileVerified
+  });
 });
 router.post('/otp', usersController.checkOTP);
 

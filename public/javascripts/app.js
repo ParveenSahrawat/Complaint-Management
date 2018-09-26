@@ -305,7 +305,7 @@ function registerUser() {
     let password = $("#contact_password").val();
 
     $.ajax({
-        url: baseUrl + '/signup',
+        url: baseUrl + '/auth/signup',
         type: 'POST',
         data: {
             username: username, middleName : middleName, lastName : lastName,
@@ -314,13 +314,11 @@ function registerUser() {
         datatype: 'json',
         success: (data) => {
             if (data.status) {
-                savedDetails = {
-                    username, email, mobile, aadharNumber,password
-                };
                 swal({
-                    icon: 'success',
-                    text: data.message,
-                    timer: 3000
+                    icon : 'success',
+                    text : data.message
+                }).then(() => {
+                    window.location.href = './login'
                 });
             } else {
                 swal({
@@ -346,15 +344,22 @@ function registerUser() {
 }
 function signInUser() {
     let email = $("#contact_email").val();
-    let username = $("#contact_username").val();
     let password = $("#contact_password").val();
-    if (!username.length)
-        err.push('Userame can\'t be left empty');
-    if (!validate_email(email))
-        err.push('Please enter valid Email');
-    if(!password.length)
-        err.push('Password can\'t be left empty');
-
+    $.ajax({
+        url : baseUrl + '/auth/login',
+        type : 'POST',
+        data : { email : email, password : password },
+        datatype : 'json',
+        success : (data) => {
+            console.log(data);
+            if(error) {
+                swal({
+                    icon : 'error',
+                    text : 'Please enter valid email and password'
+                });
+            }
+        }
+    });
 }
 function closeEditProfile() {
     $("#aadharRow").removeClass("d-none");
@@ -506,6 +511,44 @@ function getComplaint() {
         }
     });
 }
+function registerComplaint(){
+    var objectionOrSuggestion = $('#objectionOrSuggestion').val();
+    var complaintType = $('#complaintType').val();
+    var location = $('#location').val();
+    var relevantParaClause = $('#relevantParaClause').val();
+    var complaintDesc = $('#complaintDesc').val();
+    $.ajax({
+        url : baseUrl + '/newComplaint',
+        type : 'POST',
+        data : { objectionOrSuggestion : objectionOrSuggestion, complaintType : complaintType,
+                location : location, relevantParaClause : relevantParaClause, complaintDesc : complaintDesc },
+        datatype : 'json',              
+        success : (data) => {
+            if(data.status){
+                swal({
+                    icon : 'success',
+                    text : `Your ${objectionOrSuggestion} is successfully registered`
+                });
+            } else {
+                swal({
+                    icon : 'error',
+                    text : data.message
+                });
+            }
+        }, 
+        error : ((err) => {
+                if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+                    swal({
+                        icon : 'error',
+                        text : err.responseJSON.message
+                    });
+                else
+                    swal({
+                        icon : 'error',
+                        text : 'An error occured while communicating with server.'});
+        })
+    });
+}
 function changeStatus() {
     let newStatus = $('#c_new_status').val();
     if (!newStatus) {
@@ -568,7 +611,9 @@ function setPassword(){
                     swal({
                         icon : 'success',
                         text : 'Your Password is successfully changed'
-                    });
+                    }).then(() => {
+                        window.location.href = '../login'
+                    })
                 } else { 
                     swal({
                         icon : 'error',
@@ -593,17 +638,8 @@ function setPassword(){
 function sendOTP(){
     var timer = document.getElementById('timer');
     var time = 0;
-    var resendOtpInterval = setInterval(() => {
-        timer.innerHTML = time;
-        time++;
-        if(time > 59){
-            clearInterval(resendOtpInterval);
-            time = 0;
-            timer.innerHTML = '';
-            timer.classList.add('d-none');
-            document.getElementById('resendOtpCode').classList.remove('d-none')
-        }    
-    }, 1000);
+    if($('#mobileverified').text() === true)
+        return;
     $.ajax({
         type : 'GET',
         url : baseUrl + '/sendOTP',
@@ -614,6 +650,18 @@ function sendOTP(){
               swal({
                   text : data.message,
                   icon : 'success'
+              }).then(() => {
+                var resendOtpInterval = setInterval(() => {
+                    timer.innerHTML = time;
+                    time++;
+                    if(time > 59){
+                        clearInterval(resendOtpInterval);
+                        time = 0;
+                        timer.innerHTML = '';
+                        timer.classList.add('d-none');
+                        document.getElementById('resendOtpCode').classList.remove('d-none')
+                    }    
+                }, 1000);
               });
           }  
         },
@@ -626,7 +674,7 @@ function sendOTP(){
     });
 }
 function verifyOTP(){
-    if($('#otp').val().length!=4){
+    if($('#otp').val() === ''){
         swal({
             icon : 'warning',
             text : 'Enter Valid OTP'
@@ -646,7 +694,11 @@ function verifyOTP(){
                         icon  : 'success',
                         text : data.message
                     }).then(() => {
-                        window.location.href = './complaints'
+                        if($('#usertype').text() === 'user')
+                            window.location.href = './complaints'
+                        else {
+                            window.location.href = './dashboard'
+                        }    
                     });
             }
                 else{
