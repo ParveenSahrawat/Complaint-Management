@@ -20,7 +20,7 @@ mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-
     reconnectInterval : 1000
   },
   (error, data) => {
-    if (error) {
+    if (error) {``
       console.log('Failed in connecting to database');
       throw error;
     } else {

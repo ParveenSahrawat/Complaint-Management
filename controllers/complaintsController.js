@@ -90,7 +90,6 @@ module.exports.registerNewComplaint = (req,res,next) => {
     console.log(req.file);
     try {
         let newComplaint = new Complaint({
-            // complaintNumber : req.body.counter,
             complaintType : req.body.complaintType,
             location : req.body.location,
             relevantParaClause : req.body.relevantParaClause,
@@ -121,9 +120,18 @@ module.exports.registerNewComplaint = (req,res,next) => {
         }
         else {
             console.log('complaint registered');
+            var complaintData = {
+                objectionOrSuggestion : registeredComplaint.objectionOrSuggestion,
+                complaintType : registeredComplaint.complaintType,
+                complaintDesc : registeredComplaint.complaintDesc,
+                status : registeredComplaint.status,
+                postedOn : registeredComplaint.postedOn,
+                location : registeredComplaint.location,
+            }
             return res.status(200).json({
                 status: 1,
                 message: `Your ${req.body.objectionOrSuggestion} is successfully registered.`,
+                complaintData : complaintData
             });
         }
     });
