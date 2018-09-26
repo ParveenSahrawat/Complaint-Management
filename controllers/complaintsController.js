@@ -10,6 +10,8 @@ const nodemailer = require('nodemailer');
 const {adminEmailAddress, adminName, emailConfig} = require('../config/email');
 
 module.exports.registerNewComplaint = (req,res,next) => {
+    console.log('in complaint register');
+    console.log(req.files);
     var pathObj = req.files;
     var patharr=[];
     pathObj.forEach(function(item) {patharr.push(item.path);});
@@ -86,26 +88,28 @@ module.exports.registerNewComplaint = (req,res,next) => {
         }
     }
     console.log(req.file);
-    let newComplaint = new Complaint({
-        // complaintNumber : req.body.counter,
-        complaintType : req.body.complaintType,
-        location : req.body.location,
-        relevantParaClause : req.body.relevantParaClause,
-        complaintDesc : req.body.complaintDesc,
-        objectionOrSuggestion : req.body.objectionOrSuggestion,
-        image : {
-
-             path : patharr,
-            //  originalName : req.files.originalName
-         },
-        complainant : req.user._id,
-        actionTrail : [{
-            user : req.user._id,
-            action : 'Submitted',
-            datetime : Date.now()
-        }],
-        postedOn : Date.now()
-    });
+    try {
+        let newComplaint = new Complaint({
+            // complaintNumber : req.body.counter,
+            complaintType : req.body.complaintType,
+            location : req.body.location,
+            relevantParaClause : req.body.relevantParaClause,
+            complaintDesc : req.body.complaintDesc,
+            objectionOrSuggestion : req.body.objectionOrSuggestion,
+            image : {
+    
+                 path : patharr,
+                 originalName : req.files.originalName
+             },
+            complainant : req.user._id,
+            actionTrail : [{
+                user : req.user._id,
+                action : 'Submitted',
+                datetime : Date.now()
+            }],
+            postedOn : Date.now()
+        });
+    
     console.log(`It's going on`);
     newComplaint.save((err, registeredComplaint) => {
         if (err) {
@@ -116,12 +120,16 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
         else {
-            res.status(200).json({
+            console.log('complaint registered');
+            return res.status(200).json({
                 status: 1,
                 message: `Your ${req.body.objectionOrSuggestion} is successfully registered.`,
             });
         }
     });
+} catch(error) {
+    console.log(error);
+}
 };
 module.exports.listAllComplaints = (req, res, next) => {
     if (req.user.userType === "user") {

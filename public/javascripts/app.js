@@ -520,38 +520,41 @@ function registerComplaint(){
     var location = $('#location').val();
     var relevantParaClause = $('#relevantParaClause').val();
     var complaintDesc = $('#complaintDesc').val();
-    $.ajax({
-        url : baseUrl + '/newComplaint',
-        type : 'POST',
-        data : { objectionOrSuggestion : objectionOrSuggestion, complaintType : complaintType,
-                location : location, relevantParaClause : relevantParaClause, complaintDesc : complaintDesc },
-        datatype : 'json',              
-        success : (data) => {
-            if(data.status){
-                swal({
-                    icon : 'success',
-                    text : `Your ${objectionOrSuggestion} is successfully registered`
-                });
-            } else {
-                swal({
-                    icon : 'error',
-                    text : data.message
-                });
-            }
-        }, 
-        error : ((err) => {
-                if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+    
+    console.log(complaintDesc);
+        $.ajax({
+            url : baseUrl + '/complaints/newComplaint',
+            type : 'POST',
+            data : { objectionOrSuggestion : objectionOrSuggestion, complaintType : complaintType,
+                    location : location, relevantParaClause : relevantParaClause, complaintDesc : complaintDesc },
+            datatype : 'json',        
+            success : (data) => {
+                if(data.status){
+                    swal({
+                        icon : 'success',
+                        text : `Your ${objectionOrSuggestion} is successfully registered`
+                    });
+                } else {
                     swal({
                         icon : 'error',
-                        text : err.responseJSON.message
+                        text : data.message
                     });
-                else
-                    swal({
-                        icon : 'error',
-                        text : 'An error occured while communicating with server.'
-                    });
-        })
-    });
+                }
+            }, 
+            error : ((err) => {
+                console.log(err);
+                    if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+                        swal({
+                            icon : 'error',
+                            text : err.responseJSON.message
+                        });
+                    else
+                        swal({
+                            icon : 'error',
+                            text : 'An error occured while communicating with server.'
+                        });
+            })
+        });
 }
 function changeStatus() {
     let newStatus = $('#c_new_status').val();

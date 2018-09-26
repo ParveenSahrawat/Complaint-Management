@@ -32,7 +32,7 @@ mongoose.connect('mongodb://elevenx:elevenx18@ds213612.mlab.com:13612/complaint-
 const index = require('./routes/index');
 const users = require('./routes/users');
 const auth = require('./routes/auth')(passport);
-// const complaint = require('./routes/complaints');
+const complaint = require('./routes/complaints');
 
 var app = express();
 // const port = process.env.PORT || 3000;
@@ -66,7 +66,7 @@ app.use(passport.session());
 app.use('/', index);
 app.use('/users', users);
 app.use('/auth', auth);
-// app.use('/complaints', complaint);
+app.use('/complaints', complaint);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

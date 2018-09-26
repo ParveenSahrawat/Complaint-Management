@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Welcome</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.38/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.38/vfs_fonts.js"></script>
   <% include partials/scripts.ejs %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.38/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.38/vfs_fonts.js"></script>
 </head>
 <body onload="getParaClauseLinks()">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -18,15 +18,12 @@
             <a class="btn secondary white btn-lg" href="/logout">Logout</a>
         </div>
     </nav>
-      <!-- <form action="/complaints/newComplaint" autocomplete="off" method="post" class="container needs-validation" id="myForm" enctype="multipart/form-data" novalidate> -->
-        <div class="container">  
+    
+      <form action="/complaints/newComplaint" method="post" class="container needs-validation" id="newComplaintForm" enctype="multipart/form-data" novalidate>
+        <!-- <div class="container">   -->
             <div class="form-group">
               <label for="objectionOrSuggestion" class="label-font">Whether Objection/Suggestion</label>
-<<<<<<< HEAD
               <select required class="form-control container" id="objectionOrSuggestion" name="objectionOrSuggestion">
-=======
-              <select required class="form-control container" name="objectionOrSuggestion" id="objectionOrSuggestion">
->>>>>>> fc93655ce25d35d36e88b0f6979150fbafb5436f
                   <option value="" style="display:none" selected disabled>Choose Option</option>
                   <option value="Objection" class="input-font" >Objection</option>
                   <option value="Suggestion" class="input-font">Suggestion</option>
@@ -37,17 +34,10 @@
               <div class="valid-feedback">
                   Looks good!
               </div>
-<<<<<<< HEAD
             </div>
             <div class="form-group">
                 <label for="complaintType" class="label-font">Type</label>
                 <select class="form-control container" id="complaintType" name="complaintType" required>
-=======
-          </div>
-          <div class="form-group">
-            <label for="complaintType" class="label-font">Type</label>
-            <select class="form-control container" name="complaintType" id="complaintType" required>
->>>>>>> fc93655ce25d35d36e88b0f6979150fbafb5436f
                     <option value="" style="display:none" selected disabled>Choose Complaint Type</option>
                     <option value="Land Use Proposals" class="input-font">Land Use Proposals</option>
                     <option value="Zoning Acquisition" class="input-font">Zoning Acquisition</option>
@@ -57,7 +47,6 @@
                     <option value="MCA/Control Area/Village Boundary" class="input-font">MCA/Control Area/Village Boundary</option>
                     <option value="Traffic & Transportation" class="input-font">Traffic &amp; Transportation (incl. alignment of Roads)</option>
                     <option value="Others" class="input-font">Others</option>
-<<<<<<< HEAD
                 </select>
                   <div class="invalid-feedback">
                       Please fill this field
@@ -67,18 +56,6 @@
                   </div>
             </div>
             <div class="form-group">
-=======
-            </select>
-              <div class="invalid-feedback">
-                  Please fill this field
-              </div>
-              <div class="valid-feedback">
-                  Looks good!
-              </div>
-          </div>
-
-          <div class="form-group">
->>>>>>> fc93655ce25d35d36e88b0f6979150fbafb5436f
                 <label for="location" class="control-label label-font">Location</label>
                 <input type="text" id="location" class="form-control input-font" name="location" placeholder="Enter location..." required>
 
@@ -91,11 +68,7 @@
             </div>
             <div class="form-group">
                 <label for="paraClause" class="label-font">Relevant Para/Clause</label>
-<<<<<<< HEAD
                 <input type="text" class="form-control input-font" id="relevantParaClause" name="relevantParaClause" placeholder="" required>
-=======
-                <input type="text" class="form-control input-font" name="relevantParaClause" placeholder="" id="relevantParaClause" required>
->>>>>>> fc93655ce25d35d36e88b0f6979150fbafb5436f
               <div class="invalid-feedback">
                   Please fill this field
               </div>
@@ -119,19 +92,16 @@
             </div>
             <div class="form-group">
                 <label for="image" class="label-font">Image(s) Or Relevant Document(s)</label>
-                <small class="alert-danger">Supported File Formats are .docx,.pdf,.jpeg</small>
-                <input type="file" name="image" placeholder="Choose photo" multiple>
+                <small class="">Supported File Formats are .docx,.pdf,.jpeg</small>
+                <input type="file" name="image" placeholder="Choose file" multiple>
             </div>
             <div class="form-group text-center"> <!--onsubmit="openModal()"-->
-<<<<<<< HEAD
-                <input onclick="registerComplaint()" class="label-font" value="Submit">
-=======
-                <input type="submit" class="label-font" value="Submit" onclick="html2Pdf()">
-                <button type="button" onclick="html2Pdf()">PDF</button>
->>>>>>> fc93655ce25d35d36e88b0f6979150fbafb5436f
+                <input class="label-font" value="Submit" type="submit" id="btnSubmit">
+                <!-- <button type="submit">Submit</button> -->
+                <!-- <button type="button" onclick="html2Pdf()">PDF</button> -->
             </div>
-        </div>
-      <!-- </form> -->
+        <!-- </div> -->
+      </form>
     <script>
         function init(){
             var options = {
@@ -144,13 +114,53 @@
 
     </script>
     <script>
+        try {
+            $(document).ready(() => {
+            var options = {
+                beforeSubmit: showRequest, // pre-submit callback
+                success: showResponse, // post-submit callback
+                error : showError
+            };
+            // var objectionOrSuggestion = $('#objectionOrSuggestion').val();
+            // var complaintType = $('#complaintType').val();
+            // var location = $('#location').val();
+            // var relevantParaClause = $('#relevantParaClause').val();
+            // var complaintDesc = $('#complaintDesc').val();
+            // var formData = { objectionOrSuggestion : objectionOrSuggestion, complaintType : complaintType,
+            //                 location : location, relevantParaClause : relevantParaClause, complaintDesc : complaintDesc };
+            // console.log(formData.complaintDesc);
+            $('#newComplaintForm').submit(function(){
+                $(this).ajaxSubmit(options);
+                    return false;//always return false to prevent standard browser submit and page navigation
+            });
+        });
+        function showRequest(formData, jqForm, options){
+           
+        }
+        function showResponse(responseText, statusText, xhr, $form){
+            debugger;
+            swal({
+                icon : 'success',
+                text : responseText.message
+            });
+            alert('status: ' + statusText + '\n\nresponseText: \n' + responseText );
+        }
+        function showError(error){
+            alert('error' + error);
+        }
+        } catch(error) {
+            alert(error);
+        }
+        
+    </script>
+    <script>
 
         function html2Pdf(){
             var objOrSug= $('#objectionOrSuggestion :selected').text();
             var type = $('#complaintType :selected').text();
             var relParClause =$('#relevantParaClause')[0].value;
             var location = $('#location')[0].value;
-            var compDesc = $('#editor')[0].value;
+            var compDesc = $('#complaintDesc')[0].value;
 
             //console.log(objOrSug);
             var docDefinition = {
