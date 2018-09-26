@@ -477,6 +477,8 @@ function saveNewPassword() {
 function getComplaint() {
     let params = (new URL(document.location)).searchParams;
     console.log(params);
+    var id1 = $('#user').text().trim();
+    console.log("ab"+id1);
     let id = params.get('_id');
     $.ajax({
         url: baseUrl + '/complaint/' + $("#uid").text(),
@@ -505,8 +507,9 @@ function getComplaint() {
                     '<tr><td>' + 'Relevant Paraclause' + '</td><td>' + complaint.relevantParaClause + '</td></tr>'+
                     '<tr><td>' + 'Status' + '</td><td>' + complaint.status + '</td></tr>';
                 $('#ctable').append(trHTML);
-                if ($('#user').text() === 'admin')
+                if ($('#user').text().trim() === 'admin') {
                     $('#action_div').removeClass('d-none');
+                }
             }
         }
     });
@@ -776,7 +779,7 @@ function relevantParaClauseLinks(){
                     // else 
                     //     let linkListItem = `<li><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a></li>`;
                     $('#paralinksList').append(linkListItem);
-                    $('#paralinkUrl').val() = '';
+                    $('#paralinkUrl')[0].value = '';
                 } else {
                     swal({
                         icon : 'error',
@@ -785,16 +788,19 @@ function relevantParaClauseLinks(){
                 }
             },
             error : (err) => {
-                if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+                if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined"){
                     swal({
                         text: err.responseJSON.message,
                         icon: 'warning'
                     });
-                else
+                }
+
+                else {
                     swal({
                         text: 'An error occured while communicating with server.',
                         icon: 'warning'
-                    });  
+                    });
+                }
             }
         });
     } else {
@@ -808,16 +814,19 @@ function getParaClauseLinks(){
         success : (links) => {
             if(links.status){
                 var listItems = '';
-                // if($('#usertype' === 'admin')){
-                //     $.each(links.data, (i, link) => {
-                //         listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button onclick='removeParaClauseLink()'>Remove</button></li>`
-                //     });
-                // }else {
+                if($('#usertype').text().trim() === 'admin'){
                     $.each(links.data, (i, link) => {
+                        listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button id='${links.data[i].paraClauseLink}' onclick='removeParaClauseLink()'>Remove</button></li>`
+                    });
+                }
+                else {
+                    $.each(links.data, (i, link) => {
+
                         listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a></li>`
                     // });
-                })
+                });
                 $('#paralinksList').append(listItems);
+            }
             }
             else {
                 swal({
