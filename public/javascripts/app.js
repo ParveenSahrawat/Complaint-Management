@@ -545,7 +545,8 @@ function registerComplaint(){
                 else
                     swal({
                         icon : 'error',
-                        text : 'An error occured while communicating with server.'});
+                        text : 'An error occured while communicating with server.'
+                    });
         })
     });
 }
@@ -586,16 +587,21 @@ function changeStatus() {
 function setPassword(){
     let newPass = $('#reset-password').val();
     let confirmPass = $('#confirm-password').val();
-    if(!newPass.length)
-        return;
-    else if(!confirmPass.length)
-        return;    
+    if(newPass == '')
+        swal({
+            icon : 'error',
+            text : 'Please enter new password'
+        });
+    else if(confirmPass == '')
+        swal({
+            icon : 'error',
+            text : 'Please enter confirm password'
+        })
     else if(newPass !== confirmPass){
         swal({
             icon : 'error',
             text : 'New Password and Confirm Password don\'t match'
         });
-        return;
     } else {
         let currentUrl = window.location.href;
         console.log(currentUrl);

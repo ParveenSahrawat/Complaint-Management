@@ -116,10 +116,9 @@ module.exports.registerNewComplaint = (req,res,next) => {
             });
         }
         else {
-            res.json({
+            res.status(200).json({
                 status: 1,
                 message: `Your ${req.body.objectionOrSuggestion} is successfully registered.`,
-                refNo: req.body.complaintNumber
             });
         }
     });

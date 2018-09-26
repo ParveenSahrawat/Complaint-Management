@@ -89,7 +89,7 @@
                 <input type="file" name="image" placeholder="Choose photo" multiple>
             </div>
             <div class="form-group text-center"> <!--onsubmit="openModal()"-->
-                <input onclick="registerComplaint()" type="submit" class="label-font" value="Submit">
+                <input onclick="registerComplaint()" class="label-font" value="Submit">
             </div>
         </div>
       <!-- </form> -->
@@ -97,7 +97,7 @@
         function init(){
             var options = {
                 types: ['(regions)'],
-                componentRestrictions: {country: "in"}
+                componentRestrictions: {country : "in"}
             };
             var input = document.getElementById('location');
             var autocomplete = new google.maps.places.Autocomplete(input, options);

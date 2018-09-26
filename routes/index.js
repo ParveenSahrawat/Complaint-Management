@@ -3,7 +3,6 @@ const router = express.Router();
 const complaintsController = require('../controllers/complaintsController');
 const usersController = require('../controllers/userController');
 
-
 const loggedin = function (req, res, next) {
   if (req.isAuthenticated()) {
     next();
