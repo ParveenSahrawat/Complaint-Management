@@ -9,7 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 </head>
     <body onload="loadAnalytics()">
-        <% include partials/navbar.ejs %>
+        <% include partials/navbar-admin.ejs %>
+        <main>
             <div class="chart-container" id="barChart">
                 <canvas id="myChart"></canvas>
             </div>
@@ -21,5 +22,6 @@
                     <canvas id="myLineChart"></canvas>   
                 </div>
             </div> 
+        </main>
     </body>
 </html>

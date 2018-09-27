@@ -1,6 +1,6 @@
 
-// const baseUrl = 'http://localhost:3000';
-const baseUrl = 'https://complaint-management26.herokuapp.com';
+const baseUrl = 'http://localhost:3000';
+// const baseUrl = 'https://complaint-management26.herokuapp.com';
 //IIFE Created For Form Validation
 (function() {
     'use strict';
@@ -100,7 +100,7 @@ function loadAnalytics() {
         type: 'GET',
         dataType: 'json',
         success: (complaints) => {
-            console.log(complaints);
+            // console.log(complaints);
             var ctxBar = document.getElementById("myChart").getContext('2d');
             var ctxPie = document.getElementById("myPieChart")
             var ctxLine = document.getElementById("myLineChart");
@@ -117,23 +117,32 @@ function loadAnalytics() {
             for (var i = 0; i < complaints.results.statusCount.length; i++) {
                 totalComplaints += complaints.results.statusCount[i];
             }
+            var label = Object.keys(complaints.results.counts);
+                console.log(label);
+            var dataset = [];
+            for(let i=0; i<comp.length; i++){
+                dataset[i] = complaints.results.counts[label[i]];
+            }
+            console.log(dataset);
             console.log(comp);
             var myChart = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: ["Land Use Proposals", "Zoning Acquisition", "Infrastructure Provisions", "Demographic & Population Projections", "Environment Related", "MCA/Control Area/Village Boundary", "Traffic & Transportation", "Others"],
+                    // labels: ["Land Use Proposals", "Zoning Acquisition", "Infrastructure Provisions", "Demographic & Population Projections", "Environment Related", "MCA/Control Area/Village Boundary", "Traffic & Transportation", "Others"],
+                    labels : label,
                     datasets: [{
-                        label: `${totalComplaints} of Complaints`,
-                        data: [
-                            comp[7]['Land Use Proposals'],
-                            comp[0]['Zoning Acquisition'],
-                            comp[4]['Infrastructure Provisions'],
-                            comp[3]['Demographic & Population Projections'],
-                            comp[5]['Environment Related'],
-                            comp[1]['MCA/Control Area/Village Boundary'],
-                            comp[2]['Traffic & Transportation'],
-                            comp[6]['Others']
-                        ],
+                        label: `${totalComplaints} Complaints`,
+                        data: dataset,
+                        // [
+                        //     comp[7]['Land Use Proposals'],
+                        //     comp[0]['Zoning Acquisition'],
+                        //     comp[4]['Infrastructure Provisions'],
+                        //     comp[3]['Demographic & Population Projections'],
+                        //     comp[5]['Environment Related'],
+                        //     comp[1]['MCA/Control Area/Village Boundary'],
+                        //     comp[2]['Traffic & Transportation'],
+                        //     comp[6]['Others']
+                        // ],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -152,7 +161,7 @@ function loadAnalytics() {
                             'rgba(153, 102, 255, 1)',
                             'rgba(255, 159, 64, 1)',
                             'rgba(54, 162, 235, 1)',
-                            'rgba(75, 192, 192, 0.2)'
+                            'rgba(75, 192, 192, 1)'
                         ],
                         borderWidth: 1
                     }]
@@ -189,6 +198,7 @@ function loadAnalytics() {
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
+                        label : `${totalComplaints} complaints`,
                         data: [
                             complaints.results.monthArray[0],
                             complaints.results.monthArray[1],
@@ -577,8 +587,12 @@ function changeStatus() {
                 data: { newStatus, remarks },
                 success: (data) => {
                     if (data) {
-                        swal('Status Updated Successfully');
-                        // window.location.href = window.location.href;
+                        swal({
+                            icon : 'success',
+                            text : 'Status Updated Successfully'
+                        }).then(() => {
+                            window.location.href = '../dashboard'
+                        });
                     }
                 },
                 error: (e) => {
@@ -779,10 +793,11 @@ function relevantParaClauseLinks(){
             success : (data) => {
                 if(data.status){
                     // if($('#usertype').text() === 'admin')
-                        let linkListItem = `<li><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a><button id='${paraClauseLink}' onclick='removeParaClauseLink()'>Remove</button></li>`;
+                        let linkListItem = `<li id='${paraClauseLink}'><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a><input type='button' value="Remove" id='${paraClauseLink}' onclick="removeParaClauseLink('${paraClauseLink}')"/></li>`;
                     // else 
                     //     let linkListItem = `<li><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a></li>`;
                     $('#paralinksList').append(linkListItem);
+                    // window.location.reload();
                     $('#paralinkUrl')[0].value = '';
                 } else {
                     swal({
@@ -820,22 +835,21 @@ function getParaClauseLinks(){
                 var listItems = '';
                 if($('#usertype').text().trim() === 'admin'){
                     $.each(links.data, (i, link) => {
-                        listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button id='${links.data[i].paraClauseLink}' onclick='removeParaClauseLink()'>Remove</button></li>`
+                        listItems += `<li id='${links.data[i].paraClauseLink}'><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button id='${links.data[i].paraClauseLink}' onclick='removeParaClauseLink("${links.data[i].paraClauseLink}")'>Remove</button></li>`
                     });
                 }
                 else {
                     $.each(links.data, (i, link) => {
 
-                        listItems += `<li><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a></li>`
-                    // });
-                });
+                        listItems += `<li id='${paraClauseLink}'><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a></li>`
+                    });
+                }
                 $('#paralinksList').append(listItems);
-            }
             }
             else {
                 swal({
                     icon : 'error',
-                    text : 'links.message'     
+                    text : 'Old links not loaded'     
                 });
             }
         }
@@ -845,11 +859,37 @@ function closeAddingLink(){
     swal({
         icon : 'warning',
         text : 'Are you sure, you don\'t want to add links',
-        buttons : true
     }).then(() => {
         window.location.href = './dashboard'
     });
 }
-function removeParaClauseLink(){
-
+function removeParaClauseLink(paraClauseLink){
+    $.ajax({
+        url : baseUrl + '/paraclauselinks',
+        type : 'DELETE',
+        data : {paraClauseLink : paraClauseLink},
+        datatype : 'json',
+        success : (res) => {
+            if(res.status){
+                $(`#${paraClauseLink}`).remove();
+            } else {
+                swal({
+                    icon : 'error',
+                    text : 'Error in removing link'
+                });
+            }    
+        },
+        error : (err) => {
+            if (typeof err.responseJSON != "undefined" && typeof err.responseJSON.message != "undefined")
+                swal({
+                    text: err.responseJSON.message,
+                    icon: 'warning'
+                });
+            else
+                swal({
+                    text: 'An error occured while communicating with server.',
+                    icon: 'warning'
+                });  
+        }
+    });
 }

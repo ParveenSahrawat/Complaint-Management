@@ -174,9 +174,18 @@ module.exports.listAllComplaints = (req, res, next) => {
                 console.log('Complaints are fetched');
                 // console.log(result);
                 var counts = {};
+                var countkey, newCount={} ;
                 result.forEach((comp) => {
                     counts[comp.complaintType] = (counts[comp.complaintType] || 0) +1;
                 });
+                countkey = Object.keys(counts);
+                console.log(countkey);
+                for(let i=0; i<countkey.length; i++){
+                    newCount[countkey[i].split(' ')[0]] = counts[countkey[i]];
+                }
+                console.log(newCount);
+                counts = newCount;
+
                 var monthArray = [];
                 for(var i=0; i<12; i++){
                     monthArray[i] = 0;
@@ -393,5 +402,22 @@ module.exports.getParalinks = (req, res) => {
     });
 }
 module.exports.deleteParaClauseLink = (req, res) => {
-    
+    paralinks.findOneAndRemove({paraClauseLink : req.body.paraClauseLink}).then((doc) => {
+        if(!doc){
+            res.status(500).json({
+                status : 0,
+                message : 'Link not deleted'
+            });
+        } else {
+            res.status(200).json({
+                status : 1,
+                message : 'Link successfully deleted'
+            });
+        }
+    }).catch((err) => {
+        res.status(500).json({
+            status : 0,
+            message : 'Internal server error'
+        });
+    });
 }

@@ -6,33 +6,7 @@
 </head>
 <% include partials/scripts.ejs %>
 <body onload="loadAllComplaintsForAdmin()">
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-        <a class="navbar-brand" href="#">
-            <img src="images/logo-hry1.png" width="110" height="100" alt="Organisation">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/allComplaints">Analytics</a>
-            </li>
-            <li class="nav-item d-none" id="addAdmin">
-                <a class="nav-link" href="/signup">Add Admin</a>
-            </li>
-            <li class="nav-item" id="">
-                <a class="nav-link" href="/paraclauselinks">Relevant Paraclause</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
-            </li>
-          </ul>
-        </div>
-    </nav>
+    <% include partials/navbar-admin.ejs %>
     <!-- complaints -->
     <p id="adminCheck"><%= superAdmin %></p>
     <main>
