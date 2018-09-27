@@ -357,7 +357,8 @@ module.exports.addParalinks = (req, res) => {
                 if(doc){
                     res.status(200).json({
                         status : 1,
-                        message : 'Link added successfully'
+                        message : 'Link added successfully',
+                        id : doc._id
                     });
                 } else {
                     res.status(500).json({
@@ -402,7 +403,7 @@ module.exports.getParalinks = (req, res) => {
     });
 }
 module.exports.deleteParaClauseLink = (req, res) => {
-    paralinks.findOneAndRemove({paraClauseLink : req.body.paraClauseLink}).then((doc) => {
+    paralinks.findByIdAndRemove({_id : req.body.paraClauseLink}).then((doc) => {
         if(!doc){
             res.status(500).json({
                 status : 0,

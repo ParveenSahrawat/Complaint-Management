@@ -1,6 +1,6 @@
 
-// const baseUrl = 'http://localhost:3000';
-const baseUrl = 'https://complaint-management26.herokuapp.com';
+const baseUrl = 'http://localhost:3000';
+// const baseUrl = 'https://complaint-management26.herokuapp.com';
 //IIFE Created For Form Validation
 (function() {
     'use strict';
@@ -793,7 +793,7 @@ function relevantParaClauseLinks(){
             success : (data) => {
                 if(data.status){
                     // if($('#usertype').text() === 'admin')
-                        let linkListItem = `<li id='${paraClauseLink}'><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a><input type='button' value="Remove" id='${paraClauseLink}' onclick="removeParaClauseLink('${paraClauseLink}')"/></li>`;
+                        let linkListItem = `<li id='${data.id}'><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a><input type='button' value="Remove" id='${data.id}' onclick="removeParaClauseLink('${data.id}')"/></li>`;
                     // else 
                     //     let linkListItem = `<li><a href='${paraClauseLink}' target='_blank'>${paraClauseLink}</a></li>`;
                     $('#paralinksList').append(linkListItem);
@@ -835,13 +835,13 @@ function getParaClauseLinks(){
                 var listItems = '';
                 if($('#usertype').text().trim() === 'admin'){
                     $.each(links.data, (i, link) => {
-                        listItems += `<li id='${links.data[i].paraClauseLink}'><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button id='${links.data[i].paraClauseLink}' onclick='removeParaClauseLink("${links.data[i].paraClauseLink}")'>Remove</button></li>`
+                        listItems += `<li id='${links.data[i]._id}'><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a><button id='${links.data[i]._id}' onclick='removeParaClauseLink("${links.data[i]._id}")'>Remove</button></li>`
                     });
                 }
                 else {
                     $.each(links.data, (i, link) => {
 
-                        listItems += `<li id='${paraClauseLink}'><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a></li>`
+                        listItems += `<li id='${links.data[i]._id}'><a href='${links.data[i].paraClauseLink}'>${links.data[i].paraClauseLink}</a></li>`
                     });
                 }
                 $('#paralinksList').append(listItems);
