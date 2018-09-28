@@ -185,7 +185,6 @@ module.exports.listAllComplaints = (req, res, next) => {
                 }
                 console.log(newCount);
                 counts = newCount;
-
                 var monthArray = [];
                 for(var i=0; i<12; i++){
                     monthArray[i] = 0;

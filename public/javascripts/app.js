@@ -1,6 +1,6 @@
 
-// const baseUrl = 'http://localhost:3000';
-const baseUrl = 'https://complaint-management26.herokuapp.com';
+const baseUrl = 'http://localhost:3000';
+// const baseUrl = 'https://complaint-management26.herokuapp.com';
 //IIFE Created For Form Validation
 (function() {
     'use strict';
@@ -88,7 +88,7 @@ function loadAllComplaintsForAdmin() {
         error: function (err) {
             swal({
                 icon : 'error',
-                text : err,message
+                text : err.message
             })
         }
     });

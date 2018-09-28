@@ -118,14 +118,6 @@
                 success: showResponse, // post-submit callback
                 error : showError
             };
-            // var objectionOrSuggestion = $('#objectionOrSuggestion').val();
-            // var complaintType = $('#complaintType').val();
-            // var location = $('#location').val();
-            // var relevantParaClause = $('#relevantParaClause').val();
-            // var complaintDesc = $('#complaintDesc').val();
-            // var formData = { objectionOrSuggestion : objectionOrSuggestion, complaintType : complaintType,
-            //                 location : location, relevantParaClause : relevantParaClause, complaintDesc : complaintDesc };
-            // console.log(formData.complaintDesc);
             $('#newComplaintForm').submit(function(){
                 $(this).ajaxSubmit(options);
                     return false;//always return false to prevent standard browser submit and page navigation
